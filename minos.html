@@ -408,10 +408,12 @@ function canecaOcupada(b) {
       if (p.cuenta === "invitada") invitadas++;
       if (!p.administrador && p.cuenta === "activa" && p.reglas !== t.reglas_vigentes) sinReglas++;
     });
+    var bloqueados = 0; ps.forEach(function (p) { (p.equipos || []).forEach(function (e) { if (e.estado === "bloqueado") bloqueados++; }); });
     var sinCandado = as.filter(function (a) { return !a.candado; }).length;
     $("mn-cifras").innerHTML =
       '<div class="mn-cifra" data-mover-id="personas"><b>' + ps.length + '</b><span>personas con cuenta o registro</span></div>' +
       '<div class="mn-cifra' + (pedidos ? " atencion" : "") + '" data-mover-id="pedidos"><b>' + pedidos + '</b><span>pedidos esperando tu decisión</span></div>' +
+      '<div class="mn-cifra' + (bloqueados ? " atencion" : "") + '" data-mover-id="bloqueados"><b>' + bloqueados + '</b><span>computadores bloqueados (otro equipo)</span></div>' +
       '<div class="mn-cifra" data-mover-id="invitadas"><b>' + invitadas + '</b><span>invitadas que no han entrado</span></div>' +
       '<div class="mn-cifra' + (sinReglas ? " atencion" : "") + '" data-mover-id="reglas"><b>' + sinReglas + '</b><span>sin aceptar las reglas ' + esc(t.reglas_vigentes || "") + '</span></div>' +
       '<div class="mn-cifra" data-mover-id="candado"><b>' + sinCandado + ' de ' + as.length + '</b><span>herramientas sin candado propio</span></div>';
@@ -458,7 +460,7 @@ function canecaOcupada(b) {
         (!p.administrador && p.cuenta === "invitada" ? '<p style="margin:12px 0 4px"><b>Invitación</b> <span class="mn-sub">enviada ' + esc(fecha(p.invitada_en)) + ', todavía no la abre</span></p>' +
           '<div style="display:flex;flex-wrap:wrap;gap:8px;align-items:center"><button class="mn-btn" type="button" data-inv="reenviar" data-correo="' + esc(p.correo) + '">Reenviar la invitación</button>' +
           caneca("la invitación de " + p.correo, { attrs: 'data-inv="retirar" data-correo="' + esc(p.correo) + '" data-nombre="' + esc(p.nombre || "") + '"' }) + '</div>' : '') +
-        '<p style="margin:12px 0 4px"><b>Computadores</b></p>' + (eq ? '<ul class="mn-equipos">' + eq + '</ul>' : '<p class="mn-sub">Todavía no tiene computadores anotados: se anota el computador cada vez que la persona entra a Hestia (desde el 5 de octubre).</p>') +
+        '<p style="margin:12px 0 4px"><b>Computadores</b> <span class="mn-sub">— solo el primero queda autorizado; desde otro no entra hasta que lo apruebes</span></p>' + (eq ? '<ul class="mn-equipos">' + eq + '</ul>' : '<p class="mn-sub">Todavía no tiene computadores anotados: se anota el computador cada vez que la persona entra a Hestia (desde el 5 de octubre).</p>') +
         '</div></details>';
     }).join("");
     // Roles
