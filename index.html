@@ -1,0 +1,952 @@
+<!doctype html>
+<html lang="es">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Hestia — Tus herramientas · IRM Aires</title>
+<link rel="icon" href="data:image/png;base64,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">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Poppins:wght@600;700&family=Inter:wght@400;500;600&display=swap">
+<style>
+:root {
+  --irm-cian: #00B9CE;
+  --irm-lima: #96D416;
+  --irm-gris-azul: #B7C6CE;
+  --superficie: #fcfcfb;
+  --plano: #f9f9f7;
+  --tinta: #0b0b0b;
+  --tinta-2: #52514e;
+  --tinta-apagada: #898781;
+  --cuadricula: #e1e0d9;
+  --sans: Inter, system-ui, -apple-system, "Segoe UI", sans-serif;
+  --display: Poppins, Inter, system-ui, sans-serif;
+  --mono: ui-monospace, "SF Mono", Menlo, "Cascadia Code", monospace;
+}
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme="light"]) {
+    --superficie: #1a1a19; --plano: #0d0d0d; --tinta: #ffffff;
+    --tinta-2: #c3c2b7; --cuadricula: #2c2c2a;
+  }
+}
+:root[data-theme="dark"] {
+  --superficie: #1a1a19; --plano: #0d0d0d; --tinta: #ffffff;
+  --tinta-2: #c3c2b7; --cuadricula: #2c2c2a;
+}
+* { box-sizing: border-box; }
+body {
+  margin: 0; padding: 0 clamp(16px, 5vw, 56px) 48px;
+  background: var(--plano); color: var(--tinta);
+  font: 15px/1.6 var(--sans);
+  -webkit-font-smoothing: antialiased;
+}
+h1, h2, h3 { font-family: var(--display); font-weight: 600; letter-spacing: -.01em; }
+h1 { font-size: clamp(24px, 3.2vw, 34px); margin: 0 0 4px; }
+h2 { font-size: 20px; margin: 40px 0 12px; color: var(--tinta); }
+
+/* Encabezado. El `height` de abajo cae sobre el LIENZO del archivo, no sobre la
+   tinta, y los dos no son lo mismo: el vector tiene viewBox 1288x513 con la
+   tinta en 1256,49 x 476,21 (§1.1.bis). Con `height: 42px` la tinta terminaba
+   en 39,0 x 102,9 px — 14,3 % por debajo del mínimo de 120 px de ancho que fija
+   §1.5, que manda sobre cualquier altura escrita en otra sección.
+
+   49px de lienzo = 45,5px de tinta = 120,2px de ancho: el piso de §1.5, justo.
+   Para el "típico" de 48px de tinta que pide §4.3 son 52px de lienzo.
+   NO bajar de 49 y NO dimensionar por la relación del viewBox (§1.1.bis).
+
+   Aire (§1.4): >= 1/2 de la altura del logo por lado, y ahí no entra nada — ni
+   el borde lima. Con 49px eso son >= 24,5px: por eso el padding inferior es 26
+   y no 20, que ya quedaba corto cuando el logo medía 42. */
+.irm-encabezado {
+  display: flex; align-items: center; gap: 28px;
+  padding: 28px 0 26px; margin-bottom: 28px;
+  border-bottom: 2px solid var(--irm-lima);
+}
+.irm-encabezado img { height: 49px; width: auto; display: block; }
+.irm-encabezado .titulo { flex: 1; min-width: 0; }
+.irm-encabezado .fecha {
+  font-family: var(--mono); font-size: 12px; color: var(--tinta-apagada);
+  font-variant-numeric: tabular-nums; white-space: nowrap;
+}
+.irm-banda {
+  background: var(--irm-cian); margin: 0 calc(-1 * clamp(16px, 5vw, 56px));
+  padding: 26px clamp(16px, 5vw, 56px); border-bottom: none;
+}
+.irm-banda, .irm-banda h1, .irm-banda .fecha { color: #ffffff; }
+/* En el celular (pilar «se ve bien en el celular», 2026-10-04) el título no se aprieta en
+   una columna al lado del logo: baja a su propia línea. El aire del logo (§1.4, >= 24,5 px)
+   se respeta también en vertical, por eso el gap de fila es 26. */
+@media (max-width: 560px) {
+  .irm-encabezado { flex-wrap: wrap; gap: 26px 28px; }
+  .irm-encabezado .titulo { order: 3; flex: 1 1 100%; }
+  .irm-encabezado .fecha { margin-left: auto; }
+  /* Lo largo baja de línea en vez de empujar la página de lado; las tablas anchas se deslizan
+     dentro de su propio marco; y los campos van en 16 px para que el iPhone no haga zoom. */
+  body { overflow-wrap: anywhere; }
+  code, kbd, a { overflow-wrap: anywhere; }
+  pre { overflow-x: auto; }
+  table:not(.irm-tabla-fija) { display: block; overflow-x: auto; -webkit-overflow-scrolling: touch; }
+  input:not([type=checkbox]):not([type=radio]), select, textarea { font-size: 16px !important; }
+  img, svg, video, canvas { max-width: 100%; }
+}
+
+table { border-collapse: collapse; width: 100%; font-size: 14px; }
+th { background: var(--irm-cian); color: #fff; text-align: left;
+     font-family: var(--display); font-weight: 600; }
+th, td { padding: 8px 12px; border-bottom: 1px solid var(--cuadricula); }
+td.num { font-family: var(--mono); font-variant-numeric: tabular-nums; text-align: right; }
+.scroll-x { overflow-x: auto; }
+/* Un fieldset por defecto no se deja angostar más que su contenido: en el celular eso empuja
+   la página de lado aunque la tabla tenga su propio marco con scroll. */
+fieldset { min-width: 0; }
+
+.irm-pie {
+  margin-top: 56px; padding-top: 14px; border-top: 1px solid var(--cuadricula);
+  display: flex; flex-wrap: wrap; gap: 12px; justify-content: space-between;
+  font-size: 11px; color: var(--tinta-apagada);
+}
+.irm-contacto { display: flex; flex-wrap: wrap; gap: 14px; font-size: 11px; }
+.irm-contacto b { color: var(--irm-cian); font-weight: 600; }
+/* El rótulo va en el token declarado, NO en el cian de las plantillas Word:
+   esa excepción (BRAND_IRM.md §2.3 regla 4) existía porque el membrete ya
+   venía impreso en la hoja. Retirado Word como vehículo (2026-09-21), se
+   queda sin objeto. Nota: no se escribe acá el hex viejo ni en comentario —
+   el validador audita el archivo entero, y hace bien. */
+
+/* ── Impresión. El entregable es el PDF, y la paginación no puede quedar a
+   criterio del navegador de quien imprima (BRAND_IRM.md §5.1). Márgenes
+   tomados de PL-HM-0001, que es el membrete que esto reemplaza: 3,75 cm
+   arriba · 2,54 abajo · 2,50 a los lados. */
+@page {
+  size: Letter;
+  margin: 3.75cm 2.5cm 2.54cm 2.5cm;
+}
+@media print {
+  :root { color-scheme: light; }
+  body { background: #fff; padding: 0; }
+  /* El encabezado con el logo se repite en toda página, como el membrete. */
+  thead { display: table-header-group; }
+  .irm-cabecera { position: running(membrete); }
+  .irm-pie { position: running(pie); }
+  @page { @top-center { content: element(membrete); }
+          @bottom-center { content: element(pie); } }
+  /* Respaldo para motores sin `running()` (Chrome incluido): el encabezado va
+     en la primera página y la numeración la lleva el pie fijo. */
+  .irm-paginacion::after { content: "página " counter(page) " de " counter(pages); }
+  h1, h2, h3 { break-after: avoid; }
+  table, figure, pre { break-inside: avoid; }
+  a[href^="http"]::after { content: " (" attr(href) ")"; font-size: 9px; }
+}
+</style>
+
+</head>
+<body>
+<header class="irm-cabecera irm-encabezado">
+  <img src="data:image/svg+xml;base64,PD94bWwgdmVyc2lvbj0iMS4wIiBlbmNvZGluZz0idXRmLTgiPz4KPCEtLSBHZW5lcmF0b3I6IEFkb2JlIElsbHVzdHJhdG9yIDI4LjAuMCwgU1ZHIEV4cG9ydCBQbHVnLUluIC4gU1ZHIFZlcnNpb246IDYuMDAgQnVpbGQgMCkgIC0tPgo8c3ZnIHZlcnNpb249IjEuMSIgaWQ9IkNhcGFfMSIgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIiB4bWxuczp4bGluaz0iaHR0cDovL3d3dy53My5vcmcvMTk5OS94bGluayIgeD0iMHB4IiB5PSIwcHgiCgkgdmlld0JveD0iMCAwIDEyODggNTEzIiBzdHlsZT0iZW5hYmxlLWJhY2tncm91bmQ6bmV3IDAgMCAxMjg4IDUxMzsiIHhtbDpzcGFjZT0icHJlc2VydmUiPgo8c3R5bGUgdHlwZT0idGV4dC9jc3MiPgoJLnN0MHtmaWxsOiMwNUMwREI7fQoJLnN0MXtmaWxsOiNBOUQ0MzM7fQoJLnN0MntmaWxsOiMwNUJGREI7fQoJLnN0M3tmaWxsOiMwNkMwREI7fQo8L3N0eWxlPgo8cGF0aCBjbGFzcz0ic3QwIiBkPSJNMTAyMS45NCwyOTcuODRjMC0yNC4xNS0wLjAzLTQ4LjMsMC4wMS03Mi40NmMwLjAyLTkuMzgsMS42LTE4LjUzLDQuMzYtMjcuNWMyLjk4LTkuNjksMS4xNy0xNC43OC03LjM5LTIwLjMzCgljLTEyLjk0LTguNC0yNy4zOC04LjQzLTQxLjk3LTcuMWMtMy40NiwwLjMxLTYuOTEsMS4xMS0xMC4yNywyLjAxYy0yMS41NSw1LjgtMzMuNjUsMjAuNDgtMzYuNzksNDMuOTgKCWMtMS4wOSw4LjE0LTEuMDMsMTYuMjgtMS4wNSwyNC40M2MtMC4wOCw0My44MS0wLjAxLDg3LjYyLTAuMDUsMTMxLjQzYy0wLjAyLDE4Ljg4LTcuOTksMzEuMTUtMjMuNTgsMzYuNjgKCWMtMjAuMSw3LjEyLTQyLjM3LTYuMzktNDUuMTItMjcuNWMtMC42Mi00Ljc3LTAuOTItOS42Mi0wLjkzLTE0LjQzYy0wLjA3LTQzLjE0LTAuMjYtODYuMjksMC4wNC0xMjkuNDMKCWMwLjE4LTI1Ljg4LDQuNjMtNTEuMDEsMTYuNi03NC4zMWMxNi44NS0zMi43OSw0NS4zMi01MC41LDc5LjYtNjAuMTZjMzYuNTItMTAuMyw3MC40Ni0zLjkyLDEwMS45MywxNi44NQoJYzAuOTcsMC42NCwxLjk0LDEuMjksMi45MSwxLjk0YzYuNjMsNC40Myw3LjkzLDQuNDcsMTQuMjEtMC4yYzE0LjM5LTEwLjcsMzAuMjktMTguMTMsNDgtMjEuMDYKCWM3NC45MS0xMi4zOSwxMzAuMzIsMjcuOTYsMTQ3Ljg4LDkzLjk3YzMuMDIsMTEuMzYsMy4wNCwyMy4xLDMuMDgsMzQuNzNjMC4xOCw0OC40NywwLjExLDk2Ljk1LDAuMDYsMTQ1LjQyCgljLTAuMDIsMTcuOTItOS4zNiwzMS4xNi0yNC45LDM1LjU3Yy0xOS43Nyw1LjYxLTQyLjA0LTEwLjI2LTQyLjUtMzAuNzNjLTAuNDQtMTkuNjUtMC4zLTM5LjMxLTAuMzEtNTguOTYKCWMwLTI4Ljc5LDAuMTktNTcuNTksMC4wOS04Ni4zOGMtMC4wNC0xMi40My0yLjgtMjQuNDEtNy40My0zNS45NWMtNS45NC0xNC43OS0xNi42OC0yMy41Ni0zMi40NC0yNi40NQoJYy0xMS4wOS0yLjA0LTIyLjE3LTIuNjEtMzMuMjctMC42NmMtMjEuOTYsMy44NS0zMy4zMywxOC40Ni0zOC42NiwzOC44N2MtMS41Niw1Ljk2LTIuMjgsMTIuMDktMi4yOSwxOC4yOQoJYy0wLjA3LDM4Ljk4LTAuMjIsNzcuOTUtMC4yMSwxMTYuOTNjMCwxMS4zMSwwLjczLDIyLjYzLTAuNTEsMzMuOTNjLTEuOSwxNy4zOS0xNS4yNSwzMC45NS0zMS4yMiwzMS42OAoJYy0xOS4wNiwwLjg3LTMzLjI4LTEwLjIzLTM2Ljg5LTI4LjczYy0wLjg3LTQuNDQtMS4xNy04Ljg5LTEuMTYtMTMuNGMwLjAyLTIzLjY1LDAuMDEtNDcuMzEsMC4wMS03MC45NgoJQzEwMjEuODMsMjk3Ljg0LDEwMjEuODksMjk3Ljg0LDEwMjEuOTQsMjk3Ljg0eiIvPgo8cGF0aCBjbGFzcz0ic3QxIiBkPSJNOTcuNzYsNDM2LjU5Yy01LjU3LTIuNTgtMTAuMDgtNi40Ni0xNC4wMi0xMC44OWMtMjkuNzEtMzMuMzgtNTIuMS03MC44OS02MC45NC0xMTUuMQoJQzYuNTksMjI5LjQ0LDI0LjI4LDE1Ni41OCw3OS41Myw5NC4xNmMzNi42LTQxLjM1LDgyLjY1LTY3LjIsMTM2Ljg4LTc3LjZjNTMuMzQtMTAuMjMsMTA0LjYyLTIuNDUsMTUzLjc2LDIwLjI2CgljMjQuNjQsMTEuMzksNDUuNjIsMjcuOTMsNjUuMDMsNDYuNjJjMi40LDIuMzEsNC45LDQuNTEsNy4yMSw2LjkxYzEuMzMsMS4zOCwyLjI1LDMuMywwLjY3LDQuOTFjLTEuNTEsMS41NC0yLjYxLTAuNTItMy42OC0xLjIxCgljLTMzLjI0LTIxLjQ2LTY5LjM3LTM1LjQ2LTEwOC43Mi0zOS42M2MtNzEuNzQtNy41OS0xMzUuNDgsMTEuODktMTg5Ljk4LDU5LjQ1Yy0zOC41NiwzMy42NS02NC42NSw3NS4zMS03Ni41NiwxMjUuMwoJYy0xMi40Nyw1Mi4zNi02LjgsMTAzLjM2LDEyLjY0LDE1My4xNkM4Mi43MSw0MDcuNTMsODkuOTcsNDIyLjA5LDk3Ljc2LDQzNi41OXoiLz4KPHBhdGggY2xhc3M9InN0MiIgZD0iTTczNS4xNSwzMDQuOTFjMCwyMy4xNSwwLjA3LDQ2LjMxLTAuMDIsNjkuNDZjLTAuMDYsMTYuNzYtNy44NiwyOC45My0yMS43NCwzNC4zNwoJYy0yMi44Nyw4Ljk2LTQ2Ljk5LTcuMzktNDcuNDItMzIuNzdjLTAuNDYtMjcuNjQtMC4wMy01NS4zLTAuMDctODIuOTVjLTAuMDItMTIuNDgtMC4yLTI0Ljk3LTAuMzgtMzcuNDUKCWMtMC4zOS0yNi43NiwxLjIyLTUzLjI0LDEwLjc4LTc4LjYyYzEzLjEzLTM0Ljg1LDM4LjMxLTU2Ljg0LDcyLjc2LTY5LjkyYzI3LjQ5LTEwLjQ0LDU0LjgzLTEwLjc4LDgyLjczLTMKCWMxOC42Niw1LjIsMjkuODQsMjIuMzksMjYuMDgsNDAuMThjLTQuMDUsMTkuMTUtMjIuMSwzMS42LTQxLjQzLDI4LjExYy0xNS43NS0yLjg0LTMxLjMyLTMuOC00Ni45NywwLjYzCgljLTEyLjU4LDMuNTYtMjEuMjQsMTEuMjktMjYuNDQsMjMuMTVjLTUuNDMsMTIuMzgtNy44MiwyNS4zOS03Ljg2LDM4Ljg0QzczNS4xLDI1OC4yNyw3MzUuMTUsMjgxLjU5LDczNS4xNSwzMDQuOTF6Ii8+CjxwYXRoIGNsYXNzPSJzdDMiIGQ9Ik0yMzIuNzMsNDg4LjM0Yy0yNy43NS01LjI1LTUyLjQxLTE3LjU4LTc0LjcyLTM0LjU5QzEyMy41LDQyNy40Niw5OS40MiwzOTMuNTksODcsMzUxLjg4CgljLTI1LjE3LTg0LjQ4LDYuODYtMTc0LjQsNzkuNDUtMjIzLjU3YzY4LjIzLTQ2LjIyLDE1NC40LTQxLjI3LDIwMy41Mi0xMS4zM2MtMTUuMjctMS4xOS0yOS42My0wLjk4LTQzLjk2LDAuMQoJYy00NC45MiwzLjM5LTg2LjEzLDE2LjQ2LTEyMC42NCw0Ni43Yy0yNy4xLDIzLjc1LTQ0LjkxLDUzLjctNTcuMTIsODcuMTZjLTMxLjA5LDg1LjE1LTEuNDQsMTc2LjQ4LDc0LjEyLDIyOC45MwoJYzMuNTQsMi40Niw3LjE1LDQuODEsMTAuNzIsNy4yMUMyMzIuOTYsNDg3LjUsMjMyLjg1LDQ4Ny45MiwyMzIuNzMsNDg4LjM0eiIvPgo8cGF0aCBjbGFzcz0ic3QzIiBkPSJNMjA1LjAzLDQzOC45OGMxMC42MSwwLjY3LDIxLjIxLDEuNTgsMzEuODIsMS45N2MyOS4zNCwxLjA4LDU4LjE0LTEuODgsODYuMDItMTEuNzYKCWMzNS4zOS0xMi41NSw2My42Ny0zNC40MSw4NC44MS02NS4yNmMyMi41OS0zMi45NiwzNy02OS4yLDQwLjI1LTEwOS4yNWMzLjgtNDYuNzItMTEuMTEtODcuODEtMzkuMjctMTI0LjU5CgljLTEwLjE2LTEzLjI3LTIxLjY5LTI1LjI1LTM0LjAxLTM2LjVjLTAuOTMtMC44NS0xLjk3LTEuNTYtMy41OC0yLjgyYzQuNzMtMS40Miw4LjAxLTAuNjMsMTEuMiwwLjgxCgljNjYuOTYsMzAuMTIsMTA4LjYsODAuNiwxMTkuMjEsMTUzLjY3YzkuMDEsNjItOS4yOCwxMTYuNjktNTIuMzksMTYyLjI3Yy0zNi4xOSwzOC4yNi04MS4yMyw1OC4wOC0xMzMuODYsNjAuNTcKCWMtMzcuODcsMS43OS03My4zNC02LjMzLTEwNi0yNS44OGMtMS41LTAuOS0zLjQ1LTEuMzMtNC4xMi0zLjNMMjA1LjAzLDQzOC45OHoiLz4KPHBhdGggY2xhc3M9InN0MCIgZD0iTTYyMS44NSwyNTUuMTJjMCwzOS40NywwLjA0LDc4LjkzLTAuMDIsMTE4LjRjLTAuMDMsMjEuODYtMTMuNzEsMzYuNjctMzQuNDUsMzcuNTUKCWMtMTguMDUsMC43Ni0zNC4wOC0xMy41Ny0zNS4zNS0zMS42NGMtMC4xNi0yLjMyLTAuMTctNC42Ni0wLjE3LTYuOTljLTAuMDEtNTAuNjIsMC4wMy0xMDEuMjUtMC4wMy0xNTEuODcKCWMtMC4wMi0xOC40OC0wLjY5LTM2Ljk2LTAuMjctNTUuNDJjMC4yOS0xMi42Mi0wLjYzLTI1LjMyLDEuMzYtMzcuODdjMi44OC0xOC4xOSwxNS43NC0yOS42LDMyLjgxLTI5LjM2CgljMTguNCwwLjI2LDMzLjA3LDEyLjk5LDM1LjQzLDMwLjg1YzAuNDEsMy4xMiwwLjY1LDYuMywwLjY1LDkuNDVDNjIxLjg3LDE3Ny4xOSw2MjEuODUsMjE2LjE2LDYyMS44NSwyNTUuMTJ6Ii8+CjxwYXRoIGNsYXNzPSJzdDEiIGQ9Ik0zMTAuMTcsMTM4LjVjMjguMjctMi43Nyw4MC4wMiwyMS40MSw5OC45NCw3My4zOWMxOS44Niw1NC41NiwzLjc1LDEwNi4xOS00Mi45OSwxMzguMzIKCWMtNDQuOTcsMzAuOTEtOTguODksMjQuNi0xMzAuMDUsMC40OGM1NS4yNi0yLjIsOTYuNDItMjUuNTIsMTE0Ljk1LTc4LjkyQzM2OS41LDIxOC40NywzNTMuMjUsMTc0LjI4LDMxMC4xNywxMzguNXoiLz4KPHBhdGggY2xhc3M9InN0MyIgZD0iTTIwNS4xMiw0MzguOWMtMC4xNC0wLjA0LTAuMjktMC4wNi0wLjQtMC4xNGMtMC4wNS0wLjA0LTAuMDQtMC4xOC0wLjA1LTAuMjhjMC4xMiwwLjE2LDAuMjQsMC4zMywwLjM2LDAuNDkKCUMyMDUuMDMsNDM4Ljk4LDIwNS4xMiw0MzguOSwyMDUuMTIsNDM4Ljl6Ii8+Cjwvc3ZnPg==" alt="IRM Aires">
+  <div class="titulo"><h1><span title="El fuego del hogar sobre su base: el centro de la casa, adonde todos llegan primero." style="display:inline-block;vertical-align:-4px;margin-right:8px"><svg width="26" height="26" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 3c2.5 3 4.5 5 4.5 8.5a4.5 4.5 0 0 1-9 0c0-2.2 1.2-3.8 2.5-5 0 2 1 3.2 2 3.2" stroke="#00B9CE"/><path d="M4 20h16"/><path d="M6 20v-3h12v3"/></svg></span>HESTIA</h1><div class="hs-sub">Tus herramientas de IRM, en un solo lugar · v2</div><div class="hs-leyenda">Hestia era la diosa del hogar, el fuego del centro de la casa adonde todos llegan primero: por eso la puerta de entrada a tus herramientas lleva su nombre.</div></div>
+  <div class="fecha">2026-10-04</div>
+</header>
+
+<main>
+<style>
+
+/* Caneca de eliminar — componente canónico IRM (IMAGEN CORPORATIVA/memoria_procedimental/componente_caneca.py) */
+.irm-caneca { display: inline-flex; align-items: center; justify-content: center; width: 30px; height: 30px; padding: 0;
+  border: 1px solid transparent; border-radius: 8px; background: transparent; color: #898781; cursor: pointer;
+  transition: color .15s, background .15s; vertical-align: middle; }
+.irm-caneca .irm-caneca-ico { width: 16px; height: 16px; display: block; }
+.irm-caneca:hover, .irm-caneca:focus-visible { color: #d03b3b; background: color-mix(in srgb, #d03b3b 10%, transparent); outline: none; }
+.irm-caneca:focus-visible { border-color: #d03b3b; }
+.irm-caneca:active { color: #fff; background: #d03b3b; }
+.irm-caneca[aria-disabled="true"] { opacity: .35; cursor: not-allowed; }
+.irm-caneca[aria-disabled="true"]:hover, .irm-caneca[aria-disabled="true"]:active { color: #898781; background: transparent; }
+.irm-caneca[aria-busy="true"] { cursor: progress; }
+.irm-caneca[aria-busy="true"] .irm-caneca-ico { display: none; }
+.irm-caneca[aria-busy="true"]::after { content: ""; width: 12px; height: 12px; border: 2px solid currentColor;
+  border-top-color: transparent; border-radius: 50%; animation: irmcanegira .7s linear infinite; }
+@keyframes irmcanegira { to { transform: rotate(360deg); } }
+@media (prefers-reduced-motion: reduce) { .irm-caneca[aria-busy="true"]::after { animation: none; } }
+/* Celular (pilar 2026-10-04): el dedo necesita ~44 px; el dibujo no cambia, crece el área que se toca. */
+@media (max-width: 560px) { .irm-caneca { width: 40px; height: 40px; } }
+th.irm-caneca-col, td.irm-caneca-col { width: 38px; text-align: center; padding-left: 4px; padding-right: 4px; position: relative; }
+.irm-oculto { position: absolute; left: 0; top: 0; width: 1px; height: 1px; overflow: hidden; clip: rect(0 0 0 0); white-space: nowrap; }
+
+
+/* Copiar código — componente canónico IRM (IMAGEN CORPORATIVA/memoria_procedimental/componente_copiar.py) */
+.irm-cod { display: inline-flex; align-items: center; gap: 4px; white-space: nowrap; }
+.irm-copiar { display: inline-flex; align-items: center; justify-content: center; width: 24px; height: 24px; padding: 0; margin: 0;
+  border: 1px solid transparent; border-radius: 6px; background: transparent; color: #898781; cursor: pointer;
+  transition: color .15s, background .15s; vertical-align: middle; flex-shrink: 0; }
+.irm-copiar .irm-copiar-ico { width: 14px; height: 14px; display: block; }
+.irm-copiar:hover, .irm-copiar:focus-visible { color: #00B9CE; background: color-mix(in srgb, #00B9CE 12%, transparent); outline: none; }
+.irm-copiar:focus-visible { border-color: #00B9CE; }
+.irm-copiar:active { color: #fff; background: #00B9CE; }
+.irm-copiar.copiado { color: #0ca30c; background: color-mix(in srgb, #0ca30c 12%, transparent); }
+@media print { .irm-copiar { display: none; } }
+/* Celular (pilar 2026-10-04): área de toque cómoda para el dedo; el ícono no cambia. */
+@media (max-width: 560px) { .irm-copiar { width: 36px; height: 36px; } }
+
+
+/* Tarjetas que se mueven — componente canónico IRM v2 (IMAGEN CORPORATIVA/memoria_procedimental/componente_mover.py) */
+[data-irm-mover] > [data-mover-id] { position: relative; }
+[data-irm-mover] > [data-mover-id]::after { content: ""; position: absolute; top: 7px; right: 7px; width: 10px; height: 14px; opacity: 0;
+  background: radial-gradient(circle, currentColor 1.3px, transparent 1.6px) 0 0 / 5px 5px; color: var(--tinta-apagada, #898781);
+  transition: opacity .15s; pointer-events: none; }
+[data-irm-mover] > [data-mover-id]:hover::after, [data-irm-mover] > [data-mover-id]:focus-visible::after { opacity: .9; }
+[data-irm-mover].irm-moviendo, [data-irm-mover].irm-moviendo * { user-select: none; -webkit-user-select: none; cursor: grabbing !important; }
+[data-irm-mover] > .irm-levantada { z-index: 2; border-color: #00B9CE !important;
+  box-shadow: 0 0 0 2px #00B9CE, 0 10px 26px rgba(0,0,0,.18) !important; transform: scale(1.02); }
+[data-irm-mover] > .irm-levantada::after { opacity: .9; color: #00B9CE; }
+.irm-mover-restablecer { display: inline-block; margin: 4px 0 8px; padding: 3px 9px; min-height: 32px; border: 1px solid transparent; border-radius: 8px;
+  background: transparent; color: #00B9CE; font: 600 12px var(--display, Poppins, Inter, system-ui, sans-serif); cursor: pointer; }
+.irm-mover-restablecer:hover { border-color: #00B9CE; }
+.irm-mover-restablecer:active { background: #00B9CE; color: #fff; }
+.irm-mover-voz { position: absolute; left: 0; top: 0; width: 1px; height: 1px; overflow: hidden; clip: rect(0 0 0 0); white-space: nowrap; }
+@media (prefers-reduced-motion: reduce) { [data-irm-mover] > .irm-levantada { transform: none; } }
+@media (max-width: 560px) { .irm-mover-restablecer { min-height: 40px; } }
+@media print { [data-irm-mover] > [data-mover-id]::after, .irm-mover-restablecer { display: none !important; } }
+
+.hs-sub { font: 600 13px var(--display); color: var(--tinta-2); margin-top: 2px; }
+.hs-leyenda { font-size: 12.5px; color: var(--tinta-2); margin-top: 2px; }
+details.ficha { border: 1px solid var(--cuadricula); border-radius: 10px; background: var(--superficie); padding: 0 16px; margin: 0 0 20px; }
+details.ficha > summary { cursor: pointer; padding: 12px 0; font: 600 14px var(--display); min-height: 44px; box-sizing: border-box; }
+details.ficha h3 { font-size: 14px; margin: 12px 0 4px; }
+details.ficha p, details.ficha li { font-size: 13.5px; }
+details.ficha ol { padding-left: 20px; }
+.hs-paso { display: flex; align-items: center; gap: 10px; min-height: 22px; font-size: 13px; color: var(--tinta-2); margin: 0 0 10px; }
+.hs-paso .barra { width: 90px; height: 4px; border-radius: 4px; background: var(--cuadricula); overflow: hidden; position: relative; }
+.hs-paso .barra::after { content: ""; position: absolute; inset: 0; width: 35%; background: var(--irm-cian); animation: hsbarra 1s ease-in-out infinite; }
+@keyframes hsbarra { from { transform: translateX(-100%); } to { transform: translateX(300%); } }
+@media (prefers-reduced-motion: reduce) { .hs-paso .barra::after { animation: none; } }
+.hs-caja { border: 1px solid var(--cuadricula); border-radius: 12px; background: var(--superficie); padding: 18px; max-width: 420px; }
+.hs-caja label { display: block; font-size: 13px; font-weight: 600; margin: 10px 0 4px; }
+.hs-caja input, .hs-pedir select, .hs-pedir input { width: 100%; box-sizing: border-box; padding: 9px 11px; min-height: 44px; border: 1px solid var(--cuadricula);
+  border-radius: 8px; background: transparent; color: inherit; font: 16px var(--sans); }
+.hs-btn { display: inline-flex; align-items: center; justify-content: center; gap: 8px; padding: 9px 16px; min-height: 44px; border-radius: 8px; cursor: pointer;
+  border: 1px solid var(--cuadricula); background: var(--superficie); color: var(--tinta); font: 600 14px var(--display); text-decoration: none;
+  transition: background .15s, color .15s, border-color .15s; }
+.hs-btn:hover { border-color: var(--irm-cian); }
+.hs-btn:active { background: color-mix(in srgb, var(--irm-cian) 25%, transparent); }
+.hs-btn.fuerte { background: var(--irm-cian); border-color: var(--irm-cian); color: #fff; }
+.hs-btn.fuerte:active { background: color-mix(in srgb, var(--irm-cian) 75%, #000); }
+.hs-btn[disabled] { cursor: progress; opacity: .85; }
+.hs-enlace { background: none; border: 0; padding: 6px 0; min-height: 40px; color: var(--irm-cian); font: 600 13px var(--display); cursor: pointer; }
+.hs-giro { width: 12px; height: 12px; border: 2px solid currentColor; border-top-color: transparent; border-radius: 50%; animation: hsgira .7s linear infinite; }
+@keyframes hsgira { to { transform: rotate(360deg); } }
+@media (prefers-reduced-motion: reduce) { .hs-giro { animation: none; } }
+.hs-resultado { min-height: 1.4em; font-size: 13.5px; margin: 10px 0 0; }
+.hs-resultado.mal b { color: #d03b3b; } .hs-resultado.ok b { color: var(--irm-cian); }
+.hs-barra { display: flex; flex-wrap: wrap; gap: 10px; align-items: center; justify-content: space-between; margin: 0 0 14px; font-size: 13.5px; }
+.hs-aviso { border-left: 4px solid var(--irm-cian); background: var(--superficie); border-radius: 0 10px 10px 0; padding: 10px 14px; margin: 0 0 16px; font-size: 13.5px; }
+.hs-grilla { display: grid; grid-template-columns: repeat(auto-fill, minmax(250px, 1fr)); gap: 12px; margin: 0 0 8px; }
+.hs-tarjeta { display: flex; flex-direction: column; gap: 6px; border: 1px solid var(--cuadricula); border-radius: 12px; background: var(--superficie); padding: 16px; }
+.hs-tarjeta:focus-visible { outline: 2px solid var(--irm-cian); outline-offset: 2px; }
+.hs-cab { display: flex; align-items: center; gap: 10px; }
+.hs-sello { width: 34px; height: 34px; flex: 0 0 auto; color: var(--tinta); }
+.hs-sello svg { width: 34px; height: 34px; }
+.hs-nombre { font: 700 17px var(--display); }
+.hs-tipo { font-size: 12px; color: var(--tinta-apagada); }
+.hs-funcion { font-size: 13.5px; color: var(--tinta-2); margin: 0; flex: 1; }
+.hs-donde { font-size: 12.5px; color: var(--tinta-2); margin: 0; overflow-wrap: anywhere; }
+/* Una ruta es larga y no es un código corto: se parte en el borde en vez de empujar la tarjeta. */
+.hs-donde .irm-cod { display: inline; white-space: normal; } .hs-donde code { overflow-wrap: anywhere; }
+.hs-nota { font-size: 11.5px; color: var(--tinta-apagada); margin: 0; }
+.hs-lista { list-style: none; padding: 0; margin: 6px 0 16px; border: 1px solid var(--cuadricula); border-radius: 10px; background: var(--superficie); }
+.hs-lista li { display: flex; align-items: center; gap: 10px; padding: 8px 12px; font-size: 13.5px; }
+.hs-lista li + li { border-top: 1px solid var(--cuadricula); }
+.hs-lista li span { flex: 1; }
+.hs-pedir { border: 1px solid var(--cuadricula); border-radius: 12px; background: var(--superficie); padding: 16px; margin: 6px 0 12px; max-width: 520px; }
+.hs-pedir label { display: block; font-size: 13px; font-weight: 600; margin: 8px 0 4px; }
+.hs-acciones { display: flex; flex-wrap: wrap; gap: 8px; margin-top: 12px; }
+.hs-tostada { position: fixed; left: 50%; bottom: 18px; transform: translateX(-50%); z-index: 2147482000; display: flex; gap: 12px; align-items: center;
+  background: var(--tinta); color: var(--superficie); padding: 10px 14px; border-radius: 10px; font-size: 13.5px; box-shadow: 0 6px 24px rgba(0,0,0,.25); }
+.hs-tostada button { background: transparent; border: 1px solid currentColor; color: inherit; border-radius: 8px; padding: 4px 10px; min-height: 36px; font: 600 13px var(--display); cursor: pointer; }
+.hs-tostada button:active { background: var(--irm-cian); border-color: var(--irm-cian); }
+@media (max-width: 560px) { .hs-tostada { left: 12px; right: 12px; transform: none; } }
+</style>
+
+<details class="ficha" id="ficha-hestia" open>
+  <summary>¿Qué es Hestia y cómo se usa?</summary>
+  <h3>Qué hace</h3>
+  <p>Hestia es tu <b>página de inicio</b>: reúne en un solo lugar las herramientas de IRM que tenés autorizadas, y solo esas. Es como el llavero de tu casa: tiene tus llaves, no las de todo el edificio.</p>
+  <p>Ojo con algo: Hestia <b>no abre ni cierra puertas</b>, solo te lleva hasta ellas. Cada herramienta sigue revisando por su cuenta quién sos y desde qué computador entrás. Eso lo hace <b>Éaco</b>, el portero.</p>
+  <h3>Cómo se pone en marcha</h3>
+  <ol>
+    <li>Escribí tu correo <b>@irmaires.com</b> y tu contraseña, y tocá <b>Entrar</b>. Si no tenés contraseña o la olvidaste, tocá <b>¿Olvidaste tu contraseña?</b> y te llega un correo.</li>
+    <li>Vas a ver una tarjeta por cada herramienta que tenés autorizada. Las de claude.ai tienen el botón <b>Abrir ↗</b>; las que viven en tu computador dicen <b>dónde están</b>.</li>
+    <li>Si al abrir una de claude.ai te dice que no tenés acceso, falta la <b>segunda llave</b>: que el administrador te la comparta desde claude.ai. Avisale.</li>
+    <li>¿Necesitás otra herramienta? Tocá <b>Pedir acceso a otra herramienta</b>, elegila y enviá. El administrador lo aprueba en Éaco y la tarjeta aparece sola acá.</li>
+    <li>Podés <b>ordenar las tarjetas</b> arrastrándolas, o con Alt + flechas. Cada persona guarda su orden.</li>
+  </ol>
+  <h3>Quién trabaja para ella</h3>
+  <ul>
+    <li><b>Éaco</b>, el portero de accesos, es quien dice qué herramientas tiene autorizadas cada persona. Hestia solo le pregunta y te muestra la respuesta.</li>
+    <li><b>Larrey</b>, la mesa de tickets, recibe lo que escribas en el botón «Reportar» de abajo.</li>
+  </ul>
+</details>
+
+<div class="hs-paso" role="status" aria-live="polite"><span class="barra" id="hs-barra" hidden></span><span id="hs-paso"></span></div>
+
+<section id="hs-entrar" hidden>
+  <form class="hs-caja" id="hs-form" novalidate>
+    <label for="hs-correo">Correo</label>
+    <input id="hs-correo" type="email" autocomplete="username" placeholder="nombre@irmaires.com">
+    <label for="hs-clave">Contraseña</label>
+    <input id="hs-clave" type="password" autocomplete="current-password">
+    <div class="hs-acciones"><button class="hs-btn fuerte" type="submit" id="hs-entrar-btn">Entrar</button></div>
+    <button class="hs-enlace" type="button" id="hs-olvido">¿Olvidaste tu contraseña?</button>
+    <p class="hs-resultado" id="hs-entrar-res" role="status"></p>
+  </form>
+</section>
+
+<section id="hs-recupero" hidden>
+  <form class="hs-caja" id="hs-form-recupero" novalidate>
+    <p style="margin:0 0 6px"><b>Elegí tu contraseña nueva.</b> Llegaste desde el correo de recuperación: escribila dos veces y guardala.</p>
+    <label for="hs-nueva1">Contraseña nueva <span style="font-weight:400">(mínimo 8 caracteres)</span></label>
+    <input id="hs-nueva1" type="password" autocomplete="new-password">
+    <label for="hs-nueva2">Repetila</label>
+    <input id="hs-nueva2" type="password" autocomplete="new-password">
+    <div class="hs-acciones"><button class="hs-btn fuerte" type="submit" id="hs-recupero-btn">Guardar la contraseña</button><button class="hs-btn" type="button" id="hs-recupero-cancelar">Cancelar</button></div>
+    <p class="hs-resultado" id="hs-recupero-res" role="status"></p>
+  </form>
+</section>
+
+<section id="hs-inicio" hidden>
+  <div class="hs-barra"><span id="hs-quien"></span><button class="hs-btn" type="button" id="hs-salir">Salir</button></div>
+  <div id="hs-mensaje"></div>
+  <div class="hs-grilla" id="hs-grilla" data-irm-mover="hestia.herramientas"></div>
+  <div id="hs-pendientes"></div>
+  <button class="hs-btn" type="button" id="hs-pedir-abrir" hidden>Pedir acceso a otra herramienta</button>
+  <div class="hs-pedir" id="hs-pedir" hidden>
+    <label for="hs-pedir-cual">¿Qué herramienta necesitás?</label>
+    <select id="hs-pedir-cual"></select>
+    <label for="hs-pedir-nombre">Tu nombre completo</label>
+    <input id="hs-pedir-nombre" type="text" maxlength="120" autocomplete="name">
+    <label for="hs-pedir-nota">Para qué la necesitás <span style="font-weight:400">(opcional)</span></label>
+    <input id="hs-pedir-nota" type="text" maxlength="300" placeholder="Ej.: voy a cotizar las propuestas de Servicios">
+    <div class="hs-acciones"><button class="hs-btn fuerte" type="button" id="hs-pedir-enviar">Enviar el pedido</button><button class="hs-btn" type="button" id="hs-pedir-cancelar">Cancelar</button></div>
+    <p class="hs-resultado" id="hs-pedir-res" role="status"></p>
+  </div>
+</section>
+
+<!-- Versión fija con su huella (SRI): si el CDN entregara otro archivo, el navegador no lo corre. -->
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.117.2/dist/umd/supabase.js" integrity="sha384-Rj26LVGvoeRVR6+mwQmFfcR3QOBEwT+ZmuCWpuiqeTzJpCs0ER4ITAWGb4Hiy3Ok" crossorigin="anonymous"></script>
+<script>
+
+/* Caneca de eliminar — componente canónico IRM. caneca(etiqueta, {bloqueo}) devuelve el HTML del botón;
+   si hay bloqueo, la caneca sale apagada y el clic explica el porqué. canecaOcupada(b) la pone a girar
+   y devuelve la función que la restaura (va en el finally). */
+const CANECA_SVG = "<svg class=\"irm-caneca-ico\" viewBox=\"0 0 24 24\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"2\" stroke-linecap=\"round\" stroke-linejoin=\"round\" aria-hidden=\"true\" focusable=\"false\"><path d=\"M3 6h18\"/><path d=\"M8 6V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2\"/><path d=\"M19 6l-1 14a2 2 0 0 1-2 2H8a2 2 0 0 1-2-2L5 6\"/><path d=\"M10 11v6M14 11v6\"/></svg>";
+function caneca(etiqueta, { bloqueo = "", attrs = "" } = {}) {
+  const esc = s => String(s ?? "").replace(/[&<>"']/g, c => ({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c]));
+  const t = bloqueo ? `No se puede eliminar: ${bloqueo}` : `Eliminar ${etiqueta}`;
+  return `<button type="button" class="irm-caneca" aria-label="${esc(t)}" title="${esc(t)}"${bloqueo ? ` aria-disabled="true" data-bloqueo="${esc(bloqueo)}"` : ""} ${attrs}>${CANECA_SVG}</button>`;
+}
+function canecaOcupada(b) {
+  if (!b || b.getAttribute("aria-busy") === "true") return () => {};
+  b.setAttribute("aria-busy", "true"); b.disabled = true;
+  return () => { b.removeAttribute("aria-busy"); b.disabled = false; };
+}
+
+
+/* Copiar código — componente canónico IRM. codigoCopiable(c) arma código + botón; instalarCopiar({avisar}) engancha el clic. */
+const COPIAR_ICO = "<svg class=\"irm-copiar-ico\" viewBox=\"0 0 24 24\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"2\" stroke-linecap=\"round\" stroke-linejoin=\"round\" aria-hidden=\"true\" focusable=\"false\"><rect x=\"9\" y=\"9\" width=\"12\" height=\"12\" rx=\"2\"/><path d=\"M5 15H4a1 1 0 0 1-1-1V4a1 1 0 0 1 1-1h10a1 1 0 0 1 1 1v1\"/></svg>", COPIAR_LISTO = "<svg class=\"irm-copiar-ico\" viewBox=\"0 0 24 24\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"2.4\" stroke-linecap=\"round\" stroke-linejoin=\"round\" aria-hidden=\"true\" focusable=\"false\"><path d=\"M5 12.5l4.5 4.5L19 7.5\"/></svg>";
+function codigoCopiable(c, { claseCodigo = "" } = {}) {
+  if (!c) return "";
+  const esc = s => String(s ?? "").replace(/[&<>"']/g, ch => ({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[ch]));
+  return `<span class="irm-cod"><code${claseCodigo ? ` class="${esc(claseCodigo)}"` : ""}>${esc(c)}</code><button type="button" class="irm-copiar" data-copiar="${esc(c)}" aria-label="Copiar el código ${esc(c)}" title="Copiar código">${COPIAR_ICO}</button></span>`;
+}
+async function copiarAlPortapapeles(t) {
+  try { if (navigator.clipboard && window.isSecureContext) { await navigator.clipboard.writeText(t); return true; } } catch (_) {}
+  const a = document.createElement("textarea"); a.value = t; a.setAttribute("readonly", ""); a.style.cssText = "position:fixed;top:-1000px;opacity:0";
+  document.body.appendChild(a); a.select(); let ok = false; try { ok = document.execCommand("copy"); } catch (_) {} a.remove(); return ok;
+}
+function instalarCopiar({ avisar = null } = {}) {
+  if (window.__copiarInstalado) return; window.__copiarInstalado = true;
+  let estado = null;
+  const decir = (html, ok) => {
+    if (avisar) return avisar(html, ok);
+    if (!estado) { estado = document.createElement("div"); estado.setAttribute("role", "status"); estado.setAttribute("aria-live", "polite");
+      estado.style.cssText = "position:fixed;left:50%;bottom:18px;transform:translateX(-50%);background:#0b0b0b;color:#fff;padding:8px 14px;border-radius:8px;font-size:13px;z-index:9999";
+      document.body.appendChild(estado); }
+    estado.innerHTML = html; estado.hidden = false; clearTimeout(estado._t); estado._t = setTimeout(() => { estado.hidden = true; }, 3500);
+  };
+  document.addEventListener("click", async ev => {
+    const b = ev.target.closest(".irm-copiar"); if (!b) return;
+    ev.stopPropagation(); ev.preventDefault();
+    const t = b.dataset.copiar, ok = await copiarAlPortapapeles(t), esc = s => String(s).replace(/[&<>]/g, ch => ({"&":"&amp;","<":"&lt;",">":"&gt;"}[ch]));
+    if (!ok) { decir(`No se pudo copiar solo. Seleccioná <b>${esc(t)}</b> y copialo con ⌘C.`, false); return; }
+    b.classList.add("copiado"); b.innerHTML = COPIAR_LISTO; b.setAttribute("aria-label", `Código ${t} copiado`);
+    clearTimeout(b._t); b._t = setTimeout(() => { b.classList.remove("copiado"); b.innerHTML = COPIAR_ICO; b.setAttribute("aria-label", `Copiar el código ${t}`); }, 1600);
+    decir(`Copiaste <b>${esc(t)}</b>: pegalo en la receta con ⌘V.`, true);
+  }, true);
+}
+
+(function () {
+  "use strict";
+  var URL_SB = "https://oixizeqfuxsbjqcvzpbe.supabase.co";
+  var LLAVE = "sb_publishable_Yfu9GwQGe9w5NsGVmC3BvQ_Gj7k4DGi"; // pública: el permiso real lo pone la base
+  var SELLOS = {"Dédalo": "<svg xmlns=\"http://www.w3.org/2000/svg\" viewBox=\"0 0 24 24\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"2\" stroke-linecap=\"round\" stroke-linejoin=\"round\"><path d=\"M4 20V4h16v16H8v-12h8v8h-4\"/><circle cx=\"12\" cy=\"12\" r=\"1\" fill=\"#00B9CE\" stroke=\"none\"/></svg>", "Linneo": "<svg xmlns=\"http://www.w3.org/2000/svg\" viewBox=\"0 0 24 24\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"2\" stroke-linecap=\"round\" stroke-linejoin=\"round\"><path d=\"M4 13C4 7 8.5 3 15.5 3c0 7-4.5 11-11.5 10z\"/><path d=\"M4 13c2.5-3.5 5.5-6.5 9.5-8.5\"/><path d=\"M13 14h5.5l2 2.5-2 2.5H13z\"/><circle cx=\"15\" cy=\"16.5\" r=\".9\" fill=\"#00B9CE\" stroke=\"none\"/></svg>", "Tirón": "<svg xmlns=\"http://www.w3.org/2000/svg\" viewBox=\"0 0 24 24\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"2\" stroke-linecap=\"round\" stroke-linejoin=\"round\"><path d=\"M19.5 4.5c-5.5.5-9.5 3.5-11.5 9L6.5 18l4-1.5c5.5-2 8.5-6 9-12z\"/><path d=\"M6.5 18C10 13 14 9 18 6.5\"/><path d=\"M3 21c2.5-1 5.5-1 8.5 0\" stroke=\"#00B9CE\"/></svg>", "Pericles": "<svg xmlns=\"http://www.w3.org/2000/svg\" viewBox=\"0 0 24 24\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"2\" stroke-linecap=\"round\" stroke-linejoin=\"round\"><path d=\"M6 15v-4a6 6 0 0 1 12 0v4\"/><path d=\"M6 15v6l3.5-2v-4\"/><path d=\"M18 15v6l-3.5-2v-4\"/><path d=\"M12 11.5V19\"/><path d=\"M3.5 7C7 1.5 17 1.5 20.5 7\" stroke=\"#00B9CE\"/></svg>", "Sócrates": "<svg xmlns=\"http://www.w3.org/2000/svg\" viewBox=\"0 0 24 24\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"2\" stroke-linecap=\"round\" stroke-linejoin=\"round\"><path d=\"M3 5.5A2.5 2.5 0 0 1 5.5 3h8A2.5 2.5 0 0 1 16 5.5V10a2.5 2.5 0 0 1-2.5 2.5H9.5L6 15.5v-3h-.5A2.5 2.5 0 0 1 3 10z\"/><path d=\"M13.5 16H18a2 2 0 0 1 2 2v1.5a2 2 0 0 1-2 2h-.5l-2.5 2v-2H14\"/><circle cx=\"9.5\" cy=\"7.8\" r=\"1\" fill=\"#00B9CE\" stroke=\"none\"/></svg>", "Plutarco": "<svg xmlns=\"http://www.w3.org/2000/svg\" viewBox=\"0 0 24 24\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"2\" stroke-linecap=\"round\" stroke-linejoin=\"round\"><circle cx=\"7.5\" cy=\"7.5\" r=\"3\"/><path d=\"M2.5 20a5 5 0 0 1 10 0\"/><circle cx=\"16.5\" cy=\"7.5\" r=\"3\"/><path d=\"M11.5 20a5 5 0 0 1 10 0\"/></svg>", "Larrey": "<svg xmlns=\"http://www.w3.org/2000/svg\" viewBox=\"0 0 24 24\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"2\" stroke-linecap=\"round\" stroke-linejoin=\"round\"><path d=\"M3 7l5-4h13v18H8l-5-4z\"/><circle cx=\"7\" cy=\"12\" r=\"1\"/><path d=\"M15 9v6M12 12h6\" stroke=\"#00B9CE\"/></svg>", "Pitia": "<svg xmlns=\"http://www.w3.org/2000/svg\" viewBox=\"0 0 24 24\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"2\" stroke-linecap=\"round\" stroke-linejoin=\"round\"><path d=\"M5 8h14c0 4-3 6.5-7 6.5S5 12 5 8z\"/><path d=\"M8.5 14l-3 7.5M15.5 14l3 7.5M12 14.5v7\"/><path d=\"M12 2c-1.6 1.5 1.6 2.7 0 4.2\" stroke=\"#00B9CE\"/></svg>", "Rómulo": "<svg xmlns=\"http://www.w3.org/2000/svg\" viewBox=\"0 0 24 24\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"2\" stroke-linecap=\"round\" stroke-linejoin=\"round\"><circle cx=\"12\" cy=\"12\" r=\"8.5\" stroke=\"#00B9CE\" stroke-dasharray=\"3.2 2.6\"/><circle cx=\"12\" cy=\"12\" r=\"1.6\" fill=\"currentColor\" stroke=\"none\"/></svg>", "Clausewitz": "<svg xmlns=\"http://www.w3.org/2000/svg\" viewBox=\"0 0 24 24\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"2\" stroke-linecap=\"round\" stroke-linejoin=\"round\"><path d=\"M3 6.5l6-2.5 6 2.5 6-2.5v13.5l-6 2.5-6-2.5-6 2.5z\"/><path d=\"M9 4v13.5M15 6.5V20\"/><path d=\"M6 16c2.5-4.5 6-6.5 10.5-7.5m0 0l-3-1.2m3 1.2l-1.2 3\" stroke=\"#00B9CE\"/></svg>"};
+  var SELLO_GENERICO = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="4" y="4" width="16" height="16" rx="3"/></svg>';
+  function $(id) { return document.getElementById(id); }
+  function esc(s) { return String(s == null ? "" : s).replace(/[&<>"']/g, function (c) { return {"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c]; }); }
+  function leerLS(k) { try { return localStorage.getItem(k); } catch (e) { return null; } }
+  function guardarLS(k, v) { try { localStorage.setItem(k, v); } catch (e) {} }
+
+  // Ficha: nace abierta en el HTML; el script solo la cierra si esta persona la dejó cerrada.
+  var ficha = $("ficha-hestia");
+  if (leerLS("hestia.ficha") === "cerrada") ficha.removeAttribute("open");
+  ficha.addEventListener("toggle", function () { guardarLS("hestia.ficha", ficha.open ? "abierta" : "cerrada"); });
+
+  function paso(t) { $("hs-paso").textContent = t || ""; $("hs-barra").hidden = !t; }
+  function ocupar(b, t) { b.disabled = true; b.setAttribute("aria-busy", "true"); b.dataset.etq = b.textContent; if (t) b.textContent = t; b.insertAdjacentHTML("beforeend", '<span class="hs-giro" aria-hidden="true"></span>'); }
+  function liberar(b) { b.disabled = false; b.removeAttribute("aria-busy"); if (b.dataset.etq) b.textContent = b.dataset.etq; var g = b.querySelector(".hs-giro"); if (g) g.remove(); }
+  function decir(el, clase, html) { el.className = "hs-resultado" + (clase ? " " + clase : ""); el.innerHTML = html; }
+
+  if (!window.supabase || !window.supabase.createClient) {
+    $("hs-entrar").hidden = false;
+    decir($("hs-entrar-res"), "mal", "<b>NO SE PUDO CARGAR.</b> No llegó la librería de Supabase (sin internet o bloqueada). Recargá la página.");
+    return;
+  }
+  // El almacenamiento puede no existir (ventana privada): la sesión vive en memoria y hay que volver a entrar al recargar.
+  var memoria = {};
+  var almacen = { getItem: function (k) { try { return localStorage.getItem(k); } catch (e) { return memoria[k] || null; } },
+                  setItem: function (k, v) { try { localStorage.setItem(k, v); } catch (e) { memoria[k] = v; } },
+                  removeItem: function (k) { try { localStorage.removeItem(k); } catch (e) { delete memoria[k]; } } };
+  var sb = window.supabase.createClient(URL_SB, LLAVE, { auth: { persistSession: true, autoRefreshToken: true, storage: almacen } });
+
+  async function rpc(fn, args, texto) {
+    paso(texto || "Consultando a Éaco…");
+    try {
+      var r = await sb.schema("core").rpc(fn, args || {});
+      if (r.error) throw new Error(r.error.message || "la base no respondió");
+      return r.data;
+    } finally { paso(null); }
+  }
+
+  function mostrarEntrar() { $("hs-entrar").hidden = false; $("hs-inicio").hidden = true; $("hs-recupero").hidden = true; setTimeout(function () { $("hs-correo").focus(); }, 50); }
+  var RECUPERANDO = false;
+  function mostrarRecupero() { RECUPERANDO = true; $("hs-entrar").hidden = true; $("hs-inicio").hidden = true; $("hs-recupero").hidden = false; setTimeout(function () { $("hs-nueva1").focus(); }, 50); }
+  $("hs-form-recupero").addEventListener("submit", async function (ev) {
+    ev.preventDefault();
+    var b = $("hs-recupero-btn"), res = $("hs-recupero-res"), a = $("hs-nueva1").value, c = $("hs-nueva2").value;
+    if (a.length < 8) { decir(res, "mal", "<b>Falta un dato.</b> La contraseña tiene que tener al menos 8 caracteres."); return; }
+    if (a !== c) { decir(res, "mal", "<b>No coinciden.</b> Las dos contraseñas tienen que ser iguales."); return; }
+    ocupar(b, "Guardando…"); paso("Guardando tu contraseña nueva…");
+    try { var r = await sb.auth.updateUser({ password: a }); if (r.error) throw r.error;
+      $("hs-nueva1").value = $("hs-nueva2").value = ""; RECUPERANDO = false;
+      decir(res, "ok", "<b>CONTRASEÑA GUARDADA.</b> Ya podés usarla en Hestia, Linneo, Tirón y Clausewitz.");
+      history.replaceState(null, "", location.pathname); setTimeout(cargar, 900); }
+    catch (e) { decir(res, "mal", "<b>NO SE GUARDÓ.</b> " + esc(e.message || "No hubo conexión.") + " Si el enlace del correo ya venció, pedí otro con «¿Olvidaste tu contraseña?»."); }
+    finally { liberar(b); paso(null); }
+  });
+  $("hs-recupero-cancelar").addEventListener("click", async function () { RECUPERANDO = false; try { await sb.auth.signOut(); } finally { history.replaceState(null, "", location.pathname); mostrarEntrar(); } });
+
+  $("hs-form").addEventListener("submit", async function (ev) {
+    ev.preventDefault();
+    var b = $("hs-entrar-btn"), res = $("hs-entrar-res");
+    var correo = $("hs-correo").value.trim(), clave = $("hs-clave").value;
+    if (!correo || !clave) { decir(res, "mal", "<b>Falta un dato.</b> Escribí tu correo y tu contraseña."); return; }
+    ocupar(b, "Entrando…"); paso("Revisando tu correo y tu contraseña…");
+    try {
+      var r = await sb.auth.signInWithPassword({ email: correo, password: clave });
+      if (r.error) throw r.error;
+      $("hs-clave").value = ""; decir(res, "", ""); await cargar();
+    } catch (e) {
+      decir(res, "mal", "<b>NO ENTRASTE.</b> " + esc(/invalid/i.test(e.message || "") ? "El correo o la contraseña no coinciden." : (e.message || "No hubo conexión.")));
+    } finally { liberar(b); paso(null); }
+  });
+  $("hs-olvido").addEventListener("click", async function () {
+    var b = this, res = $("hs-entrar-res"), correo = $("hs-correo").value.trim();
+    if (!correo) { decir(res, "mal", "<b>Falta un dato.</b> Escribí arriba tu correo y volvé a tocar «¿Olvidaste tu contraseña?»."); $("hs-correo").focus(); return; }
+    ocupar(b, "Enviando…");
+    try { var r = await sb.auth.resetPasswordForEmail(correo, { redirectTo: location.origin + location.pathname }); if (r.error) throw r.error;
+      decir(res, "ok", "<b>CORREO ENVIADO.</b> Revisá tu bandeja (y el correo no deseado): trae un enlace para elegir una contraseña nueva."); }
+    catch (e) { decir(res, "mal", "<b>NO SE ENVIÓ.</b> " + esc(e.message || "No hubo conexión.")); }
+    finally { liberar(b); }
+  });
+  $("hs-salir").addEventListener("click", async function () { ocupar(this, "Saliendo…"); try { await sb.auth.signOut(); } finally { mostrarEntrar(); liberar(this); } });
+
+  function tarjeta(h) {
+    var sello = SELLOS[h.nombre_propio] || SELLOS[(h.nombre_propio || "").split(" ")[0]] || SELLO_GENERICO;
+    var titulo = h.nombre_propio || h.nombre;
+    var abrir;
+    if (h.como_abre === "claudeai" && h.url) {
+      abrir = '<a class="hs-btn fuerte" href="' + esc(h.url) + '" target="_blank" rel="noopener">Abrir ' + esc(titulo) + ' ↗</a>' +
+              '<p class="hs-nota">Si claude.ai dice que no tenés acceso, falta que el administrador te la comparta en claude.ai.</p>';
+    } else if (h.como_abre === "servidor") {
+      abrir = '<p class="hs-donde">' + esc(h.donde || "Se abre desde la Mac de IRM.") + '</p>';
+    } else {
+      abrir = '<p class="hs-donde">Está en tu computador: ' + (h.donde ? codigoCopiable(h.donde.split(" — ")[0]) + (h.donde.indexOf(" — ") > 0 ? ' <span>— ' + esc(h.donde.split(" — ").slice(1).join(" — ")) + '</span>' : '') : 'preguntale al administrador dónde.') + '</p>';
+    }
+    return '<article class="hs-tarjeta" data-mover-id="' + esc(h.clave) + '" aria-label="' + esc(titulo) + '">' +
+      '<div class="hs-cab"><span class="hs-sello" aria-hidden="true">' + sello + '</span><div><div class="hs-nombre">' + esc(titulo) + '</div>' +
+      '<div class="hs-tipo">' + esc(h.nombre) + '</div></div></div>' +
+      '<p class="hs-funcion">' + esc(h.funcion || "") + '</p>' + abrir + '</article>';
+  }
+
+  var ULTIMO = null;
+  function pintar(d) {
+    ULTIMO = d;
+    $("hs-entrar").hidden = true; $("hs-inicio").hidden = false;
+    $("hs-quien").innerHTML = "Entraste como <b>" + esc(d.correo) + "</b>" + (d.administrador ? " · administrador" : "");
+    $("hs-mensaje").innerHTML = d.mensaje ? '<div class="hs-aviso">' + esc(d.mensaje) + '</div>' : "";
+    var hs = d.herramientas || [];
+    $("hs-grilla").innerHTML = hs.map(tarjeta).join("");
+    var pend = d.pendientes || [];
+    $("hs-pendientes").innerHTML = pend.length ? '<h2 style="font-size:16px;margin:18px 0 4px">Pedidos en espera</h2>' +
+      '<p class="hs-nota">El administrador los revisa en Éaco. Si pediste uno por error, la caneca lo retira.</p><ul class="hs-lista">' +
+      pend.map(function (p) { return '<li><span><b>' + esc(p.nombre_propio || p.nombre) + '</b> — ' + esc(p.nombre) + '</span>' +
+        caneca("el pedido de " + (p.nombre_propio || p.nombre), { attrs: 'data-retirar="' + esc(p.clave) + '"' }) + '</li>'; }).join("") + '</ul>' : "";
+    var otras = d.otras || [];
+    $("hs-pedir-abrir").hidden = d.administrador || !otras.length;
+    $("hs-pedir-cual").innerHTML = otras.map(function (o) { return '<option value="' + esc(o.clave) + '">' + esc((o.nombre_propio ? o.nombre_propio + " — " : "") + o.nombre) + '</option>'; }).join("");
+  }
+
+  async function cargar() {
+    try {
+      var d = await rpc("hestia_inicio", {}, "Preguntándole a Éaco qué herramientas tenés autorizadas…");
+      if (!d || !d.sesion) { mostrarEntrar(); return; }
+      pintar(d);
+    } catch (e) {
+      $("hs-entrar").hidden = true; $("hs-inicio").hidden = false;
+      $("hs-mensaje").innerHTML = '<div class="hs-aviso"><b>NO SE PUDO LEER.</b> ' + esc(e.message) + ' — revisá tu conexión y recargá.</div>';
+    }
+  }
+
+  // Pedir acceso
+  $("hs-pedir-abrir").addEventListener("click", function () { $("hs-pedir").hidden = false; this.hidden = true; $("hs-pedir-cual").focus(); });
+  $("hs-pedir-cancelar").addEventListener("click", function () { $("hs-pedir").hidden = true; $("hs-pedir-abrir").hidden = false; decir($("hs-pedir-res"), "", ""); });
+  $("hs-pedir-enviar").addEventListener("click", async function () {
+    var b = this, res = $("hs-pedir-res"), cual = $("hs-pedir-cual").value, nombre = $("hs-pedir-nombre").value.trim();
+    if (!cual) { decir(res, "mal", "<b>Falta un dato.</b> Elegí la herramienta."); return; }
+    if (!nombre) { decir(res, "mal", "<b>Falta un dato.</b> Escribí tu nombre completo: el administrador necesita saber quién pide."); return; }
+    ocupar(b, "Enviando…");
+    try {
+      var r = await rpc("hestia_pedir", { p_artefacto: cual, p_nombre: nombre, p_nota: $("hs-pedir-nota").value.trim() || null }, "Dejando tu pedido en Éaco…");
+      if (!r || !r.ok) throw new Error((r && r.mensaje) || "la base no confirmó el pedido");
+      decir(res, "ok", "<b>PEDIDO ENVIADO.</b> " + esc(r.mensaje));
+      await cargar(); $("hs-pedir").hidden = true;
+    } catch (e) { decir(res, "mal", "<b>NO SE ENVIÓ.</b> " + esc(e.message)); }
+    finally { liberar(b); }
+  });
+
+  // Retirar un pedido (caneca) con Deshacer
+  var tostada = null, tTimer = null;
+  function ofrecerDeshacer(texto, fn) {
+    if (tostada) tostada.remove(); clearTimeout(tTimer);
+    tostada = document.createElement("div"); tostada.className = "hs-tostada"; tostada.setAttribute("role", "status");
+    tostada.innerHTML = '<span>' + esc(texto) + '</span><button type="button">Deshacer ⌘Z</button>';
+    document.body.appendChild(tostada);
+    var b = tostada.querySelector("button");
+    tostada._deshacer = async function () { ocupar(b, "Deshaciendo…"); try { await fn(); } finally { if (tostada) { tostada.remove(); tostada = null; } } };
+    b.addEventListener("click", tostada._deshacer);
+    tTimer = setTimeout(function () { if (tostada) { tostada.remove(); tostada = null; } }, 9000);
+  }
+  document.addEventListener("keydown", function (ev) {
+    if ((ev.metaKey || ev.ctrlKey) && ev.key.toLowerCase() === "z" && tostada && tostada._deshacer && !/^(INPUT|TEXTAREA)$/.test((ev.target || {}).tagName || "")) { ev.preventDefault(); tostada._deshacer(); }
+  });
+  $("hs-pendientes").addEventListener("click", async function (ev) {
+    var b = ev.target.closest && ev.target.closest(".irm-caneca"); if (!b) return;
+    var clave = b.getAttribute("data-retirar"), listo = canecaOcupada(b);
+    try {
+      var r = await rpc("hestia_retirar", { p_artefacto: clave }, "Retirando el pedido…");
+      if (!r || !r.ok) throw new Error((r && r.mensaje) || "no se pudo retirar");
+      await cargar();
+      ofrecerDeshacer("PEDIDO RETIRADO.", async function () { await rpc("hestia_pedir", { p_artefacto: clave }, "Volviendo a pedir…"); await cargar(); });
+    } catch (e) { $("hs-mensaje").innerHTML = '<div class="hs-aviso"><b>NO SE RETIRÓ.</b> ' + esc(e.message) + '</div>'; }
+    finally { listo(); }
+  });
+
+  instalarCopiar();
+  sb.auth.onAuthStateChange(function (ev) { if (ev === "PASSWORD_RECOVERY") mostrarRecupero(); else if (ev === "SIGNED_OUT" && !RECUPERANDO) mostrarEntrar(); });
+  (async function () {
+    paso("Buscando tu sesión…");
+    try { var s = await sb.auth.getSession(); paso(null);
+      if (/type=recovery/.test(location.hash)) { mostrarRecupero(); return; }
+      if (s.data && s.data.session) await cargar(); else mostrarEntrar(); }
+    catch (e) { paso(null); mostrarEntrar(); }
+  })();
+})();
+</script>
+
+</main>
+
+<footer class="irm-pie">
+  <div class="irm-contacto"><span><b>C.</b> 318 3591189</span><span><b>D.</b> Cra. 36 #10B-39 el poblado, Medellín, Ant.</span><span>www.irmaires.com</span></div>
+  <span>Confidencial — uso interno IRM Aires</span>
+  <span class="irm-paginacion">2026-10-04</span>
+</footer>
+<script>
+/* Tarjetas que se mueven — componente canónico IRM v2. Marca: data-irm-mover="<clave>" en la grilla
+   y data-mover-id="<id estable>" en cada tarjeta. Se activa solo, también en lo que se pinta después. */
+(function (global) {
+  "use strict";
+  if (global.IRMMover) return;
+  var ESPERA_DEDO = 450, UMBRAL = 6, PREFIJO = "irm.mover.";
+  var quieto = global.matchMedia && global.matchMedia("(prefers-reduced-motion: reduce)").matches;
+  function leer(k) { try { return JSON.parse(global.localStorage.getItem(PREFIJO + k) || "null"); } catch (e) { return null; } }
+  function guardar(k, v) { try { if (v) global.localStorage.setItem(PREFIJO + k, JSON.stringify(v)); else global.localStorage.removeItem(PREFIJO + k); } catch (e) {} }
+  var voz = null;
+  function decir(t) {
+    if (!voz) { voz = document.createElement("div"); voz.className = "irm-mover-voz"; voz.setAttribute("role", "status"); voz.setAttribute("aria-live", "polite"); document.body.appendChild(voz); }
+    voz.textContent = ""; setTimeout(function () { voz.textContent = t; }, 30);
+  }
+  function tarjetas(g) { return Array.prototype.filter.call(g.children, function (c) { return c.hasAttribute("data-mover-id"); }); }
+  function ids(g) { return tarjetas(g).map(function (c) { return c.getAttribute("data-mover-id"); }); }
+  // Lo último que dejó el propio componente: si la grilla cambia y no fue él (la página la
+  // volvió a pintar), se reaplica el orden guardado sobre lo nuevo.
+  function marcar(g) { g.__irmUltimo = ids(g).join("\u0001"); }
+  function nombre(c) { var t = c.getAttribute("aria-label") || c.textContent || ""; return t.replace(/\s+/g, " ").trim().split(":")[0].slice(0, 60); }
+
+  // FLIP: las demás tarjetas se corren con una animación corta en vez de saltar.
+  function conAnimacion(g, cambio) {
+    if (quieto || !Element.prototype.animate) { cambio(); return; }
+    var antes = new Map(); tarjetas(g).forEach(function (c) { antes.set(c, c.getBoundingClientRect()); });
+    cambio();
+    tarjetas(g).forEach(function (c) {
+      var a = antes.get(c); if (!a) return; var d = c.getBoundingClientRect(), dx = a.left - d.left, dy = a.top - d.top;
+      if (!dx && !dy) return;
+      c.animate([{ transform: "translate(" + dx + "px," + dy + "px)" }, { transform: "none" }], { duration: 160, easing: "ease-out" });
+    });
+  }
+
+  function ordenarSegun(g, orden) {
+    var porId = {}; tarjetas(g).forEach(function (c) { porId[c.getAttribute("data-mover-id")] = c; });
+    var primera = tarjetas(g)[0], ancla = primera ? primera.previousSibling : null, frag = document.createDocumentFragment();
+    orden.forEach(function (id) { if (porId[id]) { frag.appendChild(porId[id]); delete porId[id]; } });
+    (g.__irmOriginal || []).forEach(function (id) { if (porId[id]) { frag.appendChild(porId[id]); delete porId[id]; } });
+    Object.keys(porId).forEach(function (id) { frag.appendChild(porId[id]); });       // nuevas: al final
+    g.insertBefore(frag, ancla ? ancla.nextSibling : g.firstChild);
+  }
+  // Alt+flechas necesita poder pararse en la tarjeta: un <div> o un <li> no se enfocan solos.
+  function enfocables(g) { tarjetas(g).forEach(function (c) {
+    if (!c.matches("a[href], button, input, select, textarea, summary, [tabindex]")) c.tabIndex = 0; }); }
+  function aplicarOrden(g) {
+    enfocables(g);
+    g.__irmOriginal = ids(g);
+    var orden = leer(g.getAttribute("data-irm-mover"));
+    if (orden && orden.length) ordenarSegun(g, orden);
+    marcar(g); pintarRestablecer(g);
+  }
+  function guardarOrden(g) {
+    var actual = ids(g), igual = actual.join("\u0001") === (g.__irmOriginal || []).join("\u0001");
+    guardar(g.getAttribute("data-irm-mover"), igual ? null : actual); pintarRestablecer(g);
+  }
+  function pintarRestablecer(g) {
+    var b = g.__irmRestablecer, distinto = ids(g).join("\u0001") !== (g.__irmOriginal || []).join("\u0001");
+    if (!distinto) { if (b) { b.remove(); g.__irmRestablecer = null; } return; }
+    if (b && b.isConnected) return;
+    b = document.createElement("button"); b.type = "button"; b.className = "irm-mover-restablecer"; b.textContent = "Volver al orden original";
+    b.addEventListener("click", function () {
+      conAnimacion(g, function () { ordenarSegun(g, g.__irmOriginal || []); }); marcar(g);
+      guardar(g.getAttribute("data-irm-mover"), null); b.remove(); g.__irmRestablecer = null; decir("Tarjetas en su orden original.");
+    });
+    g.insertAdjacentElement("afterend", b); g.__irmRestablecer = b;
+  }
+
+  function activar(g) {
+    if (g.__irmMover) return;
+    g.__irmMover = true;
+    var faltan = Array.prototype.filter.call(g.children, function (c) { return !c.hasAttribute("data-mover-id"); });
+    if (faltan.length) { faltan.forEach(function (c, i) { c.setAttribute("data-mover-id", "pos-" + i); });
+      if (global.console) console.warn("IRMMover: tarjetas sin data-mover-id en", g.getAttribute("data-irm-mover")); }
+    aplicarOrden(g);
+    var arr = null, timer = null, suprimirClic = false;
+    function soltar(guardarlo) {
+      clearTimeout(timer); timer = null;
+      if (arr && arr.activo) { arr.c.classList.remove("irm-levantada"); g.classList.remove("irm-moviendo");
+        if (guardarlo) { guardarOrden(g); decir(nombre(arr.c) + ": quedó en la posición " + (tarjetas(g).indexOf(arr.c) + 1) + " de " + tarjetas(g).length + "."); } }
+      arr = null;
+    }
+    function levantar() { if (!arr) return; arr.activo = true; arr.c.classList.add("irm-levantada"); g.classList.add("irm-moviendo");
+      if (arr.dedo && global.navigator && navigator.vibrate) { try { navigator.vibrate(15); } catch (e) {} } }
+    g.addEventListener("pointerdown", function (ev) {
+      var c = ev.target.closest && ev.target.closest("[data-mover-id]");
+      if (!c || c.parentNode !== g || ev.button > 0) return;
+      if (ev.target.closest("input, textarea, select, a[href], .irm-caneca, .irm-copiar")) return;
+      arr = { c: c, x: ev.clientX, y: ev.clientY, dedo: ev.pointerType !== "mouse", activo: false };
+      if (arr.dedo) timer = setTimeout(levantar, ESPERA_DEDO);
+    });
+    document.addEventListener("pointermove", function (ev) {
+      if (!arr) return;
+      var lejos = Math.abs(ev.clientX - arr.x) > UMBRAL || Math.abs(ev.clientY - arr.y) > UMBRAL;
+      if (!arr.activo) { if (arr.dedo) { if (lejos) soltar(false); return; } if (!lejos) return; levantar(); }
+      ev.preventDefault();
+      var bajo = document.elementFromPoint(ev.clientX, ev.clientY), otra = bajo && bajo.closest && bajo.closest("[data-mover-id]");
+      if (!otra || otra === arr.c || otra.parentNode !== g) return;
+      var lista = tarjetas(g), antes = lista.indexOf(arr.c) > lista.indexOf(otra);
+      conAnimacion(g, function () { g.insertBefore(arr.c, antes ? otra : otra.nextSibling); }); marcar(g);
+    });
+    // En el celular, una vez levantada la tarjeta, el dedo ya no hace scroll.
+    g.addEventListener("touchmove", function (ev) { if (arr && arr.activo) ev.preventDefault(); }, { passive: false });
+    document.addEventListener("pointerup", function () { if (!arr) return; if (arr.activo) suprimirClic = true; soltar(true); });
+    document.addEventListener("pointercancel", function () { if (arr) soltar(true); });
+    g.addEventListener("contextmenu", function (ev) { if (arr) ev.preventDefault(); });
+    g.addEventListener("click", function (ev) { if (suprimirClic) { suprimirClic = false; ev.preventDefault(); ev.stopImmediatePropagation(); } }, true);
+    g.addEventListener("keydown", function (ev) {
+      if (!ev.altKey || !/^Arrow(Left|Right|Up|Down)$/.test(ev.key)) return;
+      var c = ev.target.closest && ev.target.closest("[data-mover-id]"); if (!c || c.parentNode !== g) return;
+      ev.preventDefault();
+      var lista = tarjetas(g), i = lista.indexOf(c), atras = ev.key === "ArrowLeft" || ev.key === "ArrowUp", j = atras ? i - 1 : i + 1;
+      if (j < 0 || j >= lista.length) { decir(nombre(c) + ": ya está " + (atras ? "primera." : "última.")); return; }
+      conAnimacion(g, function () { g.insertBefore(c, atras ? lista[j] : lista[j].nextSibling); }); marcar(g);
+      c.focus(); guardarOrden(g); decir(nombre(c) + ": posición " + (j + 1) + " de " + lista.length + ".");
+    });
+  }
+  function barrer(raiz) {
+    if (!raiz || !raiz.querySelectorAll) return;
+    if (raiz.matches && raiz.matches("[data-irm-mover]")) activar(raiz);
+    Array.prototype.forEach.call(raiz.querySelectorAll("[data-irm-mover]"), activar);
+  }
+  function arrancar() {
+    barrer(document.body);
+    var revisar = [];
+    new MutationObserver(function (ms) {
+      ms.forEach(function (m) {
+        Array.prototype.forEach.call(m.addedNodes, function (n) { if (n.nodeType === 1) barrer(n); });
+        // Una grilla ya activa a la que la página le cambió las tarjetas (pintó con innerHTML).
+        if (m.target && m.target.__irmMover && revisar.indexOf(m.target) < 0) revisar.push(m.target);
+      });
+      if (revisar.length) Promise.resolve().then(function () {
+        revisar.splice(0).forEach(function (g) {
+          if (!g.classList.contains("irm-moviendo") && ids(g).join("\u0001") !== g.__irmUltimo) {
+            var faltan = Array.prototype.filter.call(g.children, function (c) { return !c.hasAttribute("data-mover-id"); });
+            faltan.forEach(function (c, i) { c.setAttribute("data-mover-id", "pos-" + i); });
+            aplicarOrden(g);
+          }
+        });
+      });
+    }).observe(document.body, { childList: true, subtree: true });
+  }
+  if (document.readyState === "loading") document.addEventListener("DOMContentLoaded", arrancar); else arrancar();
+  global.IRMMover = { activar: activar, version: "2" };
+})(window);
+</script>
+<style>
+/* Botón «Reportar» — componente canónico IRM v3 (IMAGEN CORPORATIVA/memoria_procedimental/componente_reporte.py) */
+.irm-reporte-raiz { --irmr-tinta: var(--tinta, #0b0b0b); --irmr-tinta-2: var(--tinta-2, #52514e);
+  --irmr-sup: var(--superficie, #fcfcfb); --irmr-borde: var(--cuadricula, #e1e0d9); --irmr-cian: #00B9CE;
+  --irmr-mal: #d03b3b; font: 14px/1.5 var(--sans, Inter, system-ui, -apple-system, "Segoe UI", sans-serif); color: var(--irmr-tinta); }
+@media (prefers-color-scheme: dark) { .irm-reporte-raiz { --irmr-tinta: var(--tinta, #fff); --irmr-tinta-2: var(--tinta-2, #c3c2b7);
+  --irmr-sup: var(--superficie, #1a1a19); --irmr-borde: var(--cuadricula, #2c2c2a); } }
+.irm-reporte-btn { position: fixed; bottom: 16px; right: 16px; z-index: 2147483000; display: inline-flex; align-items: center; gap: 6px;
+  padding: 8px 14px 8px 11px; border: 1px solid var(--irmr-borde); border-radius: 999px; background: var(--irmr-sup);
+  color: var(--irmr-tinta-2); font: 600 13px var(--display, Poppins, Inter, system-ui, sans-serif); cursor: pointer;
+  box-shadow: 0 2px 10px rgba(0,0,0,.12); transition: color .15s, background .15s, border-color .15s; }
+.irm-reporte-btn.izq { right: auto; left: 16px; }
+.irm-reporte-btn .irm-reporte-ico { width: 17px; height: 17px; }
+.irm-reporte-btn:hover, .irm-reporte-btn:focus-visible { color: var(--irmr-cian); border-color: var(--irmr-cian); outline: none; }
+.irm-reporte-btn:active, .irm-reporte-btn[aria-expanded="true"] { color: #fff; background: var(--irmr-cian); border-color: var(--irmr-cian); }
+@media print { .irm-reporte-btn { display: none; } }
+@media (max-width: 560px) { .irm-reporte-raiz { display: block; height: 72px; }
+  .irm-reporte-btn { padding: 11px; bottom: calc(12px + env(safe-area-inset-bottom, 0px)); right: 12px; }
+  .irm-reporte-btn.izq { left: 12px; right: auto; }
+  .irm-reporte-btn span { position: absolute; width: 1px; height: 1px; overflow: hidden; clip: rect(0 0 0 0); white-space: nowrap; }
+  .irm-reporte-btn .irm-reporte-ico { width: 20px; height: 20px; }
+  .irm-reporte-dlg textarea, .irm-reporte-dlg input[type=text] { font-size: 16px; }
+  .irm-reporte-seg button, .irm-reporte-acciones button { min-height: 44px; } }
+.irm-reporte-dlg { width: min(520px, calc(100vw - 32px)); max-height: calc(100vh - 32px); padding: 0; border: 1px solid var(--irmr-borde);
+  border-radius: 14px; background: var(--irmr-sup); color: var(--irmr-tinta); box-shadow: 0 12px 40px rgba(0,0,0,.25); }
+.irm-reporte-dlg::backdrop { background: rgba(0,0,0,.35); }
+.irm-reporte-dlg form { padding: 20px 20px 16px; margin: 0; }
+.irm-reporte-dlg h2 { font: 600 18px var(--display, Poppins, Inter, sans-serif); margin: 0 0 2px; }
+.irm-reporte-dlg .sub { margin: 0 0 14px; font-size: 12.5px; color: var(--irmr-tinta-2); }
+.irm-reporte-dlg fieldset { border: 0; padding: 0; margin: 0 0 12px; }
+.irm-reporte-dlg legend, .irm-reporte-dlg label { display: block; font-weight: 600; font-size: 13px; margin: 0 0 6px; }
+.irm-reporte-seg { display: flex; flex-wrap: wrap; gap: 6px; }
+.irm-reporte-seg button { flex: 1 1 auto; padding: 7px 10px; border: 1px solid var(--irmr-borde); border-radius: 8px; background: transparent;
+  color: var(--irmr-tinta); font: inherit; font-size: 13px; cursor: pointer; transition: background .15s, color .15s, border-color .15s; }
+.irm-reporte-seg button:hover { border-color: var(--irmr-cian); }
+.irm-reporte-seg button:active { background: color-mix(in srgb, var(--irmr-cian) 25%, transparent); }
+.irm-reporte-seg button[aria-pressed="true"] { background: var(--irmr-cian); border-color: var(--irmr-cian); color: #fff; }
+.irm-reporte-dlg textarea, .irm-reporte-dlg input[type=text] { width: 100%; box-sizing: border-box; padding: 8px 10px; margin: 0 0 12px;
+  border: 1px solid var(--irmr-borde); border-radius: 8px; background: transparent; color: inherit; font: inherit; }
+.irm-reporte-dlg textarea { min-height: 84px; resize: vertical; }
+.irm-reporte-dlg textarea:focus, .irm-reporte-dlg input:focus { outline: 2px solid var(--irmr-cian); outline-offset: -1px; }
+.irm-reporte-adjunto { font-size: 11.5px; color: var(--irmr-tinta-2); margin: 0 0 12px; }
+.irm-reporte-acciones { display: flex; gap: 8px; justify-content: flex-end; }
+.irm-reporte-acciones button { padding: 8px 16px; border-radius: 8px; font: 600 13px var(--display, Poppins, Inter, sans-serif); cursor: pointer;
+  border: 1px solid var(--irmr-borde); background: transparent; color: var(--irmr-tinta); transition: background .15s, color .15s; display: inline-flex; align-items: center; gap: 8px; }
+.irm-reporte-acciones button:hover { border-color: var(--irmr-cian); }
+.irm-reporte-acciones .enviar { background: var(--irmr-cian); border-color: var(--irmr-cian); color: #fff; }
+.irm-reporte-acciones .enviar:hover { background: color-mix(in srgb, var(--irmr-cian) 85%, #000); }
+.irm-reporte-acciones .enviar:active { background: color-mix(in srgb, var(--irmr-cian) 70%, #000); }
+.irm-reporte-acciones button[disabled] { cursor: progress; opacity: .85; }
+.irm-reporte-giro { width: 12px; height: 12px; border: 2px solid currentColor; border-top-color: transparent; border-radius: 50%;
+  animation: irmrgira .7s linear infinite; }
+@keyframes irmrgira { to { transform: rotate(360deg); } }
+@media (prefers-reduced-motion: reduce) { .irm-reporte-giro { animation: none; } }
+.irm-reporte-estado { min-height: 1.4em; margin: 10px 0 0; font-size: 13px; }
+.irm-reporte-estado b { font-family: var(--display, Poppins, Inter, sans-serif); }
+.irm-reporte-estado.ok b { color: var(--irmr-cian); }
+.irm-reporte-estado.mal b { color: var(--irmr-mal); }
+.irm-reporte-mios { margin-top: 12px; border-top: 1px solid var(--irmr-borde); padding-top: 10px; font-size: 12.5px; }
+.irm-reporte-mios summary { cursor: pointer; font-weight: 600; }
+.irm-reporte-mios ul { list-style: none; padding: 0; margin: 8px 0 0; }
+.irm-reporte-mios li { padding: 6px 0; border-bottom: 1px solid var(--irmr-borde); }
+.irm-reporte-mios .cod { font-family: var(--mono, ui-monospace, Menlo, monospace); font-weight: 600; }
+.irm-reporte-mios .resp { display: block; color: var(--irmr-tinta-2); margin-top: 2px; }
+.irm-reporte-oculto { display: none !important; }
+</style>
+<script>
+/* Botón «Reportar» — componente canónico IRM v3. IRMReporte.iniciar({artefacto, nombre, version})
+   pone el botón y la ventana. El reporte llega a Larrey (mesa de tickets). No depende de nada de la página. */
+(function (global) {
+  "use strict";
+  if (global.IRMReporte) return;
+  var URL_RPC = "https://oixizeqfuxsbjqcvzpbe.supabase.co" + "/rest/v1/rpc/", LLAVE = "sb_publishable_Yfu9GwQGe9w5NsGVmC3BvQ_Gj7k4DGi", SVG = "<svg class=\"irm-reporte-ico\" viewBox=\"0 0 24 24\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"2\" stroke-linecap=\"round\" stroke-linejoin=\"round\" aria-hidden=\"true\" focusable=\"false\"><path d=\"M21 12a8 8 0 0 1-11.6 7.1L4 20l1-4.6A8 8 0 1 1 21 12z\"/><path d=\"M12 8v4\"/><path d=\"M12 15.5v.01\"/></svg>", WEB = "https://irm-hestia.vercel.app/reportar.html";
+  var errores = [];
+  function anotar(m) { try { errores.push(String(m).slice(0, 300)); if (errores.length > 5) errores.shift(); } catch (e) {} }
+  global.addEventListener("error", function (ev) { anotar((ev && ev.message) || "error"); });
+  global.addEventListener("unhandledrejection", function (ev) { anotar("promesa: " + ((ev && ev.reason && ev.reason.message) || ev.reason)); });
+  var ce = global.console && global.console.error;
+  if (ce) global.console.error = function () { try { anotar([].slice.call(arguments).join(" ")); } catch (e) {} return ce.apply(this, arguments); };
+
+  function leer(k) { try { return global.localStorage.getItem(k); } catch (e) { return null; } }
+  function guardar(k, v) { try { global.localStorage.setItem(k, v); } catch (e) {} }
+  var huellaMemoria = null;
+  function huella() {   // la misma huella de equipo que usa Éaco, para que el equipo sea uno solo
+    var h = leer("eaco.huella");
+    if (h) return h;
+    if (huellaMemoria) return huellaMemoria;
+    h = (global.crypto && global.crypto.randomUUID) ? global.crypto.randomUUID()
+      : "h-" + Date.now() + "-" + Math.random().toString(36).slice(2, 12);
+    guardar("eaco.huella", h); huellaMemoria = h; return h;
+  }
+  function esc(s) { return String(s == null ? "" : s).replace(/[&<>"']/g, function (c) {
+    return {"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c]; }); }
+  function rpc(fn, cuerpo) {
+    return fetch(URL_RPC + fn, { method: "POST", headers: { "apikey": LLAVE, "Content-Profile": "core",
+      "Content-Type": "application/json" }, body: JSON.stringify(cuerpo) })
+      .then(function (r) { return r.json().then(function (j) { if (!r.ok) throw new Error((j && j.message) || ("HTTP " + r.status)); return j; }); });
+  }
+  var ESTADO = { nuevo: "recibido", en_revision: "en revisión", en_curso: "en arreglo", resuelto: "resuelto", descartado: "descartado" };
+  var PRIO = { prioritario: "PRIORITARIO", neutro: "NEUTRO", no_prioritario: "NO PRIORITARIO" };
+
+  function iniciar(cfg) {
+    cfg = cfg || {};
+    if (!cfg.artefacto) { anotar("IRMReporte sin artefacto"); return; }
+    if (document.querySelector(".irm-reporte-btn")) return;
+    var raiz = document.createElement("div"); raiz.className = "irm-reporte-raiz";
+    raiz.innerHTML =
+      '<button type="button" class="irm-reporte-btn' + (cfg.posicion === "izquierda" ? " izq" : "") + '" aria-haspopup="dialog" aria-expanded="false" ' +
+        'title="Reportar una falla o dejar una idea sobre ' + esc(cfg.nombre || "esta herramienta") + '">' + SVG + '<span>Reportar</span></button>' +
+      '<dialog class="irm-reporte-dlg" aria-labelledby="irm-reporte-tit"><form method="dialog" novalidate>' +
+        '<h2 id="irm-reporte-tit">Reportar una falla o una idea</h2>' +
+        '<p class="sub">Sobre <b>' + esc(cfg.nombre || cfg.artefacto) + '</b>' + (cfg.version ? ' · ' + esc(cfg.version) : '') +
+          '. Llega a la mesa de <b>Larrey</b>, que atiende primero lo que no deja trabajar — como el cirujano que inventó el triaje.</p>' +
+        '<fieldset><legend>¿Qué querés contar?</legend><div class="irm-reporte-seg" data-campo="tipo">' +
+          '<button type="button" data-v="falla" aria-pressed="false">Algo falla</button>' +
+          '<button type="button" data-v="sugerencia" aria-pressed="false">Tengo una idea</button></div></fieldset>' +
+        '<fieldset class="irm-reporte-oculto" data-bloque="funciona"><legend>¿La herramienta sigue funcionando?</legend><div class="irm-reporte-seg" data-campo="funciona">' +
+          '<button type="button" data-v="no" aria-pressed="false">No, me tiene bloqueado</button>' +
+          '<button type="button" data-v="a_medias" aria-pressed="false">A medias</button>' +
+          '<button type="button" data-v="si" aria-pressed="false">Sí, pero algo está mal</button></div></fieldset>' +
+        '<label for="irm-reporte-que">Qué pasó (o qué se te ocurre)</label>' +
+        '<textarea id="irm-reporte-que" maxlength="2000" placeholder="Ej.: al tocar «Guardar el precio» se queda girando y no guarda."></textarea>' +
+        '<label for="irm-reporte-hacia">Qué estabas haciendo <span style="font-weight:400">(opcional)</span></label>' +
+        '<textarea id="irm-reporte-hacia" maxlength="1000" style="min-height:52px" placeholder="Ej.: editando el APU 2.01.03, con dos pestañas abiertas."></textarea>' +
+        '<label for="irm-reporte-quien">Tu nombre</label>' +
+        '<input id="irm-reporte-quien" type="text" maxlength="120" autocomplete="name">' +
+        '<p class="irm-reporte-adjunto">Se adjunta solo: el nombre y la versión de la herramienta, el navegador, el tamaño de la pantalla y los últimos errores técnicos de la página. Nada más.</p>' +
+        '<div class="irm-reporte-acciones"><button type="button" class="cancelar">Cancelar</button>' +
+          '<button type="button" class="enviar">Enviar el reporte</button></div>' +
+        '<p class="irm-reporte-estado" role="status" aria-live="polite"></p>' +
+        '<details class="irm-reporte-mios"><summary>Mis reportes desde este equipo</summary><ul><li>Abrí para consultarlos.</li></ul></details>' +
+      '</form></dialog>';
+    document.body.appendChild(raiz);
+
+    var btn = raiz.querySelector(".irm-reporte-btn"), dlg = raiz.querySelector("dialog");
+    var est = raiz.querySelector(".irm-reporte-estado"), enviar = raiz.querySelector(".enviar");
+    var campos = { tipo: null, funciona: null };
+    var quien = raiz.querySelector("#irm-reporte-quien");
+    quien.value = leer("irm.reporte.nombre") || "";
+
+    function decir(clase, html) { est.className = "irm-reporte-estado" + (clase ? " " + clase : ""); est.innerHTML = html; }
+    function abrir() {
+      decir("", "");
+      if (typeof dlg.showModal === "function") dlg.showModal(); else dlg.setAttribute("open", "");
+      btn.setAttribute("aria-expanded", "true");
+      var p = raiz.querySelector('[data-campo="tipo"] button'); if (p) p.focus();
+    }
+    function cerrar() { if (dlg.open && typeof dlg.close === "function") dlg.close(); else dlg.removeAttribute("open"); btn.setAttribute("aria-expanded", "false"); btn.focus(); }
+    btn.addEventListener("click", abrir);
+    dlg.addEventListener("close", function () { btn.setAttribute("aria-expanded", "false"); });
+    raiz.querySelector(".cancelar").addEventListener("click", cerrar);
+    raiz.querySelector("form").addEventListener("submit", function (ev) { ev.preventDefault(); });
+    Array.prototype.forEach.call(raiz.querySelectorAll(".irm-reporte-seg"), function (seg) {
+      seg.addEventListener("click", function (ev) {
+        var b = ev.target.closest("button[data-v]"); if (!b) return;
+        Array.prototype.forEach.call(seg.querySelectorAll("button"), function (o) { o.setAttribute("aria-pressed", o === b ? "true" : "false"); });
+        campos[seg.getAttribute("data-campo")] = b.getAttribute("data-v");
+        if (seg.getAttribute("data-campo") === "tipo") {
+          raiz.querySelector('[data-bloque="funciona"]').classList.toggle("irm-reporte-oculto", campos.tipo !== "falla");
+        }
+      });
+    });
+
+    enviar.addEventListener("click", function () {
+      var que = raiz.querySelector("#irm-reporte-que").value.trim();
+      if (!campos.tipo) return decir("mal", "<b>Falta un dato.</b> Elegí arriba si algo falla o si tenés una idea.");
+      if (campos.tipo === "falla" && !campos.funciona) return decir("mal", "<b>Falta un dato.</b> Decí si la herramienta sigue funcionando: con eso se decide qué tan urgente es.");
+      if (que.length < 8) return decir("mal", "<b>Falta un dato.</b> Contá en una frase qué pasó.");
+      var nombre = quien.value.trim(); if (nombre) guardar("irm.reporte.nombre", nombre);
+      var etiqueta = enviar.textContent;
+      enviar.disabled = true; enviar.setAttribute("aria-busy", "true");
+      enviar.insertAdjacentHTML("beforeend", '<span class="irm-reporte-giro" aria-hidden="true"></span>');
+      decir("", "Enviando el reporte a la mesa de Larrey…");
+      var ctx = { navegador: navigator.userAgent, pantalla: global.innerWidth + "x" + global.innerHeight,
+                  idioma: navigator.language, errores: errores.slice(), en: new Date().toISOString() };
+      rpc("ticket_reportar", { p_artefacto: cfg.artefacto, p_artefacto_nombre: cfg.nombre || null, p_version: cfg.version || null,
+          p_tipo: campos.tipo, p_funciona: campos.tipo === "sugerencia" ? "si" : campos.funciona,
+          p_descripcion: que, p_que_hacia: raiz.querySelector("#irm-reporte-hacia").value.trim(),
+          p_reportado_por: nombre || null, p_huella: huella(), p_contexto: ctx })
+        .then(function (r) {
+          if (r && r.ok) {
+            decir("ok", "<b>REPORTE ENVIADO — " + esc(r.codigo) + ".</b> " + esc(r.mensaje) + " Con ese código lo podés seguir en «Mis reportes».");
+            raiz.querySelector("#irm-reporte-que").value = ""; raiz.querySelector("#irm-reporte-hacia").value = "";
+            enviar.textContent = "Enviar otro";
+          } else {
+            decir("mal", "<b>NO SE ENVIÓ.</b> " + esc((r && r.error) || "La base no confirmó el reporte."));
+          }
+        })
+        .catch(function (e) {
+          decir("mal", "<b>NO SE ENVIÓ desde acá.</b> Esta página no puede hablar con la base (pasa dentro de claude.ai). " +
+            "Copiá lo que escribiste y <a href=\"" + esc(enlaceWeb()) + "\" target=\"_blank\" rel=\"noopener\">abrí el formulario de reporte en otra pestaña ↗</a>: " +
+            "llega igual a Larrey. Si tampoco abre, mandalo a Soporte Sistemas (datos@irmaires.com).");
+        })
+        .finally(function () {
+          enviar.disabled = false; enviar.removeAttribute("aria-busy");
+          var g = enviar.querySelector(".irm-reporte-giro"); if (g) g.remove();
+          if (enviar.textContent !== "Enviar otro") enviar.textContent = etiqueta;
+        });
+    });
+
+    function enlaceWeb() {
+      return WEB + "?artefacto=" + encodeURIComponent(cfg.artefacto) + "&nombre=" + encodeURIComponent(cfg.nombre || "") +
+             "&version=" + encodeURIComponent(cfg.version || "");
+    }
+    var mios = raiz.querySelector(".irm-reporte-mios");
+    mios.addEventListener("toggle", function () {
+      if (!mios.open) return;
+      var ul = mios.querySelector("ul");
+      ul.innerHTML = "<li>Buscando tus reportes en la mesa de Larrey…</li>";
+      rpc("ticket_mios", { p_huella: huella() }).then(function (lista) {
+        if (!lista || !lista.length) { ul.innerHTML = "<li>Todavía no reportaste nada desde este equipo.</li>"; return; }
+        ul.innerHTML = lista.map(function (t) {
+          return '<li><span class="cod">' + esc(t.codigo) + '</span> · ' + esc(t.artefacto_nombre || "") + ' · <b>' +
+            esc(ESTADO[t.estado] || t.estado) + '</b> · ' + esc(PRIO[t.prioridad] || t.prioridad) +
+            '<span class="resp">' + esc(t.descripcion) + '</span>' +
+            (t.respuesta ? '<span class="resp">Respuesta: ' + esc(t.respuesta) + '</span>' : '') + '</li>';
+        }).join("");
+      }).catch(function () { ul.innerHTML = "<li>Desde acá no se pueden leer: <a href=\"" + esc(enlaceWeb()) + "\" target=\"_blank\" rel=\"noopener\">miralos en la página de reporte ↗</a> (desde el mismo navegador donde reportaste).</li>"; });
+    });
+  }
+  global.IRMReporte = { iniciar: iniciar, version: "3" };
+})(window);
+</script>
+<script>(function(){var go=function(){IRMReporte.iniciar({"artefacto": "hestia", "nombre": "Hestia", "version": "v2", "posicion": "derecha"});};if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',go);else go();})();</script>
+
+
+</body>
+</html>

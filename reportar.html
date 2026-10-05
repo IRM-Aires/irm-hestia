@@ -1,0 +1,398 @@
+<!doctype html>
+<html lang="es">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Reportar — Larrey · IRM Aires</title>
+<link rel="icon" href="data:image/png;base64,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">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Poppins:wght@600;700&family=Inter:wght@400;500;600&display=swap">
+<style>
+:root {
+  --irm-cian: #00B9CE;
+  --irm-lima: #96D416;
+  --irm-gris-azul: #B7C6CE;
+  --superficie: #fcfcfb;
+  --plano: #f9f9f7;
+  --tinta: #0b0b0b;
+  --tinta-2: #52514e;
+  --tinta-apagada: #898781;
+  --cuadricula: #e1e0d9;
+  --sans: Inter, system-ui, -apple-system, "Segoe UI", sans-serif;
+  --display: Poppins, Inter, system-ui, sans-serif;
+  --mono: ui-monospace, "SF Mono", Menlo, "Cascadia Code", monospace;
+}
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme="light"]) {
+    --superficie: #1a1a19; --plano: #0d0d0d; --tinta: #ffffff;
+    --tinta-2: #c3c2b7; --cuadricula: #2c2c2a;
+  }
+}
+:root[data-theme="dark"] {
+  --superficie: #1a1a19; --plano: #0d0d0d; --tinta: #ffffff;
+  --tinta-2: #c3c2b7; --cuadricula: #2c2c2a;
+}
+* { box-sizing: border-box; }
+body {
+  margin: 0; padding: 0 clamp(16px, 5vw, 56px) 48px;
+  background: var(--plano); color: var(--tinta);
+  font: 15px/1.6 var(--sans);
+  -webkit-font-smoothing: antialiased;
+}
+h1, h2, h3 { font-family: var(--display); font-weight: 600; letter-spacing: -.01em; }
+h1 { font-size: clamp(24px, 3.2vw, 34px); margin: 0 0 4px; }
+h2 { font-size: 20px; margin: 40px 0 12px; color: var(--tinta); }
+
+/* Encabezado. El `height` de abajo cae sobre el LIENZO del archivo, no sobre la
+   tinta, y los dos no son lo mismo: el vector tiene viewBox 1288x513 con la
+   tinta en 1256,49 x 476,21 (§1.1.bis). Con `height: 42px` la tinta terminaba
+   en 39,0 x 102,9 px — 14,3 % por debajo del mínimo de 120 px de ancho que fija
+   §1.5, que manda sobre cualquier altura escrita en otra sección.
+
+   49px de lienzo = 45,5px de tinta = 120,2px de ancho: el piso de §1.5, justo.
+   Para el "típico" de 48px de tinta que pide §4.3 son 52px de lienzo.
+   NO bajar de 49 y NO dimensionar por la relación del viewBox (§1.1.bis).
+
+   Aire (§1.4): >= 1/2 de la altura del logo por lado, y ahí no entra nada — ni
+   el borde lima. Con 49px eso son >= 24,5px: por eso el padding inferior es 26
+   y no 20, que ya quedaba corto cuando el logo medía 42. */
+.irm-encabezado {
+  display: flex; align-items: center; gap: 28px;
+  padding: 28px 0 26px; margin-bottom: 28px;
+  border-bottom: 2px solid var(--irm-lima);
+}
+.irm-encabezado img { height: 49px; width: auto; display: block; }
+.irm-encabezado .titulo { flex: 1; min-width: 0; }
+.irm-encabezado .fecha {
+  font-family: var(--mono); font-size: 12px; color: var(--tinta-apagada);
+  font-variant-numeric: tabular-nums; white-space: nowrap;
+}
+.irm-banda {
+  background: var(--irm-cian); margin: 0 calc(-1 * clamp(16px, 5vw, 56px));
+  padding: 26px clamp(16px, 5vw, 56px); border-bottom: none;
+}
+.irm-banda, .irm-banda h1, .irm-banda .fecha { color: #ffffff; }
+/* En el celular (pilar «se ve bien en el celular», 2026-10-04) el título no se aprieta en
+   una columna al lado del logo: baja a su propia línea. El aire del logo (§1.4, >= 24,5 px)
+   se respeta también en vertical, por eso el gap de fila es 26. */
+@media (max-width: 560px) {
+  .irm-encabezado { flex-wrap: wrap; gap: 26px 28px; }
+  .irm-encabezado .titulo { order: 3; flex: 1 1 100%; }
+  .irm-encabezado .fecha { margin-left: auto; }
+  /* Lo largo baja de línea en vez de empujar la página de lado; las tablas anchas se deslizan
+     dentro de su propio marco; y los campos van en 16 px para que el iPhone no haga zoom. */
+  body { overflow-wrap: anywhere; }
+  code, kbd, a { overflow-wrap: anywhere; }
+  pre { overflow-x: auto; }
+  table:not(.irm-tabla-fija) { display: block; overflow-x: auto; -webkit-overflow-scrolling: touch; }
+  input:not([type=checkbox]):not([type=radio]), select, textarea { font-size: 16px !important; }
+  img, svg, video, canvas { max-width: 100%; }
+}
+
+table { border-collapse: collapse; width: 100%; font-size: 14px; }
+th { background: var(--irm-cian); color: #fff; text-align: left;
+     font-family: var(--display); font-weight: 600; }
+th, td { padding: 8px 12px; border-bottom: 1px solid var(--cuadricula); }
+td.num { font-family: var(--mono); font-variant-numeric: tabular-nums; text-align: right; }
+.scroll-x { overflow-x: auto; }
+/* Un fieldset por defecto no se deja angostar más que su contenido: en el celular eso empuja
+   la página de lado aunque la tabla tenga su propio marco con scroll. */
+fieldset { min-width: 0; }
+
+.irm-pie {
+  margin-top: 56px; padding-top: 14px; border-top: 1px solid var(--cuadricula);
+  display: flex; flex-wrap: wrap; gap: 12px; justify-content: space-between;
+  font-size: 11px; color: var(--tinta-apagada);
+}
+.irm-contacto { display: flex; flex-wrap: wrap; gap: 14px; font-size: 11px; }
+.irm-contacto b { color: var(--irm-cian); font-weight: 600; }
+/* El rótulo va en el token declarado, NO en el cian de las plantillas Word:
+   esa excepción (BRAND_IRM.md §2.3 regla 4) existía porque el membrete ya
+   venía impreso en la hoja. Retirado Word como vehículo (2026-09-21), se
+   queda sin objeto. Nota: no se escribe acá el hex viejo ni en comentario —
+   el validador audita el archivo entero, y hace bien. */
+
+/* ── Impresión. El entregable es el PDF, y la paginación no puede quedar a
+   criterio del navegador de quien imprima (BRAND_IRM.md §5.1). Márgenes
+   tomados de PL-HM-0001, que es el membrete que esto reemplaza: 3,75 cm
+   arriba · 2,54 abajo · 2,50 a los lados. */
+@page {
+  size: Letter;
+  margin: 3.75cm 2.5cm 2.54cm 2.5cm;
+}
+@media print {
+  :root { color-scheme: light; }
+  body { background: #fff; padding: 0; }
+  /* El encabezado con el logo se repite en toda página, como el membrete. */
+  thead { display: table-header-group; }
+  .irm-cabecera { position: running(membrete); }
+  .irm-pie { position: running(pie); }
+  @page { @top-center { content: element(membrete); }
+          @bottom-center { content: element(pie); } }
+  /* Respaldo para motores sin `running()` (Chrome incluido): el encabezado va
+     en la primera página y la numeración la lleva el pie fijo. */
+  .irm-paginacion::after { content: "página " counter(page) " de " counter(pages); }
+  h1, h2, h3 { break-after: avoid; }
+  table, figure, pre { break-inside: avoid; }
+  a[href^="http"]::after { content: " (" attr(href) ")"; font-size: 9px; }
+}
+</style>
+
+</head>
+<body>
+<header class="irm-cabecera irm-encabezado">
+  <img src="data:image/svg+xml;base64,PD94bWwgdmVyc2lvbj0iMS4wIiBlbmNvZGluZz0idXRmLTgiPz4KPCEtLSBHZW5lcmF0b3I6IEFkb2JlIElsbHVzdHJhdG9yIDI4LjAuMCwgU1ZHIEV4cG9ydCBQbHVnLUluIC4gU1ZHIFZlcnNpb246IDYuMDAgQnVpbGQgMCkgIC0tPgo8c3ZnIHZlcnNpb249IjEuMSIgaWQ9IkNhcGFfMSIgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIiB4bWxuczp4bGluaz0iaHR0cDovL3d3dy53My5vcmcvMTk5OS94bGluayIgeD0iMHB4IiB5PSIwcHgiCgkgdmlld0JveD0iMCAwIDEyODggNTEzIiBzdHlsZT0iZW5hYmxlLWJhY2tncm91bmQ6bmV3IDAgMCAxMjg4IDUxMzsiIHhtbDpzcGFjZT0icHJlc2VydmUiPgo8c3R5bGUgdHlwZT0idGV4dC9jc3MiPgoJLnN0MHtmaWxsOiMwNUMwREI7fQoJLnN0MXtmaWxsOiNBOUQ0MzM7fQoJLnN0MntmaWxsOiMwNUJGREI7fQoJLnN0M3tmaWxsOiMwNkMwREI7fQo8L3N0eWxlPgo8cGF0aCBjbGFzcz0ic3QwIiBkPSJNMTAyMS45NCwyOTcuODRjMC0yNC4xNS0wLjAzLTQ4LjMsMC4wMS03Mi40NmMwLjAyLTkuMzgsMS42LTE4LjUzLDQuMzYtMjcuNWMyLjk4LTkuNjksMS4xNy0xNC43OC03LjM5LTIwLjMzCgljLTEyLjk0LTguNC0yNy4zOC04LjQzLTQxLjk3LTcuMWMtMy40NiwwLjMxLTYuOTEsMS4xMS0xMC4yNywyLjAxYy0yMS41NSw1LjgtMzMuNjUsMjAuNDgtMzYuNzksNDMuOTgKCWMtMS4wOSw4LjE0LTEuMDMsMTYuMjgtMS4wNSwyNC40M2MtMC4wOCw0My44MS0wLjAxLDg3LjYyLTAuMDUsMTMxLjQzYy0wLjAyLDE4Ljg4LTcuOTksMzEuMTUtMjMuNTgsMzYuNjgKCWMtMjAuMSw3LjEyLTQyLjM3LTYuMzktNDUuMTItMjcuNWMtMC42Mi00Ljc3LTAuOTItOS42Mi0wLjkzLTE0LjQzYy0wLjA3LTQzLjE0LTAuMjYtODYuMjksMC4wNC0xMjkuNDMKCWMwLjE4LTI1Ljg4LDQuNjMtNTEuMDEsMTYuNi03NC4zMWMxNi44NS0zMi43OSw0NS4zMi01MC41LDc5LjYtNjAuMTZjMzYuNTItMTAuMyw3MC40Ni0zLjkyLDEwMS45MywxNi44NQoJYzAuOTcsMC42NCwxLjk0LDEuMjksMi45MSwxLjk0YzYuNjMsNC40Myw3LjkzLDQuNDcsMTQuMjEtMC4yYzE0LjM5LTEwLjcsMzAuMjktMTguMTMsNDgtMjEuMDYKCWM3NC45MS0xMi4zOSwxMzAuMzIsMjcuOTYsMTQ3Ljg4LDkzLjk3YzMuMDIsMTEuMzYsMy4wNCwyMy4xLDMuMDgsMzQuNzNjMC4xOCw0OC40NywwLjExLDk2Ljk1LDAuMDYsMTQ1LjQyCgljLTAuMDIsMTcuOTItOS4zNiwzMS4xNi0yNC45LDM1LjU3Yy0xOS43Nyw1LjYxLTQyLjA0LTEwLjI2LTQyLjUtMzAuNzNjLTAuNDQtMTkuNjUtMC4zLTM5LjMxLTAuMzEtNTguOTYKCWMwLTI4Ljc5LDAuMTktNTcuNTksMC4wOS04Ni4zOGMtMC4wNC0xMi40My0yLjgtMjQuNDEtNy40My0zNS45NWMtNS45NC0xNC43OS0xNi42OC0yMy41Ni0zMi40NC0yNi40NQoJYy0xMS4wOS0yLjA0LTIyLjE3LTIuNjEtMzMuMjctMC42NmMtMjEuOTYsMy44NS0zMy4zMywxOC40Ni0zOC42NiwzOC44N2MtMS41Niw1Ljk2LTIuMjgsMTIuMDktMi4yOSwxOC4yOQoJYy0wLjA3LDM4Ljk4LTAuMjIsNzcuOTUtMC4yMSwxMTYuOTNjMCwxMS4zMSwwLjczLDIyLjYzLTAuNTEsMzMuOTNjLTEuOSwxNy4zOS0xNS4yNSwzMC45NS0zMS4yMiwzMS42OAoJYy0xOS4wNiwwLjg3LTMzLjI4LTEwLjIzLTM2Ljg5LTI4LjczYy0wLjg3LTQuNDQtMS4xNy04Ljg5LTEuMTYtMTMuNGMwLjAyLTIzLjY1LDAuMDEtNDcuMzEsMC4wMS03MC45NgoJQzEwMjEuODMsMjk3Ljg0LDEwMjEuODksMjk3Ljg0LDEwMjEuOTQsMjk3Ljg0eiIvPgo8cGF0aCBjbGFzcz0ic3QxIiBkPSJNOTcuNzYsNDM2LjU5Yy01LjU3LTIuNTgtMTAuMDgtNi40Ni0xNC4wMi0xMC44OWMtMjkuNzEtMzMuMzgtNTIuMS03MC44OS02MC45NC0xMTUuMQoJQzYuNTksMjI5LjQ0LDI0LjI4LDE1Ni41OCw3OS41Myw5NC4xNmMzNi42LTQxLjM1LDgyLjY1LTY3LjIsMTM2Ljg4LTc3LjZjNTMuMzQtMTAuMjMsMTA0LjYyLTIuNDUsMTUzLjc2LDIwLjI2CgljMjQuNjQsMTEuMzksNDUuNjIsMjcuOTMsNjUuMDMsNDYuNjJjMi40LDIuMzEsNC45LDQuNTEsNy4yMSw2LjkxYzEuMzMsMS4zOCwyLjI1LDMuMywwLjY3LDQuOTFjLTEuNTEsMS41NC0yLjYxLTAuNTItMy42OC0xLjIxCgljLTMzLjI0LTIxLjQ2LTY5LjM3LTM1LjQ2LTEwOC43Mi0zOS42M2MtNzEuNzQtNy41OS0xMzUuNDgsMTEuODktMTg5Ljk4LDU5LjQ1Yy0zOC41NiwzMy42NS02NC42NSw3NS4zMS03Ni41NiwxMjUuMwoJYy0xMi40Nyw1Mi4zNi02LjgsMTAzLjM2LDEyLjY0LDE1My4xNkM4Mi43MSw0MDcuNTMsODkuOTcsNDIyLjA5LDk3Ljc2LDQzNi41OXoiLz4KPHBhdGggY2xhc3M9InN0MiIgZD0iTTczNS4xNSwzMDQuOTFjMCwyMy4xNSwwLjA3LDQ2LjMxLTAuMDIsNjkuNDZjLTAuMDYsMTYuNzYtNy44NiwyOC45My0yMS43NCwzNC4zNwoJYy0yMi44Nyw4Ljk2LTQ2Ljk5LTcuMzktNDcuNDItMzIuNzdjLTAuNDYtMjcuNjQtMC4wMy01NS4zLTAuMDctODIuOTVjLTAuMDItMTIuNDgtMC4yLTI0Ljk3LTAuMzgtMzcuNDUKCWMtMC4zOS0yNi43NiwxLjIyLTUzLjI0LDEwLjc4LTc4LjYyYzEzLjEzLTM0Ljg1LDM4LjMxLTU2Ljg0LDcyLjc2LTY5LjkyYzI3LjQ5LTEwLjQ0LDU0LjgzLTEwLjc4LDgyLjczLTMKCWMxOC42Niw1LjIsMjkuODQsMjIuMzksMjYuMDgsNDAuMThjLTQuMDUsMTkuMTUtMjIuMSwzMS42LTQxLjQzLDI4LjExYy0xNS43NS0yLjg0LTMxLjMyLTMuOC00Ni45NywwLjYzCgljLTEyLjU4LDMuNTYtMjEuMjQsMTEuMjktMjYuNDQsMjMuMTVjLTUuNDMsMTIuMzgtNy44MiwyNS4zOS03Ljg2LDM4Ljg0QzczNS4xLDI1OC4yNyw3MzUuMTUsMjgxLjU5LDczNS4xNSwzMDQuOTF6Ii8+CjxwYXRoIGNsYXNzPSJzdDMiIGQ9Ik0yMzIuNzMsNDg4LjM0Yy0yNy43NS01LjI1LTUyLjQxLTE3LjU4LTc0LjcyLTM0LjU5QzEyMy41LDQyNy40Niw5OS40MiwzOTMuNTksODcsMzUxLjg4CgljLTI1LjE3LTg0LjQ4LDYuODYtMTc0LjQsNzkuNDUtMjIzLjU3YzY4LjIzLTQ2LjIyLDE1NC40LTQxLjI3LDIwMy41Mi0xMS4zM2MtMTUuMjctMS4xOS0yOS42My0wLjk4LTQzLjk2LDAuMQoJYy00NC45MiwzLjM5LTg2LjEzLDE2LjQ2LTEyMC42NCw0Ni43Yy0yNy4xLDIzLjc1LTQ0LjkxLDUzLjctNTcuMTIsODcuMTZjLTMxLjA5LDg1LjE1LTEuNDQsMTc2LjQ4LDc0LjEyLDIyOC45MwoJYzMuNTQsMi40Niw3LjE1LDQuODEsMTAuNzIsNy4yMUMyMzIuOTYsNDg3LjUsMjMyLjg1LDQ4Ny45MiwyMzIuNzMsNDg4LjM0eiIvPgo8cGF0aCBjbGFzcz0ic3QzIiBkPSJNMjA1LjAzLDQzOC45OGMxMC42MSwwLjY3LDIxLjIxLDEuNTgsMzEuODIsMS45N2MyOS4zNCwxLjA4LDU4LjE0LTEuODgsODYuMDItMTEuNzYKCWMzNS4zOS0xMi41NSw2My42Ny0zNC40MSw4NC44MS02NS4yNmMyMi41OS0zMi45NiwzNy02OS4yLDQwLjI1LTEwOS4yNWMzLjgtNDYuNzItMTEuMTEtODcuODEtMzkuMjctMTI0LjU5CgljLTEwLjE2LTEzLjI3LTIxLjY5LTI1LjI1LTM0LjAxLTM2LjVjLTAuOTMtMC44NS0xLjk3LTEuNTYtMy41OC0yLjgyYzQuNzMtMS40Miw4LjAxLTAuNjMsMTEuMiwwLjgxCgljNjYuOTYsMzAuMTIsMTA4LjYsODAuNiwxMTkuMjEsMTUzLjY3YzkuMDEsNjItOS4yOCwxMTYuNjktNTIuMzksMTYyLjI3Yy0zNi4xOSwzOC4yNi04MS4yMyw1OC4wOC0xMzMuODYsNjAuNTcKCWMtMzcuODcsMS43OS03My4zNC02LjMzLTEwNi0yNS44OGMtMS41LTAuOS0zLjQ1LTEuMzMtNC4xMi0zLjNMMjA1LjAzLDQzOC45OHoiLz4KPHBhdGggY2xhc3M9InN0MCIgZD0iTTYyMS44NSwyNTUuMTJjMCwzOS40NywwLjA0LDc4LjkzLTAuMDIsMTE4LjRjLTAuMDMsMjEuODYtMTMuNzEsMzYuNjctMzQuNDUsMzcuNTUKCWMtMTguMDUsMC43Ni0zNC4wOC0xMy41Ny0zNS4zNS0zMS42NGMtMC4xNi0yLjMyLTAuMTctNC42Ni0wLjE3LTYuOTljLTAuMDEtNTAuNjIsMC4wMy0xMDEuMjUtMC4wMy0xNTEuODcKCWMtMC4wMi0xOC40OC0wLjY5LTM2Ljk2LTAuMjctNTUuNDJjMC4yOS0xMi42Mi0wLjYzLTI1LjMyLDEuMzYtMzcuODdjMi44OC0xOC4xOSwxNS43NC0yOS42LDMyLjgxLTI5LjM2CgljMTguNCwwLjI2LDMzLjA3LDEyLjk5LDM1LjQzLDMwLjg1YzAuNDEsMy4xMiwwLjY1LDYuMywwLjY1LDkuNDVDNjIxLjg3LDE3Ny4xOSw2MjEuODUsMjE2LjE2LDYyMS44NSwyNTUuMTJ6Ii8+CjxwYXRoIGNsYXNzPSJzdDEiIGQ9Ik0zMTAuMTcsMTM4LjVjMjguMjctMi43Nyw4MC4wMiwyMS40MSw5OC45NCw3My4zOWMxOS44Niw1NC41NiwzLjc1LDEwNi4xOS00Mi45OSwxMzguMzIKCWMtNDQuOTcsMzAuOTEtOTguODksMjQuNi0xMzAuMDUsMC40OGM1NS4yNi0yLjIsOTYuNDItMjUuNTIsMTE0Ljk1LTc4LjkyQzM2OS41LDIxOC40NywzNTMuMjUsMTc0LjI4LDMxMC4xNywxMzguNXoiLz4KPHBhdGggY2xhc3M9InN0MyIgZD0iTTIwNS4xMiw0MzguOWMtMC4xNC0wLjA0LTAuMjktMC4wNi0wLjQtMC4xNGMtMC4wNS0wLjA0LTAuMDQtMC4xOC0wLjA1LTAuMjhjMC4xMiwwLjE2LDAuMjQsMC4zMywwLjM2LDAuNDkKCUMyMDUuMDMsNDM4Ljk4LDIwNS4xMiw0MzguOSwyMDUuMTIsNDM4Ljl6Ii8+Cjwvc3ZnPg==" alt="IRM Aires">
+  <div class="titulo"><h1>Reportar una falla o una idea</h1></div>
+  <div class="fecha">2026-10-04</div>
+</header>
+
+<main>
+
+  <p>Esta página recibe los reportes de las herramientas de IRM que viven en claude.ai. Lo que escribas
+  llega como ticket a <b>Larrey</b>, la mesa que los ordena por gravedad. Si la ventana no se abrió sola,
+  tocá <b>Reportar</b> abajo a la derecha.</p>
+  <p id="rp-sobre" style="font-size:13px;color:var(--tinta-2)"></p>
+  <style>
+/* Botón «Reportar» — componente canónico IRM v3 (IMAGEN CORPORATIVA/memoria_procedimental/componente_reporte.py) */
+.irm-reporte-raiz { --irmr-tinta: var(--tinta, #0b0b0b); --irmr-tinta-2: var(--tinta-2, #52514e);
+  --irmr-sup: var(--superficie, #fcfcfb); --irmr-borde: var(--cuadricula, #e1e0d9); --irmr-cian: #00B9CE;
+  --irmr-mal: #d03b3b; font: 14px/1.5 var(--sans, Inter, system-ui, -apple-system, "Segoe UI", sans-serif); color: var(--irmr-tinta); }
+@media (prefers-color-scheme: dark) { .irm-reporte-raiz { --irmr-tinta: var(--tinta, #fff); --irmr-tinta-2: var(--tinta-2, #c3c2b7);
+  --irmr-sup: var(--superficie, #1a1a19); --irmr-borde: var(--cuadricula, #2c2c2a); } }
+.irm-reporte-btn { position: fixed; bottom: 16px; right: 16px; z-index: 2147483000; display: inline-flex; align-items: center; gap: 6px;
+  padding: 8px 14px 8px 11px; border: 1px solid var(--irmr-borde); border-radius: 999px; background: var(--irmr-sup);
+  color: var(--irmr-tinta-2); font: 600 13px var(--display, Poppins, Inter, system-ui, sans-serif); cursor: pointer;
+  box-shadow: 0 2px 10px rgba(0,0,0,.12); transition: color .15s, background .15s, border-color .15s; }
+.irm-reporte-btn.izq { right: auto; left: 16px; }
+.irm-reporte-btn .irm-reporte-ico { width: 17px; height: 17px; }
+.irm-reporte-btn:hover, .irm-reporte-btn:focus-visible { color: var(--irmr-cian); border-color: var(--irmr-cian); outline: none; }
+.irm-reporte-btn:active, .irm-reporte-btn[aria-expanded="true"] { color: #fff; background: var(--irmr-cian); border-color: var(--irmr-cian); }
+@media print { .irm-reporte-btn { display: none; } }
+@media (max-width: 560px) { .irm-reporte-raiz { display: block; height: 72px; }
+  .irm-reporte-btn { padding: 11px; bottom: calc(12px + env(safe-area-inset-bottom, 0px)); right: 12px; }
+  .irm-reporte-btn.izq { left: 12px; right: auto; }
+  .irm-reporte-btn span { position: absolute; width: 1px; height: 1px; overflow: hidden; clip: rect(0 0 0 0); white-space: nowrap; }
+  .irm-reporte-btn .irm-reporte-ico { width: 20px; height: 20px; }
+  .irm-reporte-dlg textarea, .irm-reporte-dlg input[type=text] { font-size: 16px; }
+  .irm-reporte-seg button, .irm-reporte-acciones button { min-height: 44px; } }
+.irm-reporte-dlg { width: min(520px, calc(100vw - 32px)); max-height: calc(100vh - 32px); padding: 0; border: 1px solid var(--irmr-borde);
+  border-radius: 14px; background: var(--irmr-sup); color: var(--irmr-tinta); box-shadow: 0 12px 40px rgba(0,0,0,.25); }
+.irm-reporte-dlg::backdrop { background: rgba(0,0,0,.35); }
+.irm-reporte-dlg form { padding: 20px 20px 16px; margin: 0; }
+.irm-reporte-dlg h2 { font: 600 18px var(--display, Poppins, Inter, sans-serif); margin: 0 0 2px; }
+.irm-reporte-dlg .sub { margin: 0 0 14px; font-size: 12.5px; color: var(--irmr-tinta-2); }
+.irm-reporte-dlg fieldset { border: 0; padding: 0; margin: 0 0 12px; }
+.irm-reporte-dlg legend, .irm-reporte-dlg label { display: block; font-weight: 600; font-size: 13px; margin: 0 0 6px; }
+.irm-reporte-seg { display: flex; flex-wrap: wrap; gap: 6px; }
+.irm-reporte-seg button { flex: 1 1 auto; padding: 7px 10px; border: 1px solid var(--irmr-borde); border-radius: 8px; background: transparent;
+  color: var(--irmr-tinta); font: inherit; font-size: 13px; cursor: pointer; transition: background .15s, color .15s, border-color .15s; }
+.irm-reporte-seg button:hover { border-color: var(--irmr-cian); }
+.irm-reporte-seg button:active { background: color-mix(in srgb, var(--irmr-cian) 25%, transparent); }
+.irm-reporte-seg button[aria-pressed="true"] { background: var(--irmr-cian); border-color: var(--irmr-cian); color: #fff; }
+.irm-reporte-dlg textarea, .irm-reporte-dlg input[type=text] { width: 100%; box-sizing: border-box; padding: 8px 10px; margin: 0 0 12px;
+  border: 1px solid var(--irmr-borde); border-radius: 8px; background: transparent; color: inherit; font: inherit; }
+.irm-reporte-dlg textarea { min-height: 84px; resize: vertical; }
+.irm-reporte-dlg textarea:focus, .irm-reporte-dlg input:focus { outline: 2px solid var(--irmr-cian); outline-offset: -1px; }
+.irm-reporte-adjunto { font-size: 11.5px; color: var(--irmr-tinta-2); margin: 0 0 12px; }
+.irm-reporte-acciones { display: flex; gap: 8px; justify-content: flex-end; }
+.irm-reporte-acciones button { padding: 8px 16px; border-radius: 8px; font: 600 13px var(--display, Poppins, Inter, sans-serif); cursor: pointer;
+  border: 1px solid var(--irmr-borde); background: transparent; color: var(--irmr-tinta); transition: background .15s, color .15s; display: inline-flex; align-items: center; gap: 8px; }
+.irm-reporte-acciones button:hover { border-color: var(--irmr-cian); }
+.irm-reporte-acciones .enviar { background: var(--irmr-cian); border-color: var(--irmr-cian); color: #fff; }
+.irm-reporte-acciones .enviar:hover { background: color-mix(in srgb, var(--irmr-cian) 85%, #000); }
+.irm-reporte-acciones .enviar:active { background: color-mix(in srgb, var(--irmr-cian) 70%, #000); }
+.irm-reporte-acciones button[disabled] { cursor: progress; opacity: .85; }
+.irm-reporte-giro { width: 12px; height: 12px; border: 2px solid currentColor; border-top-color: transparent; border-radius: 50%;
+  animation: irmrgira .7s linear infinite; }
+@keyframes irmrgira { to { transform: rotate(360deg); } }
+@media (prefers-reduced-motion: reduce) { .irm-reporte-giro { animation: none; } }
+.irm-reporte-estado { min-height: 1.4em; margin: 10px 0 0; font-size: 13px; }
+.irm-reporte-estado b { font-family: var(--display, Poppins, Inter, sans-serif); }
+.irm-reporte-estado.ok b { color: var(--irmr-cian); }
+.irm-reporte-estado.mal b { color: var(--irmr-mal); }
+.irm-reporte-mios { margin-top: 12px; border-top: 1px solid var(--irmr-borde); padding-top: 10px; font-size: 12.5px; }
+.irm-reporte-mios summary { cursor: pointer; font-weight: 600; }
+.irm-reporte-mios ul { list-style: none; padding: 0; margin: 8px 0 0; }
+.irm-reporte-mios li { padding: 6px 0; border-bottom: 1px solid var(--irmr-borde); }
+.irm-reporte-mios .cod { font-family: var(--mono, ui-monospace, Menlo, monospace); font-weight: 600; }
+.irm-reporte-mios .resp { display: block; color: var(--irmr-tinta-2); margin-top: 2px; }
+.irm-reporte-oculto { display: none !important; }
+</style>
+  <script>
+/* Botón «Reportar» — componente canónico IRM v3. IRMReporte.iniciar({artefacto, nombre, version})
+   pone el botón y la ventana. El reporte llega a Larrey (mesa de tickets). No depende de nada de la página. */
+(function (global) {
+  "use strict";
+  if (global.IRMReporte) return;
+  var URL_RPC = "https://oixizeqfuxsbjqcvzpbe.supabase.co" + "/rest/v1/rpc/", LLAVE = "sb_publishable_Yfu9GwQGe9w5NsGVmC3BvQ_Gj7k4DGi", SVG = "<svg class=\"irm-reporte-ico\" viewBox=\"0 0 24 24\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"2\" stroke-linecap=\"round\" stroke-linejoin=\"round\" aria-hidden=\"true\" focusable=\"false\"><path d=\"M21 12a8 8 0 0 1-11.6 7.1L4 20l1-4.6A8 8 0 1 1 21 12z\"/><path d=\"M12 8v4\"/><path d=\"M12 15.5v.01\"/></svg>", WEB = "https://irm-hestia.vercel.app/reportar.html";
+  var errores = [];
+  function anotar(m) { try { errores.push(String(m).slice(0, 300)); if (errores.length > 5) errores.shift(); } catch (e) {} }
+  global.addEventListener("error", function (ev) { anotar((ev && ev.message) || "error"); });
+  global.addEventListener("unhandledrejection", function (ev) { anotar("promesa: " + ((ev && ev.reason && ev.reason.message) || ev.reason)); });
+  var ce = global.console && global.console.error;
+  if (ce) global.console.error = function () { try { anotar([].slice.call(arguments).join(" ")); } catch (e) {} return ce.apply(this, arguments); };
+
+  function leer(k) { try { return global.localStorage.getItem(k); } catch (e) { return null; } }
+  function guardar(k, v) { try { global.localStorage.setItem(k, v); } catch (e) {} }
+  var huellaMemoria = null;
+  function huella() {   // la misma huella de equipo que usa Éaco, para que el equipo sea uno solo
+    var h = leer("eaco.huella");
+    if (h) return h;
+    if (huellaMemoria) return huellaMemoria;
+    h = (global.crypto && global.crypto.randomUUID) ? global.crypto.randomUUID()
+      : "h-" + Date.now() + "-" + Math.random().toString(36).slice(2, 12);
+    guardar("eaco.huella", h); huellaMemoria = h; return h;
+  }
+  function esc(s) { return String(s == null ? "" : s).replace(/[&<>"']/g, function (c) {
+    return {"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c]; }); }
+  function rpc(fn, cuerpo) {
+    return fetch(URL_RPC + fn, { method: "POST", headers: { "apikey": LLAVE, "Content-Profile": "core",
+      "Content-Type": "application/json" }, body: JSON.stringify(cuerpo) })
+      .then(function (r) { return r.json().then(function (j) { if (!r.ok) throw new Error((j && j.message) || ("HTTP " + r.status)); return j; }); });
+  }
+  var ESTADO = { nuevo: "recibido", en_revision: "en revisión", en_curso: "en arreglo", resuelto: "resuelto", descartado: "descartado" };
+  var PRIO = { prioritario: "PRIORITARIO", neutro: "NEUTRO", no_prioritario: "NO PRIORITARIO" };
+
+  function iniciar(cfg) {
+    cfg = cfg || {};
+    if (!cfg.artefacto) { anotar("IRMReporte sin artefacto"); return; }
+    if (document.querySelector(".irm-reporte-btn")) return;
+    var raiz = document.createElement("div"); raiz.className = "irm-reporte-raiz";
+    raiz.innerHTML =
+      '<button type="button" class="irm-reporte-btn' + (cfg.posicion === "izquierda" ? " izq" : "") + '" aria-haspopup="dialog" aria-expanded="false" ' +
+        'title="Reportar una falla o dejar una idea sobre ' + esc(cfg.nombre || "esta herramienta") + '">' + SVG + '<span>Reportar</span></button>' +
+      '<dialog class="irm-reporte-dlg" aria-labelledby="irm-reporte-tit"><form method="dialog" novalidate>' +
+        '<h2 id="irm-reporte-tit">Reportar una falla o una idea</h2>' +
+        '<p class="sub">Sobre <b>' + esc(cfg.nombre || cfg.artefacto) + '</b>' + (cfg.version ? ' · ' + esc(cfg.version) : '') +
+          '. Llega a la mesa de <b>Larrey</b>, que atiende primero lo que no deja trabajar — como el cirujano que inventó el triaje.</p>' +
+        '<fieldset><legend>¿Qué querés contar?</legend><div class="irm-reporte-seg" data-campo="tipo">' +
+          '<button type="button" data-v="falla" aria-pressed="false">Algo falla</button>' +
+          '<button type="button" data-v="sugerencia" aria-pressed="false">Tengo una idea</button></div></fieldset>' +
+        '<fieldset class="irm-reporte-oculto" data-bloque="funciona"><legend>¿La herramienta sigue funcionando?</legend><div class="irm-reporte-seg" data-campo="funciona">' +
+          '<button type="button" data-v="no" aria-pressed="false">No, me tiene bloqueado</button>' +
+          '<button type="button" data-v="a_medias" aria-pressed="false">A medias</button>' +
+          '<button type="button" data-v="si" aria-pressed="false">Sí, pero algo está mal</button></div></fieldset>' +
+        '<label for="irm-reporte-que">Qué pasó (o qué se te ocurre)</label>' +
+        '<textarea id="irm-reporte-que" maxlength="2000" placeholder="Ej.: al tocar «Guardar el precio» se queda girando y no guarda."></textarea>' +
+        '<label for="irm-reporte-hacia">Qué estabas haciendo <span style="font-weight:400">(opcional)</span></label>' +
+        '<textarea id="irm-reporte-hacia" maxlength="1000" style="min-height:52px" placeholder="Ej.: editando el APU 2.01.03, con dos pestañas abiertas."></textarea>' +
+        '<label for="irm-reporte-quien">Tu nombre</label>' +
+        '<input id="irm-reporte-quien" type="text" maxlength="120" autocomplete="name">' +
+        '<p class="irm-reporte-adjunto">Se adjunta solo: el nombre y la versión de la herramienta, el navegador, el tamaño de la pantalla y los últimos errores técnicos de la página. Nada más.</p>' +
+        '<div class="irm-reporte-acciones"><button type="button" class="cancelar">Cancelar</button>' +
+          '<button type="button" class="enviar">Enviar el reporte</button></div>' +
+        '<p class="irm-reporte-estado" role="status" aria-live="polite"></p>' +
+        '<details class="irm-reporte-mios"><summary>Mis reportes desde este equipo</summary><ul><li>Abrí para consultarlos.</li></ul></details>' +
+      '</form></dialog>';
+    document.body.appendChild(raiz);
+
+    var btn = raiz.querySelector(".irm-reporte-btn"), dlg = raiz.querySelector("dialog");
+    var est = raiz.querySelector(".irm-reporte-estado"), enviar = raiz.querySelector(".enviar");
+    var campos = { tipo: null, funciona: null };
+    var quien = raiz.querySelector("#irm-reporte-quien");
+    quien.value = leer("irm.reporte.nombre") || "";
+
+    function decir(clase, html) { est.className = "irm-reporte-estado" + (clase ? " " + clase : ""); est.innerHTML = html; }
+    function abrir() {
+      decir("", "");
+      if (typeof dlg.showModal === "function") dlg.showModal(); else dlg.setAttribute("open", "");
+      btn.setAttribute("aria-expanded", "true");
+      var p = raiz.querySelector('[data-campo="tipo"] button'); if (p) p.focus();
+    }
+    function cerrar() { if (dlg.open && typeof dlg.close === "function") dlg.close(); else dlg.removeAttribute("open"); btn.setAttribute("aria-expanded", "false"); btn.focus(); }
+    btn.addEventListener("click", abrir);
+    dlg.addEventListener("close", function () { btn.setAttribute("aria-expanded", "false"); });
+    raiz.querySelector(".cancelar").addEventListener("click", cerrar);
+    raiz.querySelector("form").addEventListener("submit", function (ev) { ev.preventDefault(); });
+    Array.prototype.forEach.call(raiz.querySelectorAll(".irm-reporte-seg"), function (seg) {
+      seg.addEventListener("click", function (ev) {
+        var b = ev.target.closest("button[data-v]"); if (!b) return;
+        Array.prototype.forEach.call(seg.querySelectorAll("button"), function (o) { o.setAttribute("aria-pressed", o === b ? "true" : "false"); });
+        campos[seg.getAttribute("data-campo")] = b.getAttribute("data-v");
+        if (seg.getAttribute("data-campo") === "tipo") {
+          raiz.querySelector('[data-bloque="funciona"]').classList.toggle("irm-reporte-oculto", campos.tipo !== "falla");
+        }
+      });
+    });
+
+    enviar.addEventListener("click", function () {
+      var que = raiz.querySelector("#irm-reporte-que").value.trim();
+      if (!campos.tipo) return decir("mal", "<b>Falta un dato.</b> Elegí arriba si algo falla o si tenés una idea.");
+      if (campos.tipo === "falla" && !campos.funciona) return decir("mal", "<b>Falta un dato.</b> Decí si la herramienta sigue funcionando: con eso se decide qué tan urgente es.");
+      if (que.length < 8) return decir("mal", "<b>Falta un dato.</b> Contá en una frase qué pasó.");
+      var nombre = quien.value.trim(); if (nombre) guardar("irm.reporte.nombre", nombre);
+      var etiqueta = enviar.textContent;
+      enviar.disabled = true; enviar.setAttribute("aria-busy", "true");
+      enviar.insertAdjacentHTML("beforeend", '<span class="irm-reporte-giro" aria-hidden="true"></span>');
+      decir("", "Enviando el reporte a la mesa de Larrey…");
+      var ctx = { navegador: navigator.userAgent, pantalla: global.innerWidth + "x" + global.innerHeight,
+                  idioma: navigator.language, errores: errores.slice(), en: new Date().toISOString() };
+      rpc("ticket_reportar", { p_artefacto: cfg.artefacto, p_artefacto_nombre: cfg.nombre || null, p_version: cfg.version || null,
+          p_tipo: campos.tipo, p_funciona: campos.tipo === "sugerencia" ? "si" : campos.funciona,
+          p_descripcion: que, p_que_hacia: raiz.querySelector("#irm-reporte-hacia").value.trim(),
+          p_reportado_por: nombre || null, p_huella: huella(), p_contexto: ctx })
+        .then(function (r) {
+          if (r && r.ok) {
+            decir("ok", "<b>REPORTE ENVIADO — " + esc(r.codigo) + ".</b> " + esc(r.mensaje) + " Con ese código lo podés seguir en «Mis reportes».");
+            raiz.querySelector("#irm-reporte-que").value = ""; raiz.querySelector("#irm-reporte-hacia").value = "";
+            enviar.textContent = "Enviar otro";
+          } else {
+            decir("mal", "<b>NO SE ENVIÓ.</b> " + esc((r && r.error) || "La base no confirmó el reporte."));
+          }
+        })
+        .catch(function (e) {
+          decir("mal", "<b>NO SE ENVIÓ desde acá.</b> Esta página no puede hablar con la base (pasa dentro de claude.ai). " +
+            "Copiá lo que escribiste y <a href=\"" + esc(enlaceWeb()) + "\" target=\"_blank\" rel=\"noopener\">abrí el formulario de reporte en otra pestaña ↗</a>: " +
+            "llega igual a Larrey. Si tampoco abre, mandalo a Soporte Sistemas (datos@irmaires.com).");
+        })
+        .finally(function () {
+          enviar.disabled = false; enviar.removeAttribute("aria-busy");
+          var g = enviar.querySelector(".irm-reporte-giro"); if (g) g.remove();
+          if (enviar.textContent !== "Enviar otro") enviar.textContent = etiqueta;
+        });
+    });
+
+    function enlaceWeb() {
+      return WEB + "?artefacto=" + encodeURIComponent(cfg.artefacto) + "&nombre=" + encodeURIComponent(cfg.nombre || "") +
+             "&version=" + encodeURIComponent(cfg.version || "");
+    }
+    var mios = raiz.querySelector(".irm-reporte-mios");
+    mios.addEventListener("toggle", function () {
+      if (!mios.open) return;
+      var ul = mios.querySelector("ul");
+      ul.innerHTML = "<li>Buscando tus reportes en la mesa de Larrey…</li>";
+      rpc("ticket_mios", { p_huella: huella() }).then(function (lista) {
+        if (!lista || !lista.length) { ul.innerHTML = "<li>Todavía no reportaste nada desde este equipo.</li>"; return; }
+        ul.innerHTML = lista.map(function (t) {
+          return '<li><span class="cod">' + esc(t.codigo) + '</span> · ' + esc(t.artefacto_nombre || "") + ' · <b>' +
+            esc(ESTADO[t.estado] || t.estado) + '</b> · ' + esc(PRIO[t.prioridad] || t.prioridad) +
+            '<span class="resp">' + esc(t.descripcion) + '</span>' +
+            (t.respuesta ? '<span class="resp">Respuesta: ' + esc(t.respuesta) + '</span>' : '') + '</li>';
+        }).join("");
+      }).catch(function () { ul.innerHTML = "<li>Desde acá no se pueden leer: <a href=\"" + esc(enlaceWeb()) + "\" target=\"_blank\" rel=\"noopener\">miralos en la página de reporte ↗</a> (desde el mismo navegador donde reportaste).</li>"; });
+    });
+  }
+  global.IRMReporte = { iniciar: iniciar, version: "3" };
+})(window);
+</script>
+  <script>
+  (function () {
+    var q = new URLSearchParams(location.search);
+    var clave = (q.get("artefacto") || "").toLowerCase();
+    if (!/^[a-z0-9_\-]{2,60}$/.test(clave)) clave = "desconocido";
+    var cfg = { artefacto: clave, nombre: (q.get("nombre") || "").slice(0, 60), version: (q.get("version") || "").slice(0, 30) };
+    document.getElementById("rp-sobre").textContent = "Herramienta: " + (cfg.nombre || cfg.artefacto) + (cfg.version ? " · " + cfg.version : "");
+    function ir() { IRMReporte.iniciar(cfg); var b = document.querySelector(".irm-reporte-btn"); if (b) b.click(); }
+    if (document.readyState === "loading") document.addEventListener("DOMContentLoaded", ir); else ir();
+  })();
+  </script>
+</main>
+
+<footer class="irm-pie">
+  <div class="irm-contacto"><span><b>C.</b> 318 3591189</span><span><b>D.</b> Cra. 36 #10B-39 el poblado, Medellín, Ant.</span><span>www.irmaires.com</span></div>
+  <span>Confidencial — uso interno IRM Aires</span>
+  <span class="irm-paginacion">2026-10-04</span>
+</footer>
+
+</body>
+</html>
