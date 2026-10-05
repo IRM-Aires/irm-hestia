@@ -915,7 +915,7 @@ function instalarCopiar({ avisar = null } = {}) {
 })(window);
 </script>
 <style>
-/* Botón «Reportar» — componente canónico IRM v4 (IMAGEN CORPORATIVA/memoria_procedimental/componente_reporte.py) */
+/* Botón «Reportar» — componente canónico IRM v5 (IMAGEN CORPORATIVA/memoria_procedimental/componente_reporte.py) */
 .irm-reporte-raiz { --irmr-tinta: var(--tinta, #0b0b0b); --irmr-tinta-2: var(--tinta-2, #52514e);
   --irmr-sup: var(--superficie, #fcfcfb); --irmr-borde: var(--cuadricula, #e1e0d9); --irmr-cian: #00B9CE;
   --irmr-mal: #d03b3b; font: 14px/1.5 var(--sans, Inter, system-ui, -apple-system, "Segoe UI", sans-serif); color: var(--irmr-tinta); }
@@ -991,9 +991,16 @@ function instalarCopiar({ avisar = null } = {}) {
 .irm-reporte-mios .cod { font-family: var(--mono, ui-monospace, Menlo, monospace); font-weight: 600; }
 .irm-reporte-mios .resp { display: block; color: var(--irmr-tinta-2); margin-top: 2px; }
 .irm-reporte-oculto { display: none !important; }
+/* Donde la página no alcanza la base (dentro de claude.ai), no se ofrece un formulario que va a fallar:
+   se manda directo al de Hestia, que sí llega y deja adjuntar la imagen. */
+.irm-reporte-fuera { margin: 0 0 12px; padding: 12px; border: 1px solid var(--irmr-borde); border-left: 4px solid var(--irmr-cian); border-radius: 8px; font-size: 13px; }
+.irm-reporte-fuera a { display: inline-flex; align-items: center; gap: 6px; margin-top: 8px; padding: 9px 16px; min-height: 40px; border-radius: 8px; background: var(--irmr-cian);
+  color: #fff; text-decoration: none; font: 600 13px var(--display, Poppins, Inter, sans-serif); }
+.irm-reporte-fuera a:active { background: color-mix(in srgb, var(--irmr-cian) 70%, #000); }
+.irm-reporte-dlg.sin-red .irm-reporte-campos, .irm-reporte-dlg.sin-red .enviar, .irm-reporte-dlg.sin-red .irm-reporte-mios { display: none !important; }
 </style>
 <script>
-/* Botón «Reportar» — componente canónico IRM v4. IRMReporte.iniciar({artefacto, nombre, version})
+/* Botón «Reportar» — componente canónico IRM v5. IRMReporte.iniciar({artefacto, nombre, version})
    pone el botón y la ventana. El reporte llega a Larrey (mesa de tickets). No depende de nada de la página. */
 (function (global) {
   "use strict";
@@ -1060,6 +1067,10 @@ function instalarCopiar({ avisar = null } = {}) {
         '<h2 id="irm-reporte-tit">Reportar una falla o una idea</h2>' +
         '<p class="sub">Sobre <b>' + esc(cfg.nombre || cfg.artefacto) + '</b>' + (cfg.version ? ' · ' + esc(cfg.version) : '') +
           '. Llega a la mesa de <b>Larrey</b>, que atiende primero lo que no deja trabajar — como el cirujano que inventó el triaje.</p>' +
+        '<div class="irm-reporte-fuera irm-reporte-oculto" role="status"><b>Desde esta herramienta el reporte se escribe en Hestia.</b> ' +
+          'Acá adentro (claude.ai) la página no puede hablar con la base, así que el formulario no llegaría. En Hestia llega igual a Larrey, y ahí sí podés adjuntar la imagen.<br>' +
+          '<a href="' + esc(enlaceWeb()) + '" target="_blank" rel="noopener">Abrir el formulario de reporte ↗</a></div>' +
+        '<div class="irm-reporte-campos">' +
         '<fieldset><legend>¿Qué querés contar?</legend><div class="irm-reporte-seg" data-campo="tipo">' +
           '<button type="button" data-v="falla" aria-pressed="false">Algo falla</button>' +
           '<button type="button" data-v="sugerencia" aria-pressed="false">Tengo una idea</button></div></fieldset>' +
@@ -1078,6 +1089,7 @@ function instalarCopiar({ avisar = null } = {}) {
           '<input id="irm-reporte-archivo" type="file" accept="image/png,image/jpeg,image/webp">' +
           '<div class="vista irm-reporte-oculto"><img alt="Vista previa de la imagen adjunta"><span></span><button type="button" class="quitar-img">No adjuntar</button></div></div>' +
         '<p class="irm-reporte-adjunto">Además de la imagen, si elegís una, se adjunta solo: el nombre y la versión de la herramienta, el navegador, el tamaño de la pantalla y los últimos errores técnicos de la página. Nada más.</p>' +
+        '</div>' +
         '<div class="irm-reporte-acciones"><button type="button" class="cancelar">Cancelar</button>' +
           '<button type="button" class="enviar">Enviar el reporte</button></div>' +
         '<p class="irm-reporte-estado" role="status" aria-live="polite"></p>' +
@@ -1109,8 +1121,22 @@ function instalarCopiar({ avisar = null } = {}) {
     });
 
     function decir(clase, html) { est.className = "irm-reporte-estado" + (clase ? " " + clase : ""); est.innerHTML = html; }
+    // ¿Esta página alcanza la base? Se prueba una vez, al abrir, con la consulta de conteo (no escribe nada).
+    var alcanza = null;
+    function sondear() {
+      if (alcanza !== null) return Promise.resolve(alcanza);
+      var ctl = global.AbortController ? new AbortController() : null, t = setTimeout(function () { if (ctl) ctl.abort(); }, 6000);
+      return fetch(URL_RPC + "tickets_resumen", { method: "POST", headers: { "apikey": LLAVE, "Content-Profile": "core", "Content-Type": "application/json" },
+          body: "{}", signal: ctl ? ctl.signal : undefined })
+        .then(function (r) { alcanza = r.ok; }, function () { alcanza = false; })
+        .then(function () { clearTimeout(t); return alcanza; });
+    }
     function abrir() {
       decir("", "");
+      if (alcanza === null) {
+        decir("", "Comprobando que el reporte pueda llegar a Larrey…");
+        sondear().then(function (ok) { dlg.classList.toggle("sin-red", !ok); raiz.querySelector(".irm-reporte-fuera").classList.toggle("irm-reporte-oculto", ok); decir("", ""); });
+      }
       if (typeof dlg.showModal === "function") dlg.showModal(); else dlg.setAttribute("open", "");
       btn.setAttribute("aria-expanded", "true");
       var p = raiz.querySelector('[data-campo="tipo"] button'); if (p) p.focus();
@@ -1198,7 +1224,7 @@ function instalarCopiar({ avisar = null } = {}) {
       }).catch(function () { ul.innerHTML = "<li>Desde acá no se pueden leer: <a href=\"" + esc(enlaceWeb()) + "\" target=\"_blank\" rel=\"noopener\">miralos en la página de reporte ↗</a> (desde el mismo navegador donde reportaste).</li>"; });
     });
   }
-  global.IRMReporte = { iniciar: iniciar, version: "4" };
+  global.IRMReporte = { iniciar: iniciar, version: "5" };
 })(window);
 </script>
 <script>(function(){var go=function(){IRMReporte.iniciar({"artefacto": "hestia", "nombre": "Hestia", "version": "v3", "posicion": "derecha"});};if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',go);else go();})();</script>
