@@ -159,6 +159,9 @@ fieldset { min-width: 0; }
   --irmr-mal: #d03b3b; font: 14px/1.5 var(--sans, Inter, system-ui, -apple-system, "Segoe UI", sans-serif); color: var(--irmr-tinta); }
 @media (prefers-color-scheme: dark) { .irm-reporte-raiz { --irmr-tinta: var(--tinta, #fff); --irmr-tinta-2: var(--tinta-2, #c3c2b7);
   --irmr-sup: var(--superficie, #1a1a19); --irmr-borde: var(--cuadricula, #2c2c2a); } }
+/* Franja de abajo de los dos botones: todo aviso fijo abajo se apoya encima (componente_volver.py). */
+:root { --irm-franja-abajo: 68px; }
+@media (max-width: 560px) { :root { --irm-franja-abajo: 76px; } }
 .irm-reporte-btn { position: fixed; bottom: 16px; right: 16px; z-index: 2147483000; display: inline-flex; align-items: center; gap: 6px;
   padding: 8px 14px 8px 11px; border: 1px solid var(--irmr-borde); border-radius: 999px; background: var(--irmr-sup);
   color: var(--irmr-tinta-2); font: 600 13px var(--display, Poppins, Inter, system-ui, sans-serif); cursor: pointer;
@@ -387,7 +390,12 @@ fieldset { min-width: 0; }
   })();
   </script>
 <style>
-/* Botón «Volver a Hestia» — componente canónico IRM v1 (IMAGEN CORPORATIVA/memoria_procedimental/componente_volver.py) */
+/* Botón «Volver a Hestia» — componente canónico IRM v2 (IMAGEN CORPORATIVA/memoria_procedimental/componente_volver.py) */
+/* La franja de abajo es de los dos botones del ecosistema («Volver» a la izquierda, «Reportar» a la
+   derecha). Todo aviso fijo abajo (un «Deshacer», un estado) se apoya ENCIMA de ella con
+   bottom: var(--irm-franja-abajo): así nunca queda tapado por un botón (validar_marca, punto 20). */
+:root { --irm-franja-abajo: 68px; }
+@media (max-width: 560px) { :root { --irm-franja-abajo: 76px; } }
 .irm-volver { position: fixed; bottom: 16px; left: 16px; z-index: 2147483000; display: inline-flex; align-items: center; gap: 6px;
   min-height: 40px; padding: 8px 14px; border-radius: 999px; border: 1px solid #00B9CE; text-decoration: none;
   background: var(--superficie, #fcfcfb); color: var(--tinta, #0b0b0b); font: 600 13px var(--display, Poppins, system-ui, sans-serif);
@@ -402,7 +410,7 @@ fieldset { min-width: 0; }
 @media print { .irm-volver { display: none; } }
 </style>
 <script>
-/* Botón «Volver a Hestia» — componente canónico IRM v1 (componente_volver.py) */
+/* Botón «Volver a Hestia» — componente canónico IRM v2 (componente_volver.py) */
 window.IRMVolver = window.IRMVolver || (function () {
   var HESTIA = "https://irm-hestia.vercel.app/";
   var ICONO = '<svg class="irm-volver-ico" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false"><path d="M3 11l9-7 9 7"/><path d="M5 10v10h14V10"/><path d="M10 20v-6h4v6"/></svg>';

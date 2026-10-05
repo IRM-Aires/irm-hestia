@@ -271,7 +271,7 @@ details.ficha ol { padding-left: 20px; }
 .hs-reglas-texto li.gy-sub { list-style: circle; margin-left: 22px; }
 .hs-reglas-fin { margin-top: 18px; padding-top: 12px; border-top: 1px solid var(--cuadricula); }
 .hs-btn[aria-disabled="true"] { opacity: .5; cursor: not-allowed; }
-.hs-tostada { position: fixed; left: 50%; bottom: 18px; transform: translateX(-50%); z-index: 2147482000; display: flex; gap: 12px; align-items: center;
+.hs-tostada { position: fixed; left: 50%; bottom: var(--irm-franja-abajo, 76px); transform: translateX(-50%); z-index: 2147482000; display: flex; gap: 12px; align-items: center;
   background: var(--tinta); color: var(--superficie); padding: 10px 14px; border-radius: 10px; font-size: 13.5px; box-shadow: 0 6px 24px rgba(0,0,0,.25); }
 .hs-tostada button { background: transparent; border: 1px solid currentColor; color: inherit; border-radius: 8px; padding: 4px 10px; min-height: 36px; font: 600 13px var(--display); cursor: pointer; }
 .hs-tostada button:active { background: var(--irm-cian); border-color: var(--irm-cian); }
@@ -873,6 +873,9 @@ function instalarCopiar({ avisar = null } = {}) {
   --irmr-mal: #d03b3b; font: 14px/1.5 var(--sans, Inter, system-ui, -apple-system, "Segoe UI", sans-serif); color: var(--irmr-tinta); }
 @media (prefers-color-scheme: dark) { .irm-reporte-raiz { --irmr-tinta: var(--tinta, #fff); --irmr-tinta-2: var(--tinta-2, #c3c2b7);
   --irmr-sup: var(--superficie, #1a1a19); --irmr-borde: var(--cuadricula, #2c2c2a); } }
+/* Franja de abajo de los dos botones: todo aviso fijo abajo se apoya encima (componente_volver.py). */
+:root { --irm-franja-abajo: 68px; }
+@media (max-width: 560px) { :root { --irm-franja-abajo: 76px; } }
 .irm-reporte-btn { position: fixed; bottom: 16px; right: 16px; z-index: 2147483000; display: inline-flex; align-items: center; gap: 6px;
   padding: 8px 14px 8px 11px; border: 1px solid var(--irmr-borde); border-radius: 999px; background: var(--irmr-sup);
   color: var(--irmr-tinta-2); font: 600 13px var(--display, Poppins, Inter, system-ui, sans-serif); cursor: pointer;
