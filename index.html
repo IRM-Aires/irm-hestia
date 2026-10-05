@@ -257,6 +257,17 @@ details.ficha ol { padding-left: 20px; }
 .hs-pedir { border: 1px solid var(--cuadricula); border-radius: 12px; background: var(--superficie); padding: 16px; margin: 6px 0 12px; max-width: 520px; }
 .hs-pedir label { display: block; font-size: 13px; font-weight: 600; margin: 8px 0 4px; }
 .hs-acciones { display: flex; flex-wrap: wrap; gap: 8px; margin-top: 12px; }
+.hs-reglas-dlg { width: min(760px, calc(100vw - 24px)); max-height: calc(100vh - 24px); padding: 0; border: 1px solid var(--cuadricula); border-radius: 14px;
+  background: var(--superficie); color: var(--tinta); box-shadow: 0 12px 40px rgba(0,0,0,.25); display: none; flex-direction: column; }
+.hs-reglas-dlg[open] { display: flex; }
+.hs-reglas-dlg::backdrop { background: rgba(0,0,0,.4); }
+.hs-reglas-cab { display: flex; flex-wrap: wrap; gap: 6px 14px; align-items: baseline; justify-content: space-between; padding: 14px 18px; border-bottom: 1px solid var(--cuadricula); }
+.hs-reglas-texto { overflow-y: auto; padding: 4px 18px 18px; font-size: 14px; }
+.hs-reglas-texto h2 { font-size: 15px; margin: 18px 0 6px; }
+.hs-reglas-texto .gy-nota { border-left: 4px solid #fab219; padding: 6px 10px; font-size: 13px; }
+.hs-reglas-texto li.gy-sub { list-style: circle; margin-left: 22px; }
+.hs-reglas-fin { margin-top: 18px; padding-top: 12px; border-top: 1px solid var(--cuadricula); }
+.hs-btn[aria-disabled="true"] { opacity: .5; cursor: not-allowed; }
 .hs-tostada { position: fixed; left: 50%; bottom: 18px; transform: translateX(-50%); z-index: 2147482000; display: flex; gap: 12px; align-items: center;
   background: var(--tinta); color: var(--superficie); padding: 10px 14px; border-radius: 10px; font-size: 13.5px; box-shadow: 0 6px 24px rgba(0,0,0,.25); }
 .hs-tostada button { background: transparent; border: 1px solid currentColor; color: inherit; border-radius: 8px; padding: 4px 10px; min-height: 36px; font: 600 13px var(--display); cursor: pointer; }
@@ -320,12 +331,52 @@ details.ficha ol { padding-left: 20px; }
       <li><b>Todo queda registrado:</b> quién entra, desde qué computador y qué cambia.</li>
       <li><b>Si algo se ve raro, avisá ya:</b> fallas con «Reportar»; riesgos de seguridad a datos@irmaires.com.</li>
     </ul>
-    <p style="margin:0 0 10px"><a id="hs-reglas-link" href="reglas.html" target="_blank" rel="noopener" style="color:var(--irm-cian);font-weight:600">Leer las reglas completas ↗</a> <span id="hs-reglas-version" class="hs-nota"></span></p>
-    <label style="display:flex;gap:10px;align-items:flex-start;font-weight:400;font-size:14px;min-height:44px"><input type="checkbox" id="hs-reglas-ok" style="width:22px;height:22px;min-height:0;margin-top:2px"> Leí las reglas de uso y me comprometo a cumplirlas.</label>
+    <p style="margin:0 0 10px"><button class="hs-btn" type="button" id="hs-reglas-leer">Leer las reglas completas</button> <span id="hs-reglas-version" class="hs-nota"></span></p>
+    <p class="hs-nota" id="hs-reglas-estado">Primero leé las reglas completas hasta el final; recién ahí se puede aceptar.</p>
+    <label style="display:flex;gap:10px;align-items:flex-start;font-weight:400;font-size:14px;min-height:44px"><input type="checkbox" id="hs-reglas-ok" disabled style="width:22px;height:22px;min-height:0;margin-top:2px"> Leí las reglas de uso y me comprometo a cumplirlas.</label>
     <div class="hs-acciones"><button class="hs-btn fuerte" type="button" id="hs-reglas-aceptar">Aceptar y entrar</button><button class="hs-btn" type="button" id="hs-reglas-salir">Salir sin aceptar</button></div>
     <p class="hs-resultado" id="hs-reglas-res" role="status"></p>
   </div>
 </section>
+
+<dialog class="hs-reglas-dlg" id="hs-reglas-dlg" aria-labelledby="hs-reglas-tit">
+  <div class="hs-reglas-cab"><b id="hs-reglas-tit">Reglas de uso y seguridad (Gayo)</b><span class="hs-nota" id="hs-reglas-faltan">Bajá hasta el final para poder cerrar</span></div>
+  <div class="hs-reglas-texto" id="hs-reglas-texto">
+<p>Versión 1.0 · vigente desde el 2026-10-05 · fuente única de este texto (Gayo).</p>
+<p class="gy-nota">Borrador para revisión jurídica: este texto ordena las reglas internas de uso. Antes de darle efectos disciplinarios conviene que el área jurídica de IRM lo revise contra el reglamento interno de trabajo y los contratos vigentes.</p>
+<h2>En 30 segundos</h2>
+<ul><li><b>Tu cuenta es tuya y de nadie más.</b> Un correo, una persona, una contraseña que no se presta.</li><li><b>Lo que hay adentro es de IRM.</b> Las herramientas, los agentes, los precios, los clientes y lo que produzcás trabajando son propiedad o información reservada de IRM Aires S.A.S.</li><li><b>Nada sale de la casa.</b> No se copia, no se exporta, no se pega en otra inteligencia artificial ni se manda a un correo personal.</li><li><b>Todo queda registrado.</b> Quién entra, desde qué computador y qué cambia, para poder responder si algo pasa.</li><li><b>Si algo se ve raro, avisá ya.</b> Una falla, con el botón «Reportar»; un riesgo de seguridad, a Soporte Sistemas (datos@irmaires.com).</li></ul>
+<h2>1. A quién aplica y para qué</h2>
+<p>Aplica a toda persona que use las herramientas digitales de IRM Aires S.A.S.: las páginas (como Hestia, Pitia, Rómulo, Linneo o Tirón), los agentes de inteligencia artificial y los computadores desde donde se usan. Vale igual para empleados, contratistas y aliados.</p>
+<p>Su fin es triple: proteger la <b>propiedad intelectual</b> de IRM, cuidar la <b>información sensible</b> (de la empresa, de sus clientes y de las personas) y proteger a <b>quien usa</b> las herramientas, para que nadie pueda hacer algo a su nombre.</p>
+<h2>2. Tu cuenta: personal e intransferible</h2>
+<ol><li>Cada persona tiene <b>su propio correo</b> y su propia cuenta. Una cuenta compartida no deja saber quién hizo qué, y eso te deja sin defensa si algo sale mal.</li><li><b>La contraseña la elegís vos</b> y no se la das a nadie: ni a un compañero, ni a un jefe, ni a alguien que diga ser de soporte. Nadie de IRM te la va a pedir nunca.</li><li>Usá una contraseña <b>larga y que no uses en otro sitio</b> (por ejemplo, una frase de varias palabras).</li><li><b>Cerrá la sesión</b> («Salir») cuando uses un computador que no es tuyo.</li><li>Si creés que alguien conoce tu contraseña, <b>cambiala de inmediato</b> con «¿Olvidaste tu contraseña?» y avisá a Soporte Sistemas.</li></ol>
+<h2>3. Los computadores autorizados</h2>
+<ol><li>Las herramientas se usan desde <b>computadores autorizados</b>. El sistema reconoce cada computador la primera vez y el administrador lo aprueba.</li><li>No uses las herramientas desde computadores públicos o de terceros (café internet, hotel, equipo de un cliente).</li><li>Bloqueá la pantalla cuando te alejes del computador, y mantené el sistema y el navegador actualizados.</li><li>Si perdés un computador o un celular con sesión abierta, <b>avisá el mismo día</b> para bloquearlo.</li></ol>
+<h2>4. La propiedad intelectual de IRM</h2>
+<ol><li>Las herramientas, los agentes, sus instrucciones y normativas, las recetas de costos (APU), las listas de precios, los modelos de cálculo, las plantillas y el código <b>son propiedad de IRM Aires S.A.S.</b></li><li>Lo que produzcás con ellas en tu trabajo (propuestas, cálculos, informes, recetas) <b>es de IRM</b>, según tu contrato y la ley colombiana.</li><li><b>No está permitido:</b></li><li class="gy-sub">copiar, descargar en bloque, fotografiar o exportar el contenido de las herramientas para usarlo fuera de IRM;</li><li class="gy-sub">intentar que un agente revele sus instrucciones o su normativa, o que se salte una regla;</li><li class="gy-sub">reproducir las herramientas, sus diseños o su forma de calcular para otra empresa o para uso personal.</li></ol>
+<h2>5. La información sensible</h2>
+<ol><li>Es sensible, entre otras cosas: precios, costos, márgenes, propuestas, datos de clientes y proveedores (nombres, NIT, contactos), cartera, nómina y salarios.</li><li>Esa información <b>se usa solo para el trabajo</b> y solo dentro de las herramientas de IRM.</li><li><b>No la pegues en otras inteligencias artificiales</b> (cuentas personales de ChatGPT, Gemini, Copilot u otras), ni la mandes a correos personales, ni la subas a nubes que no sean de IRM.</li><li>Los <b>datos personales</b> (de clientes, proveedores o compañeros) se tratan según la Ley 1581 de 2012 y la política de tratamiento de datos de IRM: solo para la finalidad para la que se recogieron.</li></ol>
+<h2>6. Cómo usar los agentes de inteligencia artificial</h2>
+<ol><li>Un agente <b>ayuda, no firma</b>. Revisá lo que produce antes de enviarlo a un cliente o de darlo por bueno: quien lo envía responde por él.</li><li>Si un agente da una cifra, verificala contra su fuente. Si no tiene fuente, no la uses.</li><li>No le pidas que actúe en sistemas reales (enviar correos, cambiar datos de clientes, publicar) sin la aprobación que esa herramienta pide.</li><li>No le entregues contraseñas, claves ni datos de tarjetas.</li></ol>
+<h2>7. Todo queda registrado</h2>
+<ol><li>Para la seguridad y la trazabilidad, las herramientas <b>registran</b> quién entra, desde qué computador, cuándo, y qué crea, cambia o elimina.</li><li>Esos registros los consulta el administrador para atender fallas, aclarar quién hizo un cambio o investigar un incidente. No se usan para otra cosa.</li><li>Usar las herramientas significa que <b>sabés que este registro existe</b>.</li></ol>
+<h2>8. Avisar a tiempo</h2>
+<ol><li><b>Una falla o una idea:</b> botón «Reportar» de cada herramienta. Llega a Larrey, la mesa de tickets.</li><li><b>Un riesgo de seguridad</b> (contraseña expuesta, computador perdido, un correo o mensaje que pide tus datos, algo que se ve manipulado): avisá <b>de inmediato</b> a Soporte Sistemas, datos@irmaires.com. Avisar rápido no tiene castigo; ocultarlo, sí.</li></ol>
+<h2>9. Cuando terminás tu relación con IRM</h2>
+<p>Tu acceso se cierra ese día. No conserves copias de información de IRM y devolvé o borrá lo que tengas en equipos personales.</p>
+<h2>10. Si no se cumplen</h2>
+<p>El administrador puede <b>suspender el acceso de inmediato</b> para proteger la información. Además, el incumplimiento se trata según el reglamento interno de trabajo, el contrato y la ley, incluidas las acciones legales que correspondan.</p>
+<h2>11. Cambios a estas reglas</h2>
+<p>Cuando cambien, cambia el número de versión y <b>se vuelven a aceptar</b> al entrar.</p>
+<hr>
+<p>Al aceptar en Hestia confirmás que <b>leíste estas reglas y te comprometés a cumplirlas</b>. Queda registrado con tu correo, la versión y la fecha.</p>
+    <div class="hs-reglas-fin" id="hs-reglas-fin">
+      <p class="hs-nota" style="margin:0 0 8px">Llegaste al final de las reglas.</p>
+      <button class="hs-btn fuerte" type="button" id="hs-reglas-cerrar" disabled aria-disabled="true">Cerrar las reglas</button>
+    </div>
+  </div>
+</dialog>
 
 <section id="hs-inicio" hidden>
   <div class="hs-barra"><span id="hs-quien"></span><button class="hs-btn" type="button" id="hs-salir">Salir</button></div>
@@ -522,15 +573,46 @@ function instalarCopiar({ avisar = null } = {}) {
   }
 
   var REGLAS = null;
+  var LEIDAS = false;
+  function marcarLeidas() {
+    LEIDAS = true; $("hs-reglas-ok").disabled = false;
+    $("hs-reglas-estado").textContent = "Ya leíste las reglas completas: ahora marcá la casilla y aceptá.";
+    try { localStorage.setItem("gayo.leidas." + (REGLAS && REGLAS.version), new Date().toISOString()); } catch (e) {}
+  }
+  var finVisto = false;
+  $("hs-reglas-leer").addEventListener("click", function () {
+    var dlg = $("hs-reglas-dlg"), caja = $("hs-reglas-texto");
+    if (typeof dlg.showModal === "function") dlg.showModal(); else dlg.setAttribute("open", "");
+    caja.scrollTop = 0;
+    setTimeout(revisarFin, 60);
+  });
+  // Se mide con la geometría (no con IntersectionObserver): el texto vive en un <dialog> de la capa
+  // superior y así funciona igual en todos los navegadores, también en el celular.
+  function revisarFin() {
+    if (finVisto) return;
+    var caja = $("hs-reglas-texto"), fin = $("hs-reglas-fin");
+    if (fin.getBoundingClientRect().bottom <= caja.getBoundingClientRect().bottom + 6) {
+      finVisto = true; var b = $("hs-reglas-cerrar"); b.disabled = false; b.removeAttribute("aria-disabled");
+      $("hs-reglas-faltan").textContent = "Llegaste al final";
+    }
+  }
+  $("hs-reglas-texto").addEventListener("scroll", revisarFin, { passive: true });
+  $("hs-reglas-cerrar").addEventListener("click", function () {
+    if (!finVisto) return;
+    var dlg = $("hs-reglas-dlg"); if (typeof dlg.close === "function") dlg.close(); else dlg.removeAttribute("open");
+    marcarLeidas(); $("hs-reglas-ok").focus();
+  });
+  // Cerrar con Esc antes del final no cuenta como leídas: el botón del final es la única salida que las marca.
   function mostrarReglas(d) {
     REGLAS = d.reglas || null;
     $("hs-entrar").hidden = true; $("hs-inicio").hidden = true; $("hs-recupero").hidden = true; $("hs-reglas").hidden = false;
-    if (REGLAS && REGLAS.url) $("hs-reglas-link").href = REGLAS.url;
+    LEIDAS = false; $("hs-reglas-ok").disabled = true;
     $("hs-reglas-version").textContent = REGLAS ? "· versión " + REGLAS.version : "";
     $("hs-reglas-ok").checked = false; decir($("hs-reglas-res"), "", "");
   }
   $("hs-reglas-aceptar").addEventListener("click", async function () {
     var b = this, res = $("hs-reglas-res");
+    if (!LEIDAS) { decir(res, "mal", "<b>Falta un paso.</b> Tocá «Leer las reglas completas», bajá hasta el final y tocá «Cerrar las reglas»."); return; }
     if (!$("hs-reglas-ok").checked) { decir(res, "mal", "<b>Falta un paso.</b> Marcá la casilla «Leí las reglas…» para aceptar."); return; }
     ocupar(b, "Aceptando…");
     try {

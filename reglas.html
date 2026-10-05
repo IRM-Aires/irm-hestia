@@ -182,6 +182,28 @@ main hr { border: 0; border-top: 1px solid var(--cuadricula); margin: 28px 0 14p
 <p>Cuando cambien, cambia el número de versión y <b>se vuelven a aceptar</b> al entrar.</p>
 <hr>
 <p>Al aceptar en Hestia confirmás que <b>leíste estas reglas y te comprometés a cumplirlas</b>. Queda registrado con tu correo, la versión y la fecha.</p>
+
+<div id="gy-fin" style="margin-top:22px;padding-top:12px;border-top:1px solid var(--cuadricula)">
+  <p style="font-size:13px;color:var(--tinta-2);margin:0 0 8px" id="gy-fin-txt">Bajá hasta el final para poder cerrar las reglas.</p>
+  <button type="button" id="gy-cerrar" disabled aria-disabled="true" style="min-height:44px;padding:9px 18px;border-radius:8px;border:1px solid #00B9CE;background:#00B9CE;color:#fff;font:600 14px var(--display);cursor:pointer">Cerrar las reglas</button>
+</div>
+<style>#gy-cerrar[aria-disabled="true"]{opacity:.5;cursor:not-allowed} #gy-cerrar:active{background:color-mix(in srgb,#00B9CE 75%,#000)}</style>
+<script>
+(function () {
+  var b = document.getElementById("gy-cerrar"), fin = document.getElementById("gy-fin"), visto = false;
+  function habilitar() { if (visto) return; visto = true; b.disabled = false; b.removeAttribute("aria-disabled");
+    document.getElementById("gy-fin-txt").textContent = "Llegaste al final de las reglas."; }
+  // Por geometría al hacer scroll (y al cargar, por si la pantalla es tan alta que se ve todo).
+  function revisar() { if (fin.getBoundingClientRect().bottom <= innerHeight + 6) habilitar(); }
+  window.addEventListener("scroll", revisar, { passive: true }); window.addEventListener("resize", revisar); setTimeout(revisar, 300);
+  b.addEventListener("click", function () {
+    if (!visto) return;
+    try { localStorage.setItem("gayo.leidas.1.0", new Date().toISOString()); } catch (e) {}
+    if (window.opener) { window.close(); }
+    location.href = "./";
+  });
+})();
+</script>
 </main>
 
 <footer class="irm-pie">
