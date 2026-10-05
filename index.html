@@ -442,7 +442,7 @@ function instalarCopiar({ avisar = null } = {}) {
   const decir = (html, ok) => {
     if (avisar) return avisar(html, ok);
     if (!estado) { estado = document.createElement("div"); estado.setAttribute("role", "status"); estado.setAttribute("aria-live", "polite");
-      estado.style.cssText = "position:fixed;left:50%;bottom:18px;transform:translateX(-50%);background:#0b0b0b;color:#fff;padding:8px 14px;border-radius:8px;font-size:13px;z-index:9999";
+      estado.style.cssText = "position:fixed;left:50%;bottom:var(--irm-franja-abajo,76px);max-width:calc(100vw - 32px);transform:translateX(-50%);background:#0b0b0b;color:#fff;padding:8px 14px;border-radius:8px;font-size:13px;z-index:9999";
       document.body.appendChild(estado); }
     estado.innerHTML = html; estado.hidden = false; clearTimeout(estado._t); estado._t = setTimeout(() => { estado.hidden = true; }, 3500);
   };
@@ -580,7 +580,7 @@ function instalarCopiar({ avisar = null } = {}) {
     ULTIMO = d;
     $("hs-entrar").hidden = true; $("hs-inicio").hidden = false;
     $("hs-quien").innerHTML = "Entraste como <b>" + esc(d.correo) + "</b>" + (d.administrador ? " · administrador" : "");
-    $("hs-minos").hidden = !d.administrador;   // el tablero de usuarios, siempre a la vista para quien administra
+    $("hs-minos").hidden = !d.admin_total;   // Minos es solo del administrador total (datos@), regla del usuario 2026-10-05
     $("hs-mensaje").innerHTML = d.mensaje ? '<div class="hs-aviso">' + esc(d.mensaje) + '</div>' : "";
     var hs = d.herramientas || [];
     $("hs-grilla").innerHTML = hs.map(tarjeta).join("");
