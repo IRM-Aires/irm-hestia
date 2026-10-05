@@ -386,6 +386,49 @@ fieldset { min-width: 0; }
     if (document.readyState === "loading") document.addEventListener("DOMContentLoaded", ir); else ir();
   })();
   </script>
+<style>
+/* Botón «Volver a Hestia» — componente canónico IRM v1 (IMAGEN CORPORATIVA/memoria_procedimental/componente_volver.py) */
+.irm-volver { position: fixed; bottom: 16px; left: 16px; z-index: 2147483000; display: inline-flex; align-items: center; gap: 6px;
+  min-height: 40px; padding: 8px 14px; border-radius: 999px; border: 1px solid #00B9CE; text-decoration: none;
+  background: var(--superficie, #fcfcfb); color: var(--tinta, #0b0b0b); font: 600 13px var(--display, Poppins, system-ui, sans-serif);
+  box-shadow: 0 4px 16px rgba(0,0,0,.14); transition: background .15s, color .15s; -webkit-tap-highlight-color: transparent; }
+.irm-volver:hover { background: color-mix(in srgb, #00B9CE 12%, var(--superficie, #fcfcfb)); }
+.irm-volver:active, .irm-volver.irm-volver-tocado { background: #00B9CE; color: #fff; }
+.irm-volver:focus-visible { outline: 2px solid #00B9CE; outline-offset: 2px; }
+.irm-volver-ico { width: 18px; height: 18px; flex: none; }
+@media (prefers-color-scheme: dark) { .irm-volver { background: var(--superficie, #1a1a19); color: var(--tinta, #fff); } }
+@media (max-width: 560px) { .irm-volver { width: 44px; height: 44px; min-height: 44px; padding: 0; justify-content: center; }
+  .irm-volver .irm-volver-txt { position: absolute; width: 1px; height: 1px; overflow: hidden; clip: rect(0 0 0 0); white-space: nowrap; } }
+@media print { .irm-volver { display: none; } }
+</style>
+<script>
+/* Botón «Volver a Hestia» — componente canónico IRM v1 (componente_volver.py) */
+window.IRMVolver = window.IRMVolver || (function () {
+  var HESTIA = "https://irm-hestia.vercel.app/";
+  var ICONO = '<svg class="irm-volver-ico" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false"><path d="M3 11l9-7 9 7"/><path d="M5 10v10h14V10"/><path d="M10 20v-6h4v6"/></svg>';
+  function iniciar() {
+    if (document.querySelector(".irm-volver")) return;
+    var aqui = "", ruta = "";
+    try { aqui = location.origin; ruta = location.pathname; } catch (e) {}
+    var enHestia = aqui === HESTIA.replace(/\/$/, "");
+    if (enHestia && (ruta === "/" || ruta === "/index.html")) return;   // ya estás en casa
+    var a = document.createElement("a");
+    a.className = "irm-volver";
+    a.href = enHestia ? "./" : HESTIA;
+    if (!enHestia) { a.target = "irm-hestia"; }   // su propia pestaña: la herramienta no se cierra
+    a.setAttribute("aria-label", "Volver a Hestia para abrir otra herramienta");
+    a.title = "Volver a Hestia para abrir otra herramienta";
+    a.innerHTML = ICONO + '<span class="irm-volver-txt">Hestia</span>';
+    a.addEventListener("pointerdown", function () { a.classList.add("irm-volver-tocado"); });
+    ["pointerup", "pointercancel", "pointerleave"].forEach(function (t) { a.addEventListener(t, function () { a.classList.remove("irm-volver-tocado"); }); });
+    document.body.appendChild(a);
+  }
+  return { iniciar: iniciar, url: HESTIA };
+})();
+if (document.readyState === "loading") document.addEventListener("DOMContentLoaded", function () { IRMVolver.iniciar(); });
+else IRMVolver.iniciar();
+</script>
+
 </main>
 
 <footer class="irm-pie">
