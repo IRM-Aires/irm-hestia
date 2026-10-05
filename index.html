@@ -706,13 +706,25 @@ function instalarCopiar({ avisar = null } = {}) {
 
   instalarCopiar();
   sb.auth.onAuthStateChange(function (ev) { if (ev === "PASSWORD_RECOVERY") mostrarRecupero(); else if (ev === "SIGNED_OUT" && !RECUPERANDO) mostrarEntrar(); });
+  // Un enlace de correo vencido o ya usado vuelve con #error=…&error_code=otp_expired. Sin esto la
+  // persona ve el formulario sin saber por qué: se le dice qué pasó y qué hacer (2026-10-05, Carolina
+  // abrió la invitación vieja de Juana, que ya se había usado).
+  var ERROR_ENLACE = (function () { try { var q = new URLSearchParams(location.hash.slice(1)); return q.get("error_code") || q.get("error") || ""; } catch (e) { return ""; } })();
+  function avisarEnlace() {
+    if (!ERROR_ENLACE) return;
+    var vencido = /otp_expired|expired|access_denied/.test(ERROR_ENLACE);
+    $("hs-cerrada").innerHTML = '<div class="hs-aviso"><b>' + (vencido ? 'ESTE ENLACE YA NO SIRVE.' : 'EL ENLACE NO FUNCIONÓ.') + '</b> ' +
+      (vencido ? 'Ya se usó o venció (cada enlace del correo sirve una sola vez). Abrí el correo de invitación <b>más reciente</b>, o pedile al administrador que te lo reenvíe desde Minos. Si ya tenés contraseña, entrá con ella acá abajo.'
+               : 'Pedile al administrador que te reenvíe la invitación.') + '</div>';
+    try { history.replaceState(null, "", location.pathname + location.search); } catch (e) {}
+  }
   (async function () {
     paso("Buscando tu sesión…");
     try { var s = await sb.auth.getSession(); paso(null);
       // Invitación nueva o recuperación: en los dos casos la persona elige su propia contraseña.
       if (/type=(recovery|invite|signup)/.test(location.hash)) { mostrarRecupero(); return; }
-      if (s.data && s.data.session) await cargar(); else mostrarEntrar(); }
-    catch (e) { paso(null); mostrarEntrar(); }
+      if (s.data && s.data.session) await cargar(); else { mostrarEntrar(); avisarEnlace(); } }
+    catch (e) { paso(null); mostrarEntrar(); avisarEnlace(); }
   })();
 })();
 </script>
