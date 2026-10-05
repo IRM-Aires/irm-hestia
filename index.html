@@ -300,7 +300,7 @@ details.ficha ol { padding-left: 20px; }
 
 <section id="hs-recupero" hidden>
   <form class="hs-caja" id="hs-form-recupero" novalidate>
-    <p style="margin:0 0 6px"><b>Elegí tu contraseña nueva.</b> Llegaste desde el correo de recuperación: escribila dos veces y guardala.</p>
+    <p style="margin:0 0 6px"><b>Elegí tu contraseña.</b> Llegaste desde un correo de invitación o de recuperación: escribila dos veces y guardala. Nadie más la va a conocer.</p>
     <label for="hs-nueva1">Contraseña nueva <span style="font-weight:400">(mínimo 8 caracteres)</span></label>
     <input id="hs-nueva1" type="password" autocomplete="new-password">
     <label for="hs-nueva2">Repetila</label>
@@ -603,7 +603,8 @@ function instalarCopiar({ avisar = null } = {}) {
   (async function () {
     paso("Buscando tu sesión…");
     try { var s = await sb.auth.getSession(); paso(null);
-      if (/type=recovery/.test(location.hash)) { mostrarRecupero(); return; }
+      // Invitación nueva o recuperación: en los dos casos la persona elige su propia contraseña.
+      if (/type=(recovery|invite|signup)/.test(location.hash)) { mostrarRecupero(); return; }
       if (s.data && s.data.session) await cargar(); else mostrarEntrar(); }
     catch (e) { paso(null); mostrarEntrar(); }
   })();
