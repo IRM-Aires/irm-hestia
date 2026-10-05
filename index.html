@@ -649,7 +649,7 @@ function instalarCopiar({ avisar = null } = {}) {
 
   // Gayo, cláusula 3: el sistema reconoce cada computador. La huella es la misma que usa Éaco
   // («eaco.huella» en el navegador), así el computador es el mismo cuando una herramienta tenga su candado.
-  // Solo registra: Minos lo muestra y el administrador lo aprueba o lo bloquea. Va por detrás, sin espera.
+  // PILAR 2026-10-05: el primer computador queda autorizado; desde otro, hestia_inicio no deja entrar.
   function huellaEquipo() {
     var h = null;
     try { h = localStorage.getItem("eaco.huella"); } catch (e) {}
@@ -664,18 +664,28 @@ function instalarCopiar({ avisar = null } = {}) {
     var nav = /Edg\//.test(ua) ? "Edge" : /Chrome\//.test(ua) ? "Chrome" : /Safari\//.test(ua) ? "Safari" : /Firefox\//.test(ua) ? "Firefox" : "navegador";
     return so + " · " + nav;
   }
-  async function registrarEquipo() {
-    try { await sb.schema("core").rpc("hestia_equipo", { p_huella: huellaEquipo(), p_etiqueta: etiquetaEquipo(), p_plataforma: (navigator.platform || "").slice(0, 60) }); } catch (e) {}
+
+  // Un computador que no es el de la persona: se dice cuál es el suyo y qué hacer. Nada más se muestra.
+  function mostrarBloqueo(d) {
+    $("hs-entrar").hidden = true; $("hs-reglas").hidden = true; $("hs-recupero").hidden = true; $("hs-inicio").hidden = false;
+    $("hs-quien").innerHTML = "Entraste como <b>" + esc(d.correo) + "</b>";
+    $("hs-minos").hidden = true; $("hs-grilla").innerHTML = ""; $("hs-pendientes").innerHTML = "";
+    $("hs-pedir-abrir").hidden = true; $("hs-pedir").hidden = true;
+    var suyo = d.equipo_autorizado;
+    $("hs-mensaje").innerHTML = '<div class="hs-aviso" role="alert"><b>ESTE COMPUTADOR NO ESTÁ AUTORIZADO.</b> ' + esc(d.mensaje || "") +
+      (suyo ? '<br><span class="hs-nota">Tu computador autorizado: <b>' + esc(suyo.etiqueta || "sin nombre") + '</b>, desde el ' + esc(new Date(suyo.desde).toLocaleDateString("es-CO", { day: "numeric", month: "long" })) + '.</span>' : '') +
+      '<br><span class="hs-nota">Ojo: un navegador distinto, una ventana privada o borrar los datos del sitio también cuentan como otro computador.</span></div>';
   }
 
   async function cargar() {
     try {
-      var d = await rpc("hestia_inicio", {}, "Preguntándole a Éaco qué herramientas tenés autorizadas…");
+      var d = await rpc("hestia_inicio", { p_huella: huellaEquipo(), p_etiqueta: etiquetaEquipo(), p_plataforma: (navigator.platform || "").slice(0, 60) },
+                        "Reconociendo este computador y buscando tus herramientas…");
       if (!d || !d.sesion) { mostrarEntrar(); return; }
+      if (d.equipo_bloqueado) { mostrarBloqueo(d); return; }
       if (d.reglas_aceptadas === false) { mostrarReglas(d); return; }
       $("hs-reglas").hidden = true;
       pintar(d);
-      registrarEquipo();
     } catch (e) {
       $("hs-entrar").hidden = true; $("hs-inicio").hidden = false;
       $("hs-mensaje").innerHTML = '<div class="hs-aviso"><b>NO SE PUDO LEER.</b> ' + esc(e.message) + ' — revisá tu conexión y recargá.</div>';
