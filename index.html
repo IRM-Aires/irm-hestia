@@ -617,7 +617,7 @@ function instalarCopiar({ avisar = null } = {}) {
     ocupar(b, "Aceptando…");
     try {
       var eq = (navigator.userAgent.match(/Mac|Windows|Android|iPhone|iPad|Linux/) || ["equipo"])[0];
-      var r = await rpc("gayo_aceptar", { p_version: REGLAS && REGLAS.version, p_equipo: eq }, "Registrando que aceptaste las reglas…");
+      var r = await rpc("gayo_aceptar", { p_version: REGLAS && REGLAS.version, p_equipo: eq, p_leyo_completo: LEIDAS, p_marco_casilla: $("hs-reglas-ok").checked }, "Registrando que aceptaste las reglas…");
       if (!r || !r.ok) throw new Error((r && r.mensaje) || "la base no confirmó la aceptación");
       decir(res, "ok", "<b>ACEPTADAS.</b> Gracias. Entrando…"); await cargar();
     } catch (e) { decir(res, "mal", "<b>NO SE REGISTRÓ.</b> " + esc(e.message)); }
