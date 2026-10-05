@@ -647,6 +647,27 @@ function instalarCopiar({ avisar = null } = {}) {
   });
   $("hs-reglas-salir").addEventListener("click", async function () { ocupar(this, "Saliendo…"); try { await sb.auth.signOut(); } finally { mostrarEntrar(); liberar(this); } });
 
+  // Gayo, cláusula 3: el sistema reconoce cada computador. La huella es la misma que usa Éaco
+  // («eaco.huella» en el navegador), así el computador es el mismo cuando una herramienta tenga su candado.
+  // Solo registra: Minos lo muestra y el administrador lo aprueba o lo bloquea. Va por detrás, sin espera.
+  function huellaEquipo() {
+    var h = null;
+    try { h = localStorage.getItem("eaco.huella"); } catch (e) {}
+    if (h) return h;
+    h = (window.crypto && crypto.randomUUID) ? crypto.randomUUID() : "h-" + Date.now() + "-" + Math.random().toString(36).slice(2, 12);
+    try { localStorage.setItem("eaco.huella", h); } catch (e) {}
+    return h;
+  }
+  function etiquetaEquipo() {
+    var ua = navigator.userAgent || "";
+    var so = /Mac/i.test(ua) ? "Mac" : /Windows/i.test(ua) ? "Windows" : /Android/i.test(ua) ? "Android" : /iPhone|iPad/i.test(ua) ? "iOS" : /Linux/i.test(ua) ? "Linux" : "equipo";
+    var nav = /Edg\//.test(ua) ? "Edge" : /Chrome\//.test(ua) ? "Chrome" : /Safari\//.test(ua) ? "Safari" : /Firefox\//.test(ua) ? "Firefox" : "navegador";
+    return so + " · " + nav;
+  }
+  async function registrarEquipo() {
+    try { await sb.schema("core").rpc("hestia_equipo", { p_huella: huellaEquipo(), p_etiqueta: etiquetaEquipo(), p_plataforma: (navigator.platform || "").slice(0, 60) }); } catch (e) {}
+  }
+
   async function cargar() {
     try {
       var d = await rpc("hestia_inicio", {}, "Preguntándole a Éaco qué herramientas tenés autorizadas…");
@@ -654,6 +675,7 @@ function instalarCopiar({ avisar = null } = {}) {
       if (d.reglas_aceptadas === false) { mostrarReglas(d); return; }
       $("hs-reglas").hidden = true;
       pintar(d);
+      registrarEquipo();
     } catch (e) {
       $("hs-entrar").hidden = true; $("hs-inicio").hidden = false;
       $("hs-mensaje").innerHTML = '<div class="hs-aviso"><b>NO SE PUDO LEER.</b> ' + esc(e.message) + ' — revisá tu conexión y recargá.</div>';

@@ -458,7 +458,7 @@ function canecaOcupada(b) {
         (!p.administrador && p.cuenta === "invitada" ? '<p style="margin:12px 0 4px"><b>Invitación</b> <span class="mn-sub">enviada ' + esc(fecha(p.invitada_en)) + ', todavía no la abre</span></p>' +
           '<div style="display:flex;flex-wrap:wrap;gap:8px;align-items:center"><button class="mn-btn" type="button" data-inv="reenviar" data-correo="' + esc(p.correo) + '">Reenviar la invitación</button>' +
           caneca("la invitación de " + p.correo, { attrs: 'data-inv="retirar" data-correo="' + esc(p.correo) + '" data-nombre="' + esc(p.nombre || "") + '"' }) + '</div>' : '') +
-        '<p style="margin:12px 0 4px"><b>Computadores</b></p>' + (eq ? '<ul class="mn-equipos">' + eq + '</ul>' : '<p class="mn-sub">Todavía no entró desde ningún computador que use Éaco.</p>') +
+        '<p style="margin:12px 0 4px"><b>Computadores</b></p>' + (eq ? '<ul class="mn-equipos">' + eq + '</ul>' : '<p class="mn-sub">Todavía no tiene computadores anotados: se anota el computador cada vez que la persona entra a Hestia (desde el 5 de octubre).</p>') +
         '</div></details>';
     }).join("");
     // Roles
