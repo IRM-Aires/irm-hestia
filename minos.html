@@ -302,9 +302,12 @@ details.ficha p, details.ficha li { font-size: 13.5px; }
     <li><b>Tiempo total</b>: desde que la tarea se abrió hasta que se terminó (en una propuesta, desde que se crea el borrador hasta que queda congelada). Incluye noches y fines de semana.</li>
     <li><b>Tiempo activo</b>: la suma de los ratos en que hubo movimiento. Si pasan más de 20 minutos sin ninguna huella, ese hueco no se cuenta. Es una <b>estimación</b>: alguien puede estar pensando sin tocar la herramienta.</li>
   </ul>
+  <p><b>Antes y después.</b> En la lista C-001-01 ya se anota a mano la fecha en que llega cada solicitud y la fecha en que se entrega la propuesta. Esa es la vara para comparar: los días de solicitud a entrega de las propuestas hechas <b>sin</b> Rómulo y Remo (últimos 12 meses) contra las hechas <b>con</b> ellos. Es la misma medida en los dos lados, así que la comparación es justa. Mide la herramienta, no a la persona, y por eso se muestra por UEN y no por nombre.</p>
   <p>Solo se mide lo que pasa <b>dentro</b> de las herramientas, y solo se muestra de quien aceptó las reglas de uso 1.1 (cláusula 7). De quien no las ha aceptado, la fila aparece sin cifras. Los números son para planear y cotizar, no para sancionar a nadie.</p>
   <p>Para medir una tarea nueva, se registra en la lista de abajo y su herramienta deja las huellas de inicio, actividad y fin. Las que dicen «por instrumentar» ya están anotadas y esperan que su herramienta empiece a marcar.</p>
 </div></details>
+<h3 style="font-size:14px;margin:12px 0 4px">Antes y después: días de solicitud a entrega (C-001-01)</h3>
+<div class="mn-matriz" id="mn-antes"><p class="mn-sub">Cargando…</p></div>
 <div id="mn-alias"></div>
 <div class="mn-cifras" id="mn-tareas" data-irm-mover="minos.tiempos"></div>
 <div class="mn-matriz" id="mn-tiempos"></div>
@@ -440,6 +443,8 @@ function canecaOcupada(b) {
       aviso(""); pintar(t);
       var m = await rpc("minos_tiempos", {}, "Midiendo cuánto tomaron las tareas…");
       if (m && m.ok) pintarTiempos(m, t);
+      var lb = await rpc("minos_linea_base", { p_meses: 12 }, "Comparando con las fechas de C-001-01…");
+      if (lb && lb.ok) pintarAntes(lb);
     } catch (e) { aviso("<b>NO SE PUDO LEER.</b> " + esc(e.message) + " — revisá tu conexión y recargá.", true); }
   }
 
@@ -449,6 +454,21 @@ function canecaOcupada(b) {
     if (h < 1) return Math.max(1, Math.round(h * 60)) + " min";
     if (h >= 48) return (h / 24).toLocaleString("es-CO", { maximumFractionDigits: 1 }) + " días";
     return h.toLocaleString("es-CO", { maximumFractionDigits: 1 }) + " h";
+  }
+  function dias(d) { if (d == null) return "—"; d = Number(d); return d.toLocaleString("es-CO", { maximumFractionDigits: 1 }) + (d === 1 ? " día" : " días"); }
+  function pintarAntes(lb) {
+    var g = lb.grupos || [], uens = [];
+    g.forEach(function (x) { if (uens.indexOf(x.uen) < 0) uens.push(x.uen); });
+    function celda(x) {
+      if (!x) return '<td class="mn-sub">sin propuestas todavía</td>';
+      return '<td><b>' + dias(x.mediana_dias) + '</b><div class="mn-sub">' + x.n + (x.n === 1 ? ' propuesta' : ' propuestas') + ' · 3 de cada 4 en ' + dias(x.p75_dias) + ' o menos' + (x.n < 10 ? ' · <b>muestra pequeña</b>, todavía no compara' : '') + '</div></td>';
+    }
+    $("mn-antes").innerHTML = uens.length ? '<table><thead><tr><th class="persona">UEN</th><th>Sin la herramienta (últimos ' + lb.meses + ' meses)</th><th>Con Rómulo y Remo</th></tr></thead><tbody>' +
+      uens.map(function (u) {
+        var sin = g.filter(function (x) { return x.uen === u && !x.con; })[0], con = g.filter(function (x) { return x.uen === u && x.con; })[0];
+        return '<tr><td class="persona"><b>' + esc(u) + '</b></td>' + celda(sin) + celda(con) + '</tr>';
+      }).join("") + '</tbody></table>' + (lb.descartadas_fechas_al_reves ? '<p class="mn-sub">' + lb.descartadas_fechas_al_reves + ' propuestas de C-001-01 no entran: tienen la entrega anotada antes que la solicitud (error de digitación).</p>' : '')
+      : '<p class="mn-sub">C-001-01 no tiene propuestas con las dos fechas.</p>';
   }
   function pintarTiempos(m, t) {
     var tareas = m.tareas || [], filas = m.por_persona || [], porClave = {};
