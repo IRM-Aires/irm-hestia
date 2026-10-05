@@ -236,6 +236,9 @@ details.ficha ol { padding-left: 20px; }
 @media (prefers-reduced-motion: reduce) { .hs-giro { animation: none; } }
 .hs-resultado { min-height: 1.4em; font-size: 13.5px; margin: 10px 0 0; }
 .hs-resultado.mal b { color: #d03b3b; } .hs-resultado.ok b { color: var(--irm-cian); }
+.hs-barra-acciones { display: flex; flex-wrap: wrap; gap: 8px; }
+.hs-admin { border-color: var(--irm-cian); text-decoration: none; color: var(--tinta); }
+.hs-admin:active { background: var(--irm-cian); color: #fff; }
 .hs-cerrar { border-color: var(--irm-cian); }
 .hs-cerrar:active { background: var(--irm-cian); color: #fff; }
 .hs-barra { display: flex; flex-wrap: wrap; gap: 10px; align-items: center; justify-content: space-between; margin: 0 0 14px; font-size: 13.5px; }
@@ -384,7 +387,7 @@ details.ficha ol { padding-left: 20px; }
 </dialog>
 
 <section id="hs-inicio" hidden>
-  <div class="hs-barra"><span id="hs-quien"></span><button class="hs-btn hs-cerrar" type="button" id="hs-salir" title="Cierra tu sesión en este computador: para volver a entrar te pide la contraseña"><svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false"><path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"/><path d="M16 17l5-5-5-5"/><path d="M21 12H9"/></svg>Cerrar sesión</button></div>
+  <div class="hs-barra"><span id="hs-quien"></span><span class="hs-barra-acciones"><a class="hs-btn hs-admin" id="hs-minos" href="./minos.html" hidden title="Minos: quién entra, a qué herramientas y con qué rol"><svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false"><circle cx="9" cy="8" r="3.5"/><path d="M2.5 20a6.5 6.5 0 0 1 13 0"/><path d="M17 11h5M19.5 8.5v5"/></svg>Administrar usuarios · Minos</a><button class="hs-btn hs-cerrar" type="button" id="hs-salir" title="Cierra tu sesión en este computador: para volver a entrar te pide la contraseña"><svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false"><path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"/><path d="M16 17l5-5-5-5"/><path d="M21 12H9"/></svg>Cerrar sesión</button></span></div>
   <div id="hs-mensaje"></div>
   <div class="hs-grilla" id="hs-grilla" data-irm-mover="hestia.herramientas"></div>
   <div id="hs-pendientes"></div>
@@ -577,6 +580,7 @@ function instalarCopiar({ avisar = null } = {}) {
     ULTIMO = d;
     $("hs-entrar").hidden = true; $("hs-inicio").hidden = false;
     $("hs-quien").innerHTML = "Entraste como <b>" + esc(d.correo) + "</b>" + (d.administrador ? " · administrador" : "");
+    $("hs-minos").hidden = !d.administrador;   // el tablero de usuarios, siempre a la vista para quien administra
     $("hs-mensaje").innerHTML = d.mensaje ? '<div class="hs-aviso">' + esc(d.mensaje) + '</div>' : "";
     var hs = d.herramientas || [];
     $("hs-grilla").innerHTML = hs.map(tarjeta).join("");
