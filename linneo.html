@@ -266,6 +266,7 @@ code { font: 12px var(--mono); color: var(--tinta-2); }
 .p-form .ancho { grid-column: 1 / -1; }
 /* Campo: rotulo arriba, caja alineada en toda la fila, ayuda DEBAJO de la caja (asi las cajas de una misma fila quedan a la misma altura) */
 label.p-campo { display: flex; flex-direction: column; gap: 4px; font-size: 12px; color: var(--tinta-2); }
+label.p-campo[hidden] { display: none !important; }
 label.p-campo > input, label.p-campo > select, label.p-campo > textarea, label.p-campo > .p-inter { order: 2; }
 label.p-campo small { order: 3; color: var(--tinta-apagada); font-size: 11px; line-height: 1.35; }
 label.p-campo .p-inter { align-self: flex-start; min-height: 36px; align-items: center; }
@@ -826,7 +827,7 @@ function instalarCopiar({ avisar = null } = {}) {
 const URL_SB = "https://oixizeqfuxsbjqcvzpbe.supabase.co", LLAVE = "sb_publishable_Yfu9GwQGe9w5NsGVmC3BvQ_Gj7k4DGi";
 const sb = supabase.createClient(URL_SB, LLAVE, { auth: { persistSession: true, autoRefreshToken: true } });
 const EST = { utilizable:["#0ca30c","Utilizable"], advertencia:["#fab219","Advertencia"], obligatoria:["#d03b3b","Vencido"] };
-const CAPITULOS = ["Materiales", "Insumos", "Equipos", "Herramienta Menor", "Transporte", "Subcontratos", "Mano de Obra"], UNIDADES = ["UN", "M", "ML", "M2", "M3", "KG", "L", "GAL", "LB", "ROLLO", "DIA", "SEMANA", "MES", "HORA", "VIAJE", "GBL", "PERSONA-DIA", "KWH"];   // una sola lista, la misma que acepta el servidor
+const CAPITULOS = ["Materiales", "Insumos", "Equipos", "Herramienta Menor", "Transporte", "Subcontratos", "Mano de Obra"], UNIDADES = ["UN", "M", "ML", "M2", "M3", "KG", "L", "GAL", "LB", "ROLLO", "DIA", "SEMANA", "MES", "HORA", "VIAJE", "GBL", "PERSONA-DIA", "KWH", "USO"];   // una sola lista, la misma que acepta el servidor
 const opciones = (lista, sel) => lista.map(x => `<option ${x===sel?"selected":""}>${e(x)}</option>`).join("");
 const sinTilde = s => String(s||"").toUpperCase().normalize("NFD").replace(/[̀-ͯ]/g, "");
 const esAlquiler = u => /^(DIA|SEMANA|MES|HORA)$/.test(sinTilde(u));   // alquiler = unidad DÍA / SEMANA / MES / HORA
@@ -936,7 +937,8 @@ const PASOS = { panel_control_ime: "Leyendo el catálogo completo…", ime_busca
   ime_resolver_solicitud: "Aplicando tu decisión…", ime_bitacora: "Leyendo la actividad…", ime_crear_recurso: "Creando el insumo…", ime_equipos_resumen: "Contando los equipos…", ime_clasificar_equipo: "Guardando la clase del equipo…", ime_depreciacion_clases: "Leyendo la tabla de depreciación…", ime_equipo_calcular: "Calculando el costo por día…", ime_equipo_propio_guardar: "Guardando el costo propio…", ime_equipo_propio_quitar: "Quitando el costo propio…", ime_ajuste_previa: "Buscando los precios que entran en el ajuste…", ime_ajuste_aplicar: "Ajustando los precios…", ime_ajuste_deshacer: "Devolviendo los precios a su valor anterior…", ime_ajuste_lotes: "Leyendo los ajustes anteriores…", ime_parecidos: "Buscando parecidos (palabras y sinónimos)…", ime_sinonimos: "Leyendo los sinónimos…", ime_guardar_sinonimo: "Guardando el sinónimo y recalculando el catálogo…", ime_eliminar_recurso_reciente: "Deshaciendo la creación…", ime_reabrir_solicitud: "Deshaciendo…", ime_deshacer_aprobacion: "Deshaciendo la aprobación…",
   ime_retirar_recurso: "Eliminando el insumo…", ime_restaurar_recurso: "Devolviendo el insumo al catálogo…", ime_quitar_precio: "Eliminando el precio…", ime_restaurar_precio: "Devolviendo el precio…",
   ime_reemplazo_previa: "Calculando en qué recetas cambia y cuánto…", ime_reemplazar_y_eliminar: "Cambiando el insumo en las recetas…", ime_reemplazo_deshacer: "Devolviendo las recetas como estaban…",
-  ime_tenencia_equipo: "Guardando si el equipo es propio o alquilado…", ime_dias_previa: "Revisando las recetas que lo usan…",
+  ime_tenencia_equipo: "Guardando si el equipo es propio o alquilado…", ime_insumo_usos: "Guardando cuántas veces se usa…",
+  ime_usos_previa: "Revisando las recetas que lo usan…", ime_pasar_recetas_a_usos: "Pasando las recetas a usos…", ime_dias_previa: "Revisando las recetas que lo usan…",
   ime_pasar_recetas_a_dias: "Pasando las recetas a días…", ime_proveedores: "Leyendo la lista de proveedores…", ime_crear_proveedor: "Creando el proveedor…",
   ime_editar_proveedor: "Guardando los datos del proveedor…", ime_eliminar_proveedor_reciente: "Deshaciendo el proveedor…", ime_retirar_proveedor: "Actualizando la lista de proveedores…", ime_dias_deshacer: "Devolviendo las recetas como estaban…" };
 let PASOS_ACTIVOS = 0;
@@ -1255,10 +1257,10 @@ function pintarHoja() {
       <b>Especificación</b><span class="p-editable" data-campo="especificacion">${e(f.especificacion)||'<span class="dim">—</span>'}</span>
       <b>Naturaleza</b><span>${e(f.naturaleza_valor)} <span class="dim">· costo = sin margen; sin IVA si IRM lo recupera, con IVA si no (regla 38)</span>${f.activo===false?' · <span class="p-vig" style="--c:#d03b3b">Eliminado</span> <button class="p-btn sec chico" onclick="restaurarRecurso(${f.recurso_id}, this).then(()=>abrirHoja(${f.recurso_id}))">Restaurar</button>':""}</span>
     </div>
-    ${bannerDescontinuado(d)}${bloqueEquipo(d)}
+    ${bannerDescontinuado(d)}${bloqueEquipo(d)}${bloqueInsumo(d)}
     <div class="p-acciones">
-      <button class="p-btn" onclick="irARegistrar(${Number(f.recurso_id)})">Registrar precio de proveedor</button>
-      <button class="p-btn sec" onclick="formPrecioUsuario()">Fijar mi precio</button>
+      ${f.uso_de ? "" : `<button class="p-btn" onclick="irARegistrar(${Number(f.recurso_id)})">Registrar precio de proveedor</button>
+      <button class="p-btn sec" onclick="formPrecioUsuario()">Fijar mi precio</button>`}
       <button class="p-btn sec" id="h-editar" onclick="modoEditar()">Editar</button>
       ${d.apus.length && f.activo !== false && !d.descontinuado ? '<button class="p-btn sec" onclick="formReemplazo()" title="Cuando este insumo se descontinuó: elegís el correcto y se cambia en todas sus recetas">Reemplazar y eliminar</button>' : ""}
     </div>
@@ -1506,6 +1508,73 @@ async function formDias(btn) {
   });
   $("#hoja-form").scrollIntoView({ behavior: "smooth" });
 }
+/* ---------- insumo reutilizable: número de usos (regla del usuario, 2026-10-06) ----------
+   Un insumo que se usa varias veces (paño, funda) se compra en UN y se cobra POR USO, como el equipo de
+   operación se cobra por día: su registro gemelo «— POR USO» cuesta precio de compra ÷ usos, y la base lo
+   recalcula sola cuando cambia cualquiera de los dos (core.f_sync_por_uso). */
+function bloqueInsumo(d) {
+  const f = d.ficha;
+  if (f.uso_de) return `<div class="p-kv" style="margin-top:4px"><b>Compra</b><span><button class="p-btn sec chico" onclick="abrirHoja(${Number(f.uso_de.id)})">${e(f.uso_de.codigo)} — precio de compra →</button></span></div>
+    <p class="p-paso">Cada uso cuesta el precio de compra de <b>${e(f.uso_de.codigo)}</b> ÷ <b>${num(f.uso_de.usos)} usos</b>. Su precio no se escribe acá: se cambia el de compra o el número de usos, y este se recalcula solo.</p>`;
+  if (f.capitulo !== "Insumos" || f.activo === false) return "";
+  const n = f.usos_estimados, pu = f.por_uso;
+  const enUn = n && d.apus.length ? `<div class="p-paso">Está en <b>${num(d.apus.length)}</b> receta${d.apus.length===1?"":"s"} que reparten su precio de compra con fracciones. Pasalas a <b>usos</b> y el costo queda igual hoy, pero sigue solo al precio y a los usos.
+      <div class="p-acciones" style="margin:8px 0 0"><button class="p-btn chico" onclick="formUsos(this)">Pasar sus recetas a usos</button></div></div>` : "";
+  const cuenta = n && pu ? `<span class="dim">Cada uso cuesta </span><b>${pu.precio != null ? cop(pu.precio, 2) : "—"}</b><span class="dim"> (${precioTxt(f)} ÷ ${num(n)})${pu.precio == null ? " — sin precio hasta que tenga el de compra" : ""}</span>` : `<span class="dim">Vacío = se usa una vez y se cobra entero.</span>`;
+  return `<div class="p-kv" style="margin-top:4px"><b>Veces que se usa</b><span><input id="usos-in" type="number" min="2" step="1" inputmode="numeric" style="width:92px" value="${n ?? ""}" placeholder="una vez" aria-label="Cuántas veces se usa ${e(f.codigo)}" onchange="guardarUsos(this)"> ${cuenta}</span>
+    ${pu ? `<b>Uso</b><span><button class="p-btn sec chico" onclick="abrirHoja(${Number(pu.id)})">${e(pu.codigo)} — se cobra por uso →</button>${pu.recetas ? ` <span class="dim">en ${num(pu.recetas)} receta${pu.recetas==1?"":"s"}</span>` : ""}</span>` : ""}</div>${enUn}`;
+}
+function guardarUsos(inp) {
+  const f = FICHA.ficha, antes = f.usos_estimados ?? null, v = inp.value === "" ? null : Number(inp.value);
+  if (v === antes) return;
+  if (v != null && !(Number.isInteger(v) && v >= 2)) { aviso("Las veces que se usa van en número entero, de 2 en adelante. Si se usa una sola vez, dejá el campo vacío.", { tipo: "atencion" }); inp.value = antes ?? ""; return; }
+  return accion(inp, async () => {
+    const r = await rpc("ime_insumo_usos", { p_id: f.recurso_id, p_usos: v }), pu = (r.ficha || {}).por_uso; trasFicha(r);
+    aviso(v == null ? `${e(f.codigo)} vuelve a usarse <b>una vez</b>.` : `${e(f.codigo)} se usa <b>${num(v)} veces</b>: cada uso cuesta <b>${pu && pu.precio != null ? cop(pu.precio, 2) : "—"}</b>${pu ? ` (${e(pu.codigo)})` : ""}.`,
+      { deshacer: async () => trasFicha(await rpc("ime_insumo_usos", { p_id: f.recurso_id, p_usos: antes })) });
+    return true;
+  }).then(ok => { if (!ok && inp.isConnected) inp.value = antes ?? ""; });   // si no se guardó, el campo vuelve a lo que hay en la base
+}
+let USOS = null;
+async function formUsos(btn) {
+  const f = FICHA.ficha, listo = btn ? ocupado(btn) : () => {};
+  try { USOS = await rpc("ime_usos_previa", { p_id: f.recurso_id }); } catch (err) { aviso(explicar(err), { tipo: "atencion" }); return; } finally { listo(); }
+  const d = USOS, pu = Number(d.por_uso && d.por_uso.precio);
+  if (d.falta) { $("#hoja-form").innerHTML = `<h3>Pasar sus recetas a usos</h3><div class="p-paso" style="border-left-color:#fab219">Primero escribí arriba, en «Veces que se usa», cuántas veces se usa: de eso sale el costo de cada uso.</div><div class="p-acciones"><button class="p-btn suave" onclick="cerrarForm()">Cancelar</button></div>`; return; }
+  const filas = d.recetas.map(r => [["", `${cod(r.apu_codigo)} ${e(r.apu_nombre)} <span class="dim">· por ${e(r.apu_unidad)}</span>`],
+    ["num", cop(r.cobro_actual, 2)],
+    ["num", r.bloqueo ? '<span class="dim">—</span>' : `<input class="usos-l" type="number" min="0" step="any" inputmode="decimal" style="width:84px" data-c="${Number(r.composicion_id)}" value="${r.usos_sugeridos ?? ""}" aria-label="Usos por ${e(r.apu_unidad)} en ${e(r.apu_codigo)}">`],
+    ["num", `<span class="usos-nuevo" data-c="${Number(r.composicion_id)}">—</span>`],
+    ["", r.bloqueo ? `<span class="p-vig" style="--c:#fab219">Va a Dédalo</span> <span class="dim">${e(r.bloqueo)}</span>` : `<span class="usos-que" data-c="${Number(r.composicion_id)}"></span>`]]);
+  $("#hoja-form").innerHTML = `<h3>Pasar sus recetas a usos</h3>
+    <p class="p-paso">Hoy cada receta pone una <b>fracción</b> de ${e(f.codigo)} (por ejemplo 0,05 = una vigésima parte). Desde ahora cuenta <b>usos</b> de ${e(d.por_uso.codigo)}, a <b>${cop(pu, 2)} por uso</b>.
+      Los usos ya vienen calculados para que hoy cueste lo mismo; si una receta en realidad usa más o menos veces el insumo, cambiá el número.</p>` +
+    tabla(["Receta", "Hoy cobra", "Usos por unidad", "Cobrará", "Qué pasa"], filas, "Ninguna receta activa lo usa.", undefined,
+          () => canecaFija("la receta", "esta lista solo muestra el cambio; una receta se quita en Dédalo.")) +
+    `<div class="p-paso" id="usos-resumen"></div>
+    <div class="p-acciones"><button class="p-btn" data-principal id="usos-ok">Pasar a usos</button><button class="p-btn suave" onclick="cerrarForm()">Cancelar</button></div>`;
+  const recalc = () => {
+    let cambian = 0, sin = 0; const dedalo = d.recetas.filter(r => r.bloqueo).length;
+    d.recetas.filter(r => !r.bloqueo).forEach(r => {
+      const i = $(`.usos-l[data-c="${r.composicion_id}"]`), v = Number(i.value), ok = i.value !== "" && v > 0;
+      $(`.usos-nuevo[data-c="${r.composicion_id}"]`).innerHTML = ok ? `<b>${cop(v * pu, 2)}</b>` : "—";
+      $(`.usos-que[data-c="${r.composicion_id}"]`).innerHTML = ok ? '<span class="p-vig" style="--c:#0ca30c">Pasa a usos</span>' : '<span class="dim">Sin usos: sigue igual</span>';
+      ok ? cambian++ : sin++;
+    });
+    $("#usos-resumen").innerHTML = `<b>${num(cambian)}</b> receta${cambian===1?"":"s"} pasa${cambian===1?"":"n"} a usos.${dedalo ? ` <b>${num(dedalo)}</b> va${dedalo===1?"":"n"} a Dédalo (versión nueva).` : ""}${sin ? ` ${num(sin)} sin usos quedan como están.` : ""}<br>${e(f.codigo)} sigue en ${e(f.unidad)} como <b>precio de compra</b>; las recetas que pasan cobran <b>${e(d.por_uso.codigo)}</b> por uso.`;
+    $("#usos-ok").disabled = !cambian && !dedalo;
+    $("#usos-ok").textContent = cambian ? `Pasar ${num(cambian)} receta${cambian===1?"":"s"} a usos${dedalo ? ` y pedir ${num(dedalo)} a Dédalo` : ""}` : `Pedir ${num(dedalo)} a Dédalo`;
+  };
+  $$(".usos-l").forEach(i => i.oninput = recalc); recalc();
+  $("#usos-ok").onclick = () => accion($("#usos-ok"), async () => {
+    const p_usos = {}; $$(".usos-l").forEach(i => { if (i.value !== "" && Number(i.value) > 0) p_usos[i.dataset.c] = Number(i.value); });
+    const r = await rpc("ime_pasar_recetas_a_usos", { p_id: f.recurso_id, p_usos }), x = r.usos_pasar || {};
+    trasFicha(r);
+    aviso(`${num(x.cambiadas)} receta${x.cambiadas==1?"":"s"} pasaron a usos de <b>${e(x.por_uso)}</b>${x.a_dedalo ? `, ${num(x.a_dedalo)} pedida${x.a_dedalo==1?"":"s"} a Dédalo` : ""}.`,
+      { deshacer: async () => trasFicha(await rpc("ime_dias_deshacer", { p_lote: x.lote })), ms: 12000 });
+  });
+  $("#hoja-form").scrollIntoView({ behavior: "smooth" });
+}
 function formReemplazo() {
   const f = FICHA.ficha; RZ = { viejo: f, nuevoId: null, factor: null, eq: "", previa: null };
   $("#hoja-form").innerHTML = `<h3>Reemplazar y eliminar</h3>
@@ -1720,6 +1789,7 @@ function htmlInsumo(o) {
     <label class="p-campo">Marca <small>opcional; no va en la descripción</small><input id="${i("marca")}" value="${e(v.marca || "")}"></label>
     ${ex === true ? `<label class="p-campo ancho">Especificación <small>opcional: para qué sirve, qué incluye, advertencias</small><textarea id="${i("esp")}"></textarea></label>` : ""}
     ${ex ? `<label class="p-campo">Precio de referencia <small>opcional; sin IVA si IRM lo recupera, con IVA si no. Si lo dejás vacío, el insumo entra "sin precio"</small><input id="${i("precio")}" type="number" step="0.01" min="0" inputmode="decimal"></label>` : ""}
+    ${ex === true ? `<label class="p-campo" id="${i("usos-caja")}" hidden>¿Cuántas veces se usa? <small>solo si el insumo se reutiliza (paño, funda): cada uso costará precio ÷ usos. Vacío = se usa una vez</small><input id="${i("usos")}" type="number" min="2" step="1" inputmode="numeric" placeholder="se usa una vez"></label>` : ""}
     ${ex === true ? `<label class="p-campo">Modo <span class="p-inter" id="${i("modo")}"><button class="on" data-v="compra">Compra</button><button data-v="alquiler">Alquiler</button></span></label>` : ""}
     ${ex ? `<label class="p-campo ancho">¿De dónde sale ese precio? <small>obligatorio si pusiste precio</small><input id="${i("motivo")}" placeholder="referencia de mercado, cotización, WhatsApp del proveedor del 03-10…"></label>` : ""}
     ${o.boton ? `<div class="ancho p-acciones"><button class="p-btn" data-principal id="${i("btn")}">${o.boton}</button>${o.cancelar || ""}<span class="dim" id="${i("estado")}">${o.estado || ""}</span></div>` : ""}`;
@@ -1730,7 +1800,8 @@ function leerInsumo(i) {
   const precio = val("precio") !== "" ? Number(val("precio")) : null;
   return { nombre: val("nombre"), capitulo: val("cap"), unidad: val("uni"), marca: val("marca") || null,
     especificacion: el("esp") ? (val("esp") || null) : undefined, modo: el("modo") ? valor("#" + i("modo")) : undefined,
-    precio, motivo: precio != null ? (val("motivo") || null) : null };
+    precio, motivo: precio != null ? (val("motivo") || null) : null,
+    usos: el("usos") && val("cap") === "Insumos" && val("usos") !== "" ? Number(val("usos")) : null };
 }
 function chipParecido(f) {
   const pct = Math.round((f.afinidad||0)*100), fuerte = pct >= 90;
@@ -1745,6 +1816,7 @@ function pintarParecidos(cont, d, titulo, explicacion) {
 function ligarInsumo(o) {
   const i = o.id, el = c => document.getElementById(i(c));
   if (el("modo")) interruptor("#" + i("modo"));
+  if (el("usos-caja")) { const verUsos = () => { el("usos-caja").hidden = el("cap").value !== "Insumos"; }; el("cap").addEventListener("change", verUsos); verUsos(); }
   if (!o.boton) return { limpiar() {} };
   const btn = el("btn"); let forzar = false, tmr = null, vuelta = 0;   // vuelta: sólo pinta la respuesta de la última búsqueda
   const normal = () => { forzar = false; btn.innerHTML = o.boton; el("estado").textContent = o.estado || ""; };
@@ -1764,6 +1836,9 @@ function ligarInsumo(o) {
   btn.onclick = () => accion(btn, async () => {
     clearTimeout(tmr); vuelta++;   // lo que diga el servidor al crear manda sobre una búsqueda en vivo que llegue tarde
     const v = leerInsumo(i);
+    if (v.usos != null && !(Number.isInteger(v.usos) && v.usos >= 2)) {
+      el("parecidos").innerHTML = '<div class="p-paso" style="border-left-color:#d03b3b"><b>No se creó.</b> Las veces que se usa van en número entero, de 2 en adelante. Si se usa una sola vez, dejá ese campo vacío.</div>';
+      el("usos").focus(); return; }
     const args = { p_nombre: v.nombre, p_capitulo: v.capitulo, p_unidad: v.unidad, p_marca: v.marca, p_precio: v.precio, p_motivo_precio: v.motivo, p_forzar: forzar };
     if (v.especificacion !== undefined) args.p_especificacion = v.especificacion;
     if (v.modo) args.p_modo = v.modo;
@@ -1778,7 +1853,7 @@ function ligarInsumo(o) {
   });
   if (el("nombre").value.trim().length >= 4) el("nombre").dispatchEvent(new Event("input"));   // prellenado: los parecidos se ven ya
   // Deja el formulario listo para otro: borra lo escrito; capítulo, unidad y modo quedan como estaban.
-  return { limpiar() { clearTimeout(tmr); vuelta++; ["nombre","marca","esp","precio","motivo"].forEach(c => { if (el(c)) el(c).value = ""; }); el("parecidos").innerHTML = ""; normal(); } };
+  return { limpiar() { clearTimeout(tmr); vuelta++; ["nombre","marca","esp","precio","motivo","usos"].forEach(c => { if (el(c)) el(c).value = ""; }); el("parecidos").innerHTML = ""; normal(); } };
 }
 function formInsumo(cont, o) {
   cont.innerHTML = o.clase ? `<div class="${o.clase}"${o.estilo ? ` style="${o.estilo}"` : ""}>${htmlInsumo(o)}</div>` : htmlInsumo(o);
@@ -1792,11 +1867,18 @@ const FORM_NUEVO = formInsumo($("#n-campos"), { id: c => "n-" + c, extras: true,
   alCrear: async (r, v) => {
     const rid = r.recurso_id, nombre = v.nombre.trim().toUpperCase(), unidad = v.unidad, cap = v.capitulo, precio = v.precio;
     CREADO = { recurso_id: rid, codigo: r.codigo, nombre, unidad, capitulo: cap, precio };
+    // Insumo reutilizable: los usos se guardan apenas existe, y con ellos nace su registro POR USO.
+    let usosTxt = "";
+    if (v.usos) {
+      try { const pu = ((await rpc("ime_insumo_usos", { p_id: rid, p_usos: v.usos })).ficha || {}).por_uso;
+        usosTxt = `<b>Se usa</b><span>${num(v.usos)} veces${pu ? ` · cada uso: ${pu.precio != null ? `<b>${cop(pu.precio, 2)}</b>` : '<span class="dim">sin precio hasta que tenga el de compra</span>'} · registro por uso ${cod(pu.codigo)}` : ""}</span>`; }
+      catch (err) { usosTxt = `<b>Se usa</b><span class="p-error">No se guardaron las veces que se usa: ${e(explicar(err))} Ponelas desde su ficha.</span>`; }
+    }
     FORM_NUEVO.limpiar();
     // la edicion se cierra y el insumo aparece como lo que ya es: un renglon del catalogo
     $("#n-form").hidden = true; $("#n-exito").hidden = false;
     $("#n-exito").innerHTML = `<div class="ancho"><span class="p-vig" style="--c:#0ca30c">Creado</span> <b style="font-family:var(--display);font-size:16px">${e(nombre)}</b></div>
-      <div class="ancho p-kv" style="grid-template-columns:140px 1fr"><b>Código</b><span>${cod(r.codigo)}</span><b>Capítulo · unidad</b><span>${e(cap)} · ${e(unidad)}</span><b>Precio</b><span>${precio!=null?cop(precio)+' <span class="dim">(tu referencia; vence a los 60 días)</span>':'<span class="dim">sin precio — registrá uno cuando llegue la cotización</span>'}</span></div>
+      <div class="ancho p-kv" style="grid-template-columns:140px 1fr"><b>Código</b><span>${cod(r.codigo)}</span><b>Capítulo · unidad</b><span>${e(cap)} · ${e(unidad)}</span><b>Precio</b><span>${precio!=null?cop(precio)+' <span class="dim">(tu referencia; vence a los 60 días)</span>':'<span class="dim">sin precio — registrá uno cuando llegue la cotización</span>'}</span>${usosTxt}</div>
       <div class="ancho p-acciones"><button class="p-btn" onclick="abrirHoja(${Number(rid)})">Ver su ficha</button><button class="p-btn sec" onclick="irARegistrar(${Number(rid)})">Registrar precio de proveedor</button><button class="p-btn suave" onclick="$('#n-exito').hidden=true;$('#n-form').hidden=false;setTimeout(()=>$('#n-nombre').focus(),50)">Crear otro</button></div>`;
     refrescarFondo();
     aviso(`<b>${e(r.codigo)}</b> creado.`, { deshacer: async () => { await rpc("ime_eliminar_recurso_reciente", { p_id: rid }); $("#n-exito").hidden = true; $("#n-form").hidden = false; cerrarHoja(); refrescarFondo(); }, ms: 10000 });
