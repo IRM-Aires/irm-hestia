@@ -150,6 +150,12 @@ button, input, select, textarea { font-family: var(--sans); }
 .p-nav button.on { background: var(--irm-cian); color: #fff; }
 .p-nav .p-cnt { display: inline-block; min-width: 18px; padding: 0 6px; margin-left: 6px; border-radius: 999px; background: color-mix(in srgb, currentColor 18%, transparent); font-size: 11px; line-height: 18px; text-align: center; }
 .p-nav .p-cnt:empty { display: none; }
+.p-nav .p-actualizar { display: inline-flex; align-items: center; gap: 6px; border: 1px solid var(--cuadricula); }
+.p-nav .p-actualizar svg { width: 14px; height: 14px; }
+.p-nav .p-actualizar:hover { color: var(--irm-cian); border-color: var(--irm-cian); }
+.p-nav .p-actualizar:active { background: var(--irm-cian); color: #fff; }
+.p-nav .p-actualizar[aria-busy="true"] svg { display: none; }
+.p-act-hora { font-size: 11px; color: var(--tinta-apagada); margin-right: 6px; white-space: nowrap; }
 .p-nav .p-der { margin-left: auto; display: flex; align-items: center; gap: 8px; padding-right: 6px; }
 .p-buscar-global { position: relative; }
 .p-buscar-global input { width: 240px; min-height: 34px; padding: 6px 12px 6px 32px; border: var(--p-hair); border-radius: 999px; background: var(--plano); }
@@ -485,6 +491,7 @@ th.irm-caneca-col, td.irm-caneca-col { width: 38px; text-align: center; padding-
     <button data-v="ajuste">Ajustar precios</button>
     <button data-v="actividad">Actividad</button>
     <span class="p-der">
+      <button type="button" id="b-actualizar" class="p-actualizar" title="Traer lo último de la base: lo que otros cambiaron mientras tenías Linneo abierto" aria-describedby="b-act-hora"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M21 12a9 9 0 1 1-2.64-6.36"/><path d="M21 4v5h-5"/></svg>Actualizar</button><span class="p-act-hora" id="b-act-hora" aria-live="polite"></span>
       <span class="p-buscar-global"><input id="g-q" placeholder="Buscar un recurso" aria-label="Buscar un recurso"><kbd>/</kbd></span>
       <button data-v="cuenta" title="Mi cuenta" aria-label="Mi cuenta" id="b-cuenta">●</button>
     </span>
@@ -1014,9 +1021,27 @@ async function cargarPanel() {
 const VISTAS_PANEL = ["hoy", "bandeja", "proveedores"];
 let PANEL_VIEJO = false, EXPLORAR_VIEJO = false;
 const vistaActual = () => $(".p-vista.on")?.dataset.v;
+/* Botón «Actualizar» (pedido del usuario 2026-10-06): trae lo último de la base sin recargar la página ni
+   perder lo que se estaba mirando — Hoy, Bandeja, Proveedores, la vista abierta y la ficha. */
+function marcarHora() { const h = $("#b-act-hora"); if (h) h.textContent = "al día " + new Date().toLocaleTimeString("es-CO", { hour: "2-digit", minute: "2-digit" }); }
+async function actualizarTodo(btn) {
+  return accion(btn, async () => {
+    await refrescarPanel();
+    PROVS = null; LOTES_LEIDOS = false;
+    const v = vistaActual();
+    if (v === "explorar") await buscar(ULT ? ULT.desde : 0); else EXPLORAR_VIEJO = true;
+    if (v === "actividad") await cargarActividad();
+    if (v === "ajuste") await cargarLotes();
+    if (v === "registrar" || v === "proveedores") await cargarProvs(true);
+    if ($("#hoja").classList.contains("on") && FICHA && FICHA.ficha) { FICHA = await rpc("ime_recurso", { p_id: FICHA.ficha.recurso_id }); pintarHoja(); }
+    marcarHora();
+  }, "Linneo quedó al día con la base.");
+}
+$("#b-actualizar").addEventListener("click", ev => actualizarTodo(ev.currentTarget));
 async function refrescarPanel() {
   PANEL_VIEJO = false;
   try { await cargarPanel(); } catch (_) { PANEL_VIEJO = true; return; }
+  marcarHora();
   cargarHoy(); cargarBandeja(); cargarProveedores();
 }
 // forzarPanel: para lo que cambia la bandeja, cuyo contador vive en la barra de arriba y siempre se ve.
