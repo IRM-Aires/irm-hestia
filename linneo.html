@@ -1517,7 +1517,10 @@ function pintarHoja() {
     d.precios.map(p=>[["",`${e(p.proveedor)}<br><span class="dim" style="font-size:11px">${e(p.modo_adquisicion)}${p.codigo_proveedor?` · ref. ${e(p.codigo_proveedor)}`:""}</span>`],["num",p.moneda==="USD"?`${usd(p.precio_moneda_original)}<br><span class="dim" style="font-size:11px">≈ ${cop(p.precio,0)} a TRM ${cop(p.trm_aplicada,2)}</span>`:cop(p.precio)],["",p.tipo_precio==="lista"?"Lista":"Facturado"],["",e(p.fecha_precio)],["",e(p.vigencia_hasta)||"—"],["",`<span class="dim">${e(p.fuente_tipo)}</span> · ${e(p.fuente_detalle)}`]]),
     "Todavía no hay precios de proveedor. Usá <b>Registrar precio</b> cuando tengas una cotización, factura o mensaje del proveedor.", undefined,
     i => caneca(`el precio de ${d.precios[i].proveedor}`, { attrs: `data-acc="precio" data-id="${Number(d.precios[i].id)}"` }));
-  const pu = d.precio_usuario.map(u=>`<div class="p-paso">Tu precio manda: <b>${cop(u.precio)}</b> (${e(u.modo_adquisicion)}), fijado por ${e(u.definido_por)} — ${e(u.motivo)} ${caneca("tu precio", { attrs: `data-acc="preciousuario" data-modo="${e(u.modo_adquisicion)}" data-precio="${Number(u.precio)}" data-motivo="${e(u.motivo)}"` })}</div>`).join("");
+  /* En un recurso que se cobra por tiempo, un precio tuyo en modo compra es el VALOR del equipo, no lo
+     que se cobra por día: no manda (regla 2026-10-06, caso de la bomba de vacío). Se dice así, no «manda». */
+  const noManda = u => POR_TIEMPO[String(f.unidad||"").toUpperCase()] && u.modo_adquisicion !== "alquiler";
+  const pu = d.precio_usuario.map(u=>`<div class="p-paso"${noManda(u) ? ' style="border-left-color:#898781"' : ""}>${noManda(u) ? `Valor de compra que fijaste: <b>${cop(u.precio)}</b> — <b>no se cobra por ${POR_TIEMPO[String(f.unidad).toUpperCase()]}</b>: el ${POR_TIEMPO[String(f.unidad).toUpperCase()]} lo da ${f.tenencia === "propio" ? "su costo de tenerlo" : "la tarifa de alquiler"}.` : "Tu precio manda:"} ${noManda(u) ? "" : `<b>${cop(u.precio)}</b>`} (${e(u.modo_adquisicion)}), fijado por ${e(u.definido_por)} — ${e(u.motivo)} ${caneca("tu precio", { attrs: `data-acc="preciousuario" data-modo="${e(u.modo_adquisicion)}" data-precio="${Number(u.precio)}" data-motivo="${e(u.motivo)}"` })}</div>`).join("");
   const fact = d.facturado.length ? tabla(["Fecha","Factura","Proveedor","Precio unitario","Cant."], d.facturado.map(x=>[["",e(x.fecha)],["",e(x.factura)],["",e(x.proveedor)],["num",cop(x.precio)],["num",num(x.cantidad)]]), "", undefined, () => canecaFija("la factura", "viene de las facturas de Siigo; se corrige en Siigo, no en Linneo.")) : "";
   const apus = d.apus.length ? d.apus.map(a=>`<span class="p-chipm" title="${e(a.nombre)}">${e(a.codigo)} × ${num(a.cantidad)}</span>`).join(" ") : '<span class="dim">En ninguna receta todavía.</span>';
   const bit = d.bitacora.length ? tabla(["Cuándo","Quién","Qué"], d.bitacora.map(b=>[["",e((b.en||"").slice(0,16).replace("T"," "))],["",e(b.actor)],["",`<b>${e(b.accion.replace(/_/g," "))}</b>`]]), "", undefined, () => canecaFija("el cambio", BLOQ_BITACORA)) : '<span class="dim">Sin cambios registrados desde el panel.</span>';
@@ -2300,7 +2303,7 @@ arranque();
 
 
 <style>
-/* Botón «Reportar» — componente canónico IRM v5 (IMAGEN CORPORATIVA/memoria_procedimental/componente_reporte.py) */
+/* Botón «Reportar» — componente canónico IRM v6 (IMAGEN CORPORATIVA/memoria_procedimental/componente_reporte.py) */
 .irm-reporte-raiz { --irmr-tinta: var(--tinta, #0b0b0b); --irmr-tinta-2: var(--tinta-2, #52514e);
   --irmr-sup: var(--superficie, #fcfcfb); --irmr-borde: var(--cuadricula, #e1e0d9); --irmr-cian: #00B9CE;
   --irmr-mal: #d03b3b; font: 14px/1.5 var(--sans, Inter, system-ui, -apple-system, "Segoe UI", sans-serif); color: var(--irmr-tinta); }
@@ -2378,6 +2381,10 @@ arranque();
 .irm-reporte-oculto { display: none !important; }
 /* Donde la página no alcanza la base (dentro de claude.ai), no se ofrece un formulario que va a fallar:
    se manda directo al de Hestia, que sí llega y deja adjuntar la imagen. */
+.irm-reporte-sobre { display: flex; flex-wrap: wrap; gap: 6px 10px; align-items: center; margin: 0 0 12px; padding: 8px 10px; border: 1px solid var(--irmr-cian); border-radius: 8px; font-size: 13px; overflow-wrap: anywhere; }
+.irm-reporte-sobre span { flex: 1 1 200px; }
+.irm-reporte-sobre .quitar-sobre { border: 1px solid var(--irmr-borde); background: transparent; color: inherit; border-radius: 999px; padding: 4px 12px; min-height: 32px; font: inherit; font-size: 12px; cursor: pointer; }
+.irm-reporte-sobre .quitar-sobre:active { background: color-mix(in srgb, var(--irmr-cian) 25%, transparent); }
 .irm-reporte-fuera { margin: 0 0 12px; padding: 12px; border: 1px solid var(--irmr-borde); border-left: 4px solid var(--irmr-cian); border-radius: 8px; font-size: 13px; }
 .irm-reporte-fuera a { display: inline-flex; align-items: center; gap: 6px; margin-top: 8px; padding: 9px 16px; min-height: 40px; border-radius: 8px; background: var(--irmr-cian);
   color: #fff; text-decoration: none; font: 600 13px var(--display, Poppins, Inter, sans-serif); }
@@ -2385,7 +2392,9 @@ arranque();
 .irm-reporte-dlg.sin-red .irm-reporte-campos, .irm-reporte-dlg.sin-red .enviar, .irm-reporte-dlg.sin-red .irm-reporte-mios { display: none !important; }
 </style>
 <script>
-/* Botón «Reportar» — componente canónico IRM v5. IRMReporte.iniciar({artefacto, nombre, version})
+/* Botón «Reportar» — componente canónico IRM v6. IRMReporte.iniciar({artefacto, nombre, version})
+   Reportar sobre un registro (v6, 2026-10-06): IRMReporte.sobre({tipo: 'apu'|'insumo'|'propuesta', codigo, nombre})
+   abre la ventana con ese registro; IRMReporte.contexto(function () { return registroAbierto; }) lo propone al tocar «Reportar».
    pone el botón y la ventana. El reporte llega a Larrey (mesa de tickets). No depende de nada de la página. */
 (function (global) {
   "use strict";
@@ -2455,6 +2464,7 @@ arranque();
         '<div class="irm-reporte-fuera irm-reporte-oculto" role="status"><b>Desde esta herramienta el reporte se escribe en Hestia.</b> ' +
           'Acá adentro (claude.ai) la página no puede hablar con la base, así que el formulario no llegaría. En Hestia llega igual a Larrey, y ahí sí podés adjuntar la imagen.<br>' +
           '<a href="' + esc(enlaceWeb()) + '" target="_blank" rel="noopener">Abrir el formulario de reporte ↗</a></div>' +
+        '<div class="irm-reporte-sobre irm-reporte-oculto" role="note"><span></span><button type="button" class="quitar-sobre">No es sobre esto</button></div>' +
         '<div class="irm-reporte-campos">' +
         '<fieldset><legend>¿Qué querés contar?</legend><div class="irm-reporte-seg" data-campo="tipo">' +
           '<button type="button" data-v="falla" aria-pressed="false">Algo falla</button>' +
@@ -2483,6 +2493,22 @@ arranque();
     document.body.appendChild(raiz);
 
     var btn = raiz.querySelector(".irm-reporte-btn"), dlg = raiz.querySelector("dialog");
+    // Sobre qué registro es el reporte (un APU, un insumo, una propuesta). Lo da la herramienta:
+    // IRMReporte.sobre({tipo, codigo, nombre}) abre la ventana con ese registro, o
+    // IRMReporte.contexto(fn) registra una función que dice cuál está abierto cuando tocan «Reportar».
+    var sobre = null, cajaSobre = raiz.querySelector(".irm-reporte-sobre");
+    var NOMBRE_TIPO = { apu: "el APU", insumo: "el insumo", propuesta: "la propuesta" };
+    function limpiarRef(r) {
+      if (!r || !NOMBRE_TIPO[String(r.tipo || "").toLowerCase()] || !String(r.codigo || "").trim()) return null;
+      return { tipo: String(r.tipo).toLowerCase(), codigo: String(r.codigo).trim().slice(0, 60), nombre: String(r.nombre || "").trim().slice(0, 160) };
+    }
+    function ponerSobre(r) {
+      sobre = limpiarRef(r);
+      cajaSobre.classList.toggle("irm-reporte-oculto", !sobre);
+      if (sobre) cajaSobre.querySelector("span").innerHTML = 'Sobre ' + NOMBRE_TIPO[sobre.tipo] + ' <b>' + esc(sobre.codigo) + '</b>' + (sobre.nombre ? ' — ' + esc(sobre.nombre) : '');
+      var a = raiz.querySelector(".irm-reporte-fuera a"); if (a) a.href = enlaceWeb();
+    }
+    raiz.querySelector(".quitar-sobre").addEventListener("click", function () { ponerSobre(null); });
     var est = raiz.querySelector(".irm-reporte-estado"), enviar = raiz.querySelector(".enviar");
     var campos = { tipo: null, funciona: null };
     var quien = raiz.querySelector("#irm-reporte-quien");
@@ -2516,8 +2542,10 @@ arranque();
         .then(function (r) { alcanza = r.ok; }, function () { alcanza = false; })
         .then(function () { clearTimeout(t); return alcanza; });
     }
-    function abrir() {
+    function abrir(ref) {
       decir("", "");
+      if (ref && ref.tipo) ponerSobre(ref);
+      else { var f = global.IRMReporte && global.IRMReporte._proveedor; try { ponerSobre(f ? f() : null); } catch (e) { ponerSobre(null); } }
       if (alcanza === null) {
         decir("", "Comprobando que el reporte pueda llegar a Larrey…");
         sondear().then(function (ok) { dlg.classList.toggle("sin-red", !ok); raiz.querySelector(".irm-reporte-fuera").classList.toggle("irm-reporte-oculto", ok); decir("", ""); });
@@ -2527,7 +2555,8 @@ arranque();
       var p = raiz.querySelector('[data-campo="tipo"] button'); if (p) p.focus();
     }
     function cerrar() { if (dlg.open && typeof dlg.close === "function") dlg.close(); else dlg.removeAttribute("open"); btn.setAttribute("aria-expanded", "false"); btn.focus(); }
-    btn.addEventListener("click", abrir);
+    btn.addEventListener("click", function () { abrir(null); });
+    abrirCon = abrir;
     dlg.addEventListener("close", function () { btn.setAttribute("aria-expanded", "false"); });
     raiz.querySelector(".cancelar").addEventListener("click", cerrar);
     raiz.querySelector("form").addEventListener("submit", function (ev) { ev.preventDefault(); });
@@ -2554,6 +2583,7 @@ arranque();
       decir("", "Enviando el reporte a la mesa de Larrey…");
       var ctx = { navegador: navigator.userAgent, pantalla: global.innerWidth + "x" + global.innerHeight,
                   idioma: navigator.language, errores: errores.slice(), en: new Date().toISOString() };
+      if (sobre) ctx.referencia = sobre;
       rpc("ticket_reportar", { p_artefacto: cfg.artefacto, p_artefacto_nombre: cfg.nombre || null, p_version: cfg.version || null,
           p_tipo: campos.tipo, p_funciona: campos.tipo === "sugerencia" ? "si" : campos.funciona,
           p_descripcion: que, p_que_hacia: raiz.querySelector("#irm-reporte-hacia").value.trim(),
@@ -2591,7 +2621,8 @@ arranque();
 
     function enlaceWeb() {
       return WEB + "?artefacto=" + encodeURIComponent(cfg.artefacto) + "&nombre=" + encodeURIComponent(cfg.nombre || "") +
-             "&version=" + encodeURIComponent(cfg.version || "");
+             "&version=" + encodeURIComponent(cfg.version || "") +
+             (sobre ? "&ref_tipo=" + encodeURIComponent(sobre.tipo) + "&ref_codigo=" + encodeURIComponent(sobre.codigo) + "&ref_nombre=" + encodeURIComponent(sobre.nombre || "") : "");
     }
     var mios = raiz.querySelector(".irm-reporte-mios");
     mios.addEventListener("toggle", function () {
@@ -2609,7 +2640,13 @@ arranque();
       }).catch(function () { ul.innerHTML = "<li>Desde acá no se pueden leer: <a href=\"" + esc(enlaceWeb()) + "\" target=\"_blank\" rel=\"noopener\">miralos en la página de reporte ↗</a> (desde el mismo navegador donde reportaste).</li>"; });
     });
   }
-  global.IRMReporte = { iniciar: iniciar, version: "5" };
+  var abrirCon = null;
+  global.IRMReporte = { iniciar: iniciar, version: "6",
+    // Abre la ventana de reporte sobre un registro: IRMReporte.sobre({tipo: "apu", codigo: "IRM-S-DUC-005", nombre: "…"}).
+    sobre: function (ref) { if (abrirCon) abrirCon(ref || null); },
+    // La herramienta dice qué registro está abierto; el botón «Reportar» lo propone solo.
+    contexto: function (fn) { global.IRMReporte._proveedor = typeof fn === "function" ? fn : null; },
+    _proveedor: null };
 })(window);
 </script>
 <script>(function(){var go=function(){IRMReporte.iniciar({"artefacto": "panel_ime", "nombre": "Linneo", "version": "2026-10-06", "posicion": "derecha"});};if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',go);else go();})();</script>
