@@ -296,7 +296,7 @@ textarea { min-height: 70px; resize: vertical; }
 /* hoja lateral (ficha) */
 .p-fondo { position: fixed; inset: 0; background: rgba(0,0,0,.28); opacity: 0; pointer-events: none; transition: opacity var(--p-anim); z-index: 40; }
 .p-fondo.on { opacity: 1; pointer-events: auto; }
-.p-hoja { position: fixed; top: 0; right: 0; height: 100dvh; width: min(760px, 100vw); overflow: auto; background: var(--plano); border-left: 2px solid var(--irm-lima); box-shadow: -12px 0 40px rgba(0,0,0,.18); padding: 18px 24px 60px; z-index: 50; transform: translateX(102%); transition: transform var(--p-anim); }
+.p-hoja { position: fixed; top: 0; right: 0; height: 100dvh; width: var(--irm-ancho-linneo-ficha, min(760px, 100vw)); max-width: calc(100vw - 48px); overflow: auto; background: var(--plano); border-left: 2px solid var(--irm-lima); box-shadow: -12px 0 40px rgba(0,0,0,.18); padding: 18px 24px 60px; z-index: 50; transform: translateX(102%); transition: transform var(--p-anim); }
 .p-hoja.on { transform: none; }
 .p-hoja-cab { display: flex; gap: 12px; align-items: flex-start; position: sticky; top: -18px; background: var(--plano); padding: 12px 0 10px; margin: -18px 0 8px; border-bottom: var(--p-hair); z-index: 2; }
 .p-hoja-cab h2 { margin: 0; font-size: 18px; line-height: 1.25; flex: 1; }
@@ -415,6 +415,59 @@ th.irm-caneca-col, td.irm-caneca-col { width: 38px; text-align: center; padding-
 @media (prefers-reduced-motion: reduce) { [data-irm-mover] > .irm-levantada { transform: none; } }
 @media (max-width: 560px) { .irm-mover-restablecer { min-height: 40px; } }
 @media print { [data-irm-mover] > [data-mover-id]::after, .irm-mover-restablecer { display: none !important; } }
+
+/* Ventanas emergentes que se ensanchan — componente canónico IRM v1 (IMAGEN CORPORATIVA/memoria_procedimental/componente_cajon.py) */
+/* OJO: acá NO va «[data-irm-ancho]{position:relative}». Esa regla le pisaba el
+   position:fixed al panel y lo descolocaba — pasó con Linneo el 2026-10-06. Si
+   hace falta, el JS se lo pone y sólo cuando el panel es «static».
+   El tirador va FIJO a la pantalla, no dentro del panel: hay paneles que tienen
+   su propio scroll (Linneo), y ahí un hijo absoluto se va para arriba al bajar
+   el contenido. El JS le calcula el sitio desde el borde del panel. */
+.irm-tirador {
+  position: fixed; width: 11px; z-index: 60;
+  border: 0; padding: 0; background: transparent; cursor: col-resize;
+  display: flex; align-items: center; justify-content: center; touch-action: none;
+}
+.irm-tirador[hidden] { display: none !important; }
+/* La barrita se ve SIEMPRE: tenue en reposo, de marca al apuntarla. Un tirador
+   que solo aparece al pasar por encima no lo encuentra quien no sabe que existe. */
+.irm-tirador::before {
+  content: ""; width: 3px; height: 44px; border-radius: 99px;
+  background: var(--linea-fuerte, #D2DBDF); transition: background .15s, height .15s;
+}
+.irm-tirador:hover::before, .irm-tirador:focus-visible::before { background: #00B9CE; height: 86px; }
+.irm-tirador:focus-visible { outline: 2px solid #00B9CE; outline-offset: -2px; }
+.irm-tirador.irm-agarrado::before { background: #00B9CE; height: 100%; border-radius: 0; }
+.irm-ancho-moviendo, .irm-ancho-moviendo * { user-select: none; -webkit-user-select: none; cursor: col-resize !important; }
+/* La salida vive PEGADA AL TIRADOR, a media altura, nunca sobre el contenido:
+   puesta arriba a la izquierda le tapaba el título al panel (visto el 2026-10-06).
+   En reposo es un disco con una flecha de volver; al apuntarla o enfocarla se
+   abre y dice lo que hace con todas las letras. */
+.irm-ancho-volver {
+  position: fixed; transform: translateY(-50%); z-index: 61;
+  display: inline-flex; align-items: center; gap: 0; overflow: hidden;
+  width: 28px; min-height: 28px; height: 28px; padding: 0; border-radius: 99px;
+  border: 1px solid var(--linea-fuerte, #D2DBDF); background: var(--lienzo, #fff);
+  color: #00B9CE; cursor: pointer; white-space: nowrap;
+  font: 600 11.5px var(--display, Poppins, Inter, system-ui, sans-serif);
+  box-shadow: 0 2px 8px rgba(0,0,0,.14);
+  transition: width .16s ease, padding .16s ease, border-color .15s;
+}
+.irm-ancho-volver .irm-ancho-ico { flex: none; width: 28px; text-align: center; font-size: 14px; line-height: 1; }
+.irm-ancho-volver .irm-ancho-txt { opacity: 0; transition: opacity .12s ease; }
+.irm-ancho-volver:hover, .irm-ancho-volver:focus-visible {
+  width: auto; padding-right: 12px; border-color: #00B9CE; outline: none;
+}
+.irm-ancho-volver:hover .irm-ancho-txt, .irm-ancho-volver:focus-visible .irm-ancho-txt { opacity: 1; }
+.irm-ancho-volver:active { background: #00B9CE; color: #fff; }
+@media (prefers-reduced-motion: reduce) {
+  .irm-ancho-volver { transition: none; }
+  .irm-ancho-volver .irm-ancho-txt { transition: none; }
+}
+.irm-ancho-voz { position: absolute; left: 0; top: 0; width: 1px; height: 1px; overflow: hidden; clip: rect(0 0 0 0); white-space: nowrap; }
+@media (prefers-reduced-motion: reduce) { .irm-tirador::before { transition: none; } }
+@media (max-width: 899px) { .irm-tirador, .irm-ancho-volver { display: none !important; } }
+@media print { .irm-tirador, .irm-ancho-volver { display: none !important; } }
 </style>
 
 
@@ -617,7 +670,7 @@ th.irm-caneca-col, td.irm-caneca-col { width: 38px; text-align: center; padding-
 </div>
 
 <div class="p-fondo" id="fondo"></div>
-<aside id="hoja" class="p-hoja" aria-label="Ficha del recurso"></aside>
+<aside id="hoja" class="p-hoja" data-irm-ancho="linneo.ficha" aria-label="Ficha del recurso"></aside>
 <div class="p-toasts" id="toasts"></div>
 <datalist id="dl-prov"></datalist>
 
@@ -823,6 +876,229 @@ function instalarCopiar({ avisar = null } = {}) {
   }
   if (document.readyState === "loading") document.addEventListener("DOMContentLoaded", arrancar); else arrancar();
   global.IRMMover = { activar: activar, version: "2" };
+})(window);
+
+/* Ventanas emergentes que se ensanchan — componente canónico IRM v1.
+   Marca: data-irm-ancho="<clave>" en el panel. El CSS del artefacto lee
+   var(--irm-ancho-<clave con guiones>, <ancho de fabrica>). Se activa solo,
+   tambien en paneles que la pagina pinte despues. */
+(function (global) {
+  "use strict";
+  if (global.IRMAncho) return;
+  var MIN = 380, MARGEN = 48, PREFIJO = "irm.ancho.", DESDE = 900;
+  function leer(k) { try { return parseInt(global.localStorage.getItem(PREFIJO + k) || "", 10) || null; } catch (e) { return null; } }
+  function guardar(k, v) { try { if (v) global.localStorage.setItem(PREFIJO + k, String(v)); else global.localStorage.removeItem(PREFIJO + k); } catch (e) {} }
+  function variable(clave) { return "--irm-ancho-" + String(clave).replace(/[^a-zA-Z0-9]+/g, "-"); }
+  function techo() { return Math.max(MIN, global.innerWidth - MARGEN); }
+  function acotar(v) { return Math.min(techo(), Math.max(MIN, Math.round(v))); }
+  function anchoDeFabrica(p) {
+    // Lo que mide el panel ANTES de que el componente escriba nada: es a lo que
+    // vuelve «Volver al ancho original».
+    // Se mide cuando el panel esta A LA VISTA, no al activarlo: casi todos
+    // arrancan ocultos (hidden, display:none) y ahi miden 0. Si se cacheara ese
+    // 0 habria que inventar un ancho, y «volver al original» devolveria a un
+    // numero que nadie eligio. Verificado el 2026-10-06 en el banco: el cajon
+    // de Dedalo arranca hidden y el valor de reserva coincidia con su ancho
+    // real de pura casualidad.
+    if (p.__irmFabrica) return p.__irmFabrica;
+    var clave = p.getAttribute("data-irm-ancho"), v = variable(clave);
+    var puesto = p.style.getPropertyValue(v);
+    if (puesto) p.style.removeProperty(v);          // medir sin lo que escribimos
+    var w = Math.round(p.getBoundingClientRect().width);
+    if (puesto) p.style.setProperty(v, puesto);
+    if (w > 0) p.__irmFabrica = w;                  // solo se guarda una medida real
+    return w > 0 ? w : 0;
+  }
+  var voz = null;
+  function decir(t) {
+    if (!voz) { voz = document.createElement("div"); voz.className = "irm-ancho-voz"; voz.setAttribute("role", "status"); voz.setAttribute("aria-live", "polite"); document.body.appendChild(voz); }
+    voz.textContent = ""; setTimeout(function () { voz.textContent = t; }, 30);
+  }
+
+  // El tirador esta fijo a la pantalla, asi que su sitio se calcula del borde
+  // del panel. Se recalcula cuando el panel cambia de tamano, de clase o de
+  // estilo (casi todos se muestran con una clase o quitando «hidden»), y se
+  // esconde cuando el panel no esta a la vista: un tirador flotando sobre un
+  // panel cerrado es un control que no manda a ningun lado.
+  function colocar(p) {
+    var t = p.__irmTirador; if (!t) return;
+    var r = p.getBoundingClientRect();
+    var fuera = (r.width < 1 || r.height < 1 || r.right <= 0 || r.left >= global.innerWidth
+                 || global.innerWidth < DESDE || p.hidden
+                 || getComputedStyle(p).visibility === "hidden");
+    t.hidden = fuera;
+    var b = p.__irmVolver; if (b) b.hidden = fuera;
+    if (fuera) return;
+    t.style.left = (r.left - 5) + "px";
+    t.style.top = r.top + "px";
+    t.style.height = r.height + "px";
+    if (b) { b.style.left = (r.left + 7) + "px"; b.style.top = (r.top + r.height / 2) + "px"; }
+  }
+
+  // Casi todos los paneles entran deslizandose. Si se mide en el instante en que
+  // cambia la clase, el panel todavia esta fuera de pantalla y el tirador se
+  // esconde para siempre. Se mide ahora, en el cuadro siguiente, y cuando la
+  // animacion termina — las tres, porque no se sabe cual de ellas llega.
+  function recolocarPronto(p) {
+    colocar(p);
+    if (global.requestAnimationFrame) global.requestAnimationFrame(function () { colocar(p); });
+    clearTimeout(p.__irmTarde);
+    p.__irmTarde = setTimeout(function () { colocar(p); }, 420);
+  }
+
+  function aplicar(p, ancho) {
+    var clave = p.getAttribute("data-irm-ancho");
+    if (ancho) p.style.setProperty(variable(clave), ancho + "px");
+    else p.style.removeProperty(variable(clave));
+    var t = p.__irmTirador;
+    if (t) {
+      var v = ancho || anchoDeFabrica(p);
+      if (v > 0) t.setAttribute("aria-valuenow", String(v));
+      else t.removeAttribute("aria-valuenow");   // todavia oculto: no se inventa una cifra
+      t.setAttribute("aria-valuemin", String(MIN));
+      t.setAttribute("aria-valuemax", String(techo()));
+      t.setAttribute("title", (v > 0 ? "Ancho: " + v + " px. " : "") +
+        "Arrastrá para cambiarlo; doble clic vuelve al original.");
+    }
+    pintarVolver(p);
+    colocar(p);
+  }
+
+  function pintarVolver(p) {
+    var clave = p.getAttribute("data-irm-ancho");
+    var cambiado = !!leer(clave), b = p.__irmVolver;
+    if (!cambiado) { if (b) { b.remove(); p.__irmVolver = null; } return; }
+    if (b && b.isConnected) return;
+    b = document.createElement("button");
+    b.type = "button"; b.className = "irm-ancho-volver";
+    b.title = "Volver al ancho original";
+    b.setAttribute("aria-label", "Volver al ancho original");
+    b.innerHTML = '<span class="irm-ancho-ico" aria-hidden="true">↺</span>' +
+                  '<span class="irm-ancho-txt">Ancho original</span>';
+    b.addEventListener("click", function () { restablecer(p); });
+    document.body.appendChild(b); p.__irmVolver = b; colocar(p);
+  }
+
+  function restablecer(p) {
+    guardar(p.getAttribute("data-irm-ancho"), null);
+    aplicar(p, null);
+    var f = anchoDeFabrica(p);
+    decir("Ventana en su ancho original" + (f > 0 ? ", " + f + " pixeles." : "."));
+    if (p.__irmTirador) p.__irmTirador.focus();
+  }
+
+  function activar(p) {
+    if (p.__irmAncho) return;
+    p.__irmAncho = true;
+
+    var t = document.createElement("button");
+    t.type = "button"; t.className = "irm-tirador";
+    t.setAttribute("role", "separator");
+    t.setAttribute("aria-orientation", "vertical");
+    t.setAttribute("aria-label", "Ancho de esta ventana. Arrastrá, o usá las flechas izquierda y derecha; Inicio vuelve al original.");
+    t.hidden = true;
+    document.body.appendChild(t); p.__irmTirador = t;
+    // Si el panel es «static» hay que anclarlo, pero solo entonces: ponerselo a
+    // uno que ya es fixed lo descoloca (Linneo, 2026-10-06).
+    if (getComputedStyle(p).position === "static") p.style.position = "relative";
+
+    aplicar(p, leer(p.getAttribute("data-irm-ancho")));
+
+    // Mostrar u ocultar el panel casi siempre es cambiar una clase, un estilo o
+    // el atributo hidden: cualquiera de los tres recoloca el tirador.
+    new MutationObserver(function () { recolocarPronto(p); })
+      .observe(p, { attributes: true, attributeFilter: ["class", "style", "hidden"] });
+    if (global.ResizeObserver) new ResizeObserver(function () { colocar(p); }).observe(p);
+    p.addEventListener("transitionend", function (ev) { if (ev.target === p) colocar(p); });
+    p.addEventListener("animationend", function (ev) { if (ev.target === p) colocar(p); });
+
+    var arr = null;
+    function fijar(ancho, anunciar) {
+      var v = acotar(ancho), f = anchoDeFabrica(p);
+      // Dejarlo en su ancho de fabrica NO se guarda: asi, si el artefacto cambia
+      // de ancho mas adelante, quien nunca lo movio recibe el nuevo.
+      var igual = (f > 0 && v === f);
+      guardar(p.getAttribute("data-irm-ancho"), igual ? null : v);
+      aplicar(p, igual ? null : v);
+      if (anunciar) decir("Ventana de " + v + " pixeles de ancho.");
+      return v;
+    }
+    function actual() { return Math.round(p.getBoundingClientRect().width); }
+
+    t.addEventListener("pointerdown", function (ev) {
+      if (global.innerWidth < DESDE || ev.button > 0) return;
+      arr = { x: ev.clientX, w: actual() };
+      t.classList.add("irm-agarrado");
+      document.body.classList.add("irm-ancho-moviendo");
+      try { t.setPointerCapture(ev.pointerId); } catch (e) {}
+      ev.preventDefault();
+    });
+    t.addEventListener("pointermove", function (ev) {
+      if (!arr) return;
+      ev.preventDefault();
+      // El panel esta anclado a la derecha: moverse hacia la izquierda lo ensancha.
+      var v = acotar(arr.w + (arr.x - ev.clientX));
+      p.style.setProperty(variable(p.getAttribute("data-irm-ancho")), v + "px");
+      t.setAttribute("aria-valuenow", String(v));
+    });
+    function soltar() {
+      if (!arr) return;
+      arr = null;
+      t.classList.remove("irm-agarrado");
+      document.body.classList.remove("irm-ancho-moviendo");
+      fijar(actual(), true);
+    }
+    t.addEventListener("pointerup", soltar);
+    t.addEventListener("pointercancel", soltar);
+    // Doble clic: vuelve al original. Es el gesto que ya hace eso en una ventana
+    // de escritorio, asi que no hay que aprenderlo.
+    t.addEventListener("dblclick", function (ev) { ev.preventDefault(); restablecer(p); });
+    t.addEventListener("keydown", function (ev) {
+      if (global.innerWidth < DESDE) return;
+      var paso = ev.shiftKey ? 160 : 48;
+      if (ev.key === "ArrowLeft")       { ev.preventDefault(); fijar(actual() + paso, true); }
+      else if (ev.key === "ArrowRight") { ev.preventDefault(); fijar(actual() - paso, true); }
+      else if (ev.key === "Home")       { ev.preventDefault(); restablecer(p); }
+    });
+  }
+
+  // Un ancho guardado en un monitor grande deja el panel fuera de la pantalla en
+  // un portatil. Al cambiar la ventana se vuelve a acotar, sin pisar lo guardado:
+  // si despues se vuelve al monitor grande, el ancho de antes sigue ahi.
+  var reacotar = null;
+  global.addEventListener("resize", function () {
+    clearTimeout(reacotar);
+    reacotar = setTimeout(function () {
+      Array.prototype.forEach.call(document.querySelectorAll("[data-irm-ancho]"), function (p) {
+        if (!p.__irmAncho) return;
+        var g = leer(p.getAttribute("data-irm-ancho"));
+        aplicar(p, g ? acotar(g) : null);
+        colocar(p);
+      });
+    }, 150);
+  });
+
+  function barrer(raiz) {
+    if (!raiz || !raiz.querySelectorAll) return;
+    if (raiz.matches && raiz.matches("[data-irm-ancho]")) activar(raiz);
+    Array.prototype.forEach.call(raiz.querySelectorAll("[data-irm-ancho]"), activar);
+  }
+  function arrancar() {
+    barrer(document.body);
+    new MutationObserver(function (ms) {
+      ms.forEach(function (m) {
+        Array.prototype.forEach.call(m.addedNodes, function (n) { if (n.nodeType === 1) barrer(n); });
+        // El panel que la pagina repinta con innerHTML se lleva por delante el
+        // tirador: si el suyo ya no esta en el documento, se vuelve a poner.
+        // El tirador vive en el <body>, asi que repintar el panel con innerHTML
+        // ya no se lo lleva. Lo que si cambia es su tamano: se recoloca.
+        var p = m.target && m.target.closest && m.target.closest("[data-irm-ancho]");
+        if (p && p.__irmAncho) colocar(p);
+      });
+    }).observe(document.body, { childList: true, subtree: true });
+  }
+  if (document.readyState === "loading") document.addEventListener("DOMContentLoaded", arrancar); else arrancar();
+  global.IRMAncho = { activar: activar, restablecer: restablecer, version: "1" };
 })(window);
 const URL_SB = "https://oixizeqfuxsbjqcvzpbe.supabase.co", LLAVE = "sb_publishable_Yfu9GwQGe9w5NsGVmC3BvQ_Gj7k4DGi";
 const sb = supabase.createClient(URL_SB, LLAVE, { auth: { persistSession: true, autoRefreshToken: true } });
