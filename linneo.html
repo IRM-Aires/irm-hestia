@@ -336,6 +336,8 @@ textarea { min-height: 70px; resize: vertical; }
 .presentacion-cuerpo p, .presentacion-cuerpo li { font-size: 13px; line-height: 1.5; margin: 0 0 6px; }
 .presentacion-cuerpo ol, .presentacion-cuerpo ul { margin: 0; padding-left: 18px; }
 .presentacion-cuerpo .fino { color: var(--tinta-2); font-size: 12px; }
+.p-entrega > summary { cursor: pointer; padding: 8px 0; }
+.p-entrega > summary small { color: var(--tinta-2); font-weight: 400; margin-left: 6px; }
 /* Indicador de paso (pilar «nada espera en silencio»). Selector propio: .p-estado es el contador gris de los plegables. */
 .p-trabajando { position: fixed; top: 0; left: 0; right: 0; z-index: 70; display: flex; align-items: center; gap: 10px; padding: 6px 16px; background: var(--superficie); border-bottom: 2px solid var(--irm-cian); font-size: 12.5px; color: var(--tinta-2); }
 .p-trabajando[hidden] { display: none; }
@@ -614,10 +616,13 @@ th.irm-caneca-col, td.irm-caneca-col { width: 38px; text-align: center; padding-
         <small>Regla 38: el IVA de la compra va al costo solo si IRM no lo puede descontar. Con factura a nombre de IRM se descuenta (se guarda el precio ÷ 1,19); sin factura, ese IVA es costo y se guarda tal cual.</small></label>
       <label class="p-campo">Fecha del precio <input id="p-fecha" type="date"></label>
       <label class="p-campo">Vigente hasta <small>opcional</small><input id="p-vig" type="date"></label>
+      <details class="ancho p-entrega" id="p-entrega"><summary><b>Condiciones de entrega (Incoterm)</b> <small>solo si el proveedor las especifica: sobre todo equipos mayores y sistemas</small></summary>
+      <div class="p-form" style="margin-top:8px">
       <label class="p-campo">Término de entrega (Incoterm) <small>hasta dónde lleva el proveedor la mercancía; si no lo elegís queda «sin declarar»</small><select id="p-inc"><option value="">Sin declarar</option></select></label>
       <label class="p-campo">Lugar de entrega <small id="p-lugar-que">va pegado al Incoterm: «FCA Shanghái»</small><input id="p-lugar" placeholder="Shanghái · puerto de Cartagena · la obra" autocomplete="off"></label>
       <label class="p-campo">Días de entrega <small>opcional</small><input id="p-dias" type="number" min="0" step="1" inputmode="numeric"></label>
       <label class="p-campo">Contados desde <small>obligatorio si pusiste días</small><select id="p-desde"><option value="">—</option><option value="orden">la orden de compra</option><option value="pago">el pago</option><option value="carta_credito">la carta de crédito</option></select></label>
+      </div></details>
       <label class="p-campo">Modo <span class="p-inter" id="p-modo"><button class="on" data-v="compra">Compra</button><button data-v="alquiler">Alquiler</button></span><small>alquiler = unidad DÍA / SEMANA / MES / HORA</small></label>
       <label class="p-campo">¿De dónde sale? <span class="p-inter" id="p-ftipo"><button class="on" data-v="cotizacion">Cotización</button><button data-v="factura">Factura</button><button data-v="lista_precios">Lista</button><button data-v="correo">Correo</button><button data-v="whatsapp">WhatsApp</button><button data-v="web">Web</button></span></label>
       <label class="p-campo ancho">Detalle de la evidencia <small>obligatorio: número y fecha de la cotización, factura o mensaje</small><input id="p-fdet" placeholder="Cotización 99130 del 24-09-2026 · WhatsApp de SYP del 25-09"></label>
@@ -2075,6 +2080,8 @@ function entregaTxt(p) {
 }
 function elegirRecurso(f) {
   cargarIncoterms();
+  // Incoterm: equipos mayores y sistemas, cuando el proveedor lo especifica (regla del usuario, 2026-10-10).
+  if ($("#p-entrega")) $("#p-entrega").open = f.capitulo === "Equipos" || !!$("#p-inc").value;
   if (VOLVER_A && Number(f.recurso_id) !== VOLVER_A.id) { VOLVER_A = null; pintarVolver(); }   // eligió otro recurso: el «volver» ya no aplica
   $("#p-rid").value = f.recurso_id; $("#p-elegido").textContent = `${f.codigo} · ${f.unidad||""} · precio actual ${f.precio!=null?cop(f.precio):"sin precio"}`;
   $("#p-form2").hidden = false; $("#p-paso").innerHTML = `Paso 2 de 2 — Completá proveedor, precio y de dónde sale, y presioná <kbd>⌘⏎</kbd>.`;
