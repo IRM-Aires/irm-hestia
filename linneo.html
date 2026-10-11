@@ -600,6 +600,7 @@ th.irm-caneca-col, td.irm-caneca-col { width: 38px; text-align: center; padding-
   </section>
 
   <section class="p-vista" data-v="registrar">
+    <button type="button" class="p-btn sec chico" id="p-volver" hidden onclick="if (VOLVER_A) abrirHoja(VOLVER_A.id)">← Volver a la ficha</button>
     <p class="p-paso" id="p-paso">Paso 1 de 2 — Escribí parte del nombre o el código del recurso y elegilo de la lista.</p>
     <div class="p-form">
       <label class="p-campo ancho">Recurso <input id="p-busca" list="dl-rec" placeholder="rejilla 12 x 12, CDAH, IRM-EQ-…" autocomplete="off"><input type="hidden" id="p-rid"><small id="p-elegido"></small></label>
@@ -1213,7 +1214,7 @@ document.addEventListener("keydown", ev => {
 });
 
 const PASOS = { panel_control_ime: "Leyendo el catálogo completo…", ime_buscar: "Buscando en el catálogo…", ime_recurso: "Abriendo la ficha del recurso…",
-  ime_registrar_precio: "Guardando el precio…", ime_incoterms: "Leyendo los términos de entrega…", ime_marcas_equipo: "Leyendo las marcas de equipos…", ime_crear_marca_equipo: "Creando la marca…", ime_fijar_precio_usuario: "Guardando tu precio…", ime_editar_ficha: "Guardando la ficha…",
+  ime_registrar_precio: "Guardando el precio…", ime_incoterms: "Leyendo los términos de entrega…", panel_fijar_contenido: "Guardando la presentación…", ime_marcas_equipo: "Leyendo las marcas de equipos…", ime_crear_marca_equipo: "Creando la marca…", ime_fijar_precio_usuario: "Guardando tu precio…", ime_editar_ficha: "Guardando la ficha…",
   ime_resolver_solicitud: "Aplicando tu decisión…", ime_bitacora: "Leyendo la actividad…", ime_crear_recurso: "Creando el insumo…", ime_equipos_resumen: "Contando los equipos…", ime_clasificar_equipo: "Guardando la clase del equipo…", ime_depreciacion_clases: "Leyendo la tabla de depreciación…", ime_equipo_calcular: "Calculando el costo por día…", ime_equipo_propio_guardar: "Guardando el costo propio…", ime_equipo_propio_quitar: "Quitando el costo propio…", ime_ajuste_previa: "Buscando los precios que entran en el ajuste…", ime_ajuste_aplicar: "Ajustando los precios…", ime_ajuste_deshacer: "Devolviendo los precios a su valor anterior…", ime_ajuste_lotes: "Leyendo los ajustes anteriores…", ime_parecidos: "Buscando parecidos (palabras y sinónimos)…", ime_sinonimos: "Leyendo los sinónimos…", ime_guardar_sinonimo: "Guardando el sinónimo y recalculando el catálogo…", ime_eliminar_recurso_reciente: "Deshaciendo la creación…", ime_reabrir_solicitud: "Deshaciendo…", ime_deshacer_aprobacion: "Deshaciendo la aprobación…",
   ime_retirar_recurso: "Eliminando el insumo…", ime_restaurar_recurso: "Devolviendo el insumo al catálogo…", ime_quitar_precio: "Eliminando el precio…", ime_restaurar_precio: "Devolviendo el precio…",
   ime_reemplazo_previa: "Calculando en qué recetas cambia y cuánto…", ime_reemplazar_y_eliminar: "Cambiando el insumo en las recetas…", ime_reemplazo_deshacer: "Devolviendo las recetas como estaban…",
@@ -1516,6 +1517,7 @@ async function abrirHoja(id) {
 function cerrarHoja() { $("#hoja").classList.remove("on"); $("#fondo").classList.remove("on"); if (ULTIMO_FOCO && ULTIMO_FOCO.focus) ULTIMO_FOCO.focus(); }
 $("#fondo").onclick = cerrarHoja;
 function pintarHoja() {
+  $("#hoja").classList.remove("p-editando");   // guardar, cancelar o deshacer cierran la edición: la barra no queda pegada
   const d = FICHA, f = d.ficha;
   const precios = tabla(["Proveedor","Precio","Tipo","Fecha","Vigente hasta","De dónde sale"],
     d.precios.map(p=>[["",`${e(p.proveedor)}<br><span class="dim" style="font-size:11px">${e(p.modo_adquisicion)}${p.codigo_proveedor?` · ref. ${e(p.codigo_proveedor)}`:""}<br>${e(entregaTxt(p))}</span>`],["num",p.moneda==="USD"?`${usd(p.precio_moneda_original)}<br><span class="dim" style="font-size:11px">≈ ${cop(p.precio,0)} a TRM ${cop(p.trm_aplicada,2)}</span>`:cop(p.precio)],["",p.tipo_precio==="lista"?"Lista":"Facturado"],["",e(p.fecha_precio)],["",e(p.vigencia_hasta)||"—"],["",`<span class="dim">${e(p.fuente_tipo)}</span> · ${e(p.fuente_detalle)}`]]),
@@ -1537,6 +1539,7 @@ function pintarHoja() {
       <b>Vigencia</b><span>${vig(f.estado_vigencia)} ${f.dias_precio!=null?`<span class="dim">· ${num(f.dias_precio)} días</span>`:""} ${f.alerta_trm?'<span class="p-vig" style="--c:#fab219">Se reprecia hoy con la TRM</span>':""}<br><span class="dim">${e(accionTxt(f.accion))}</span><details style="margin-top:4px"><summary class="dim" style="cursor:pointer;font-size:12px">¿Qué significa cada color?</summary>${LEYENDA}</details></span>
       <b>Capítulo · unidad</b><span><span class="p-editable" data-campo="capitulo">${e(f.capitulo)}</span> · <span class="p-editable" data-campo="unidad" ${d.apus.length?'data-fijo="1" title="No se cambia la unidad de un recurso que ya está en una receta"':""}>${e(f.unidad)}</span></span>
       <b>Marca</b>${f.capitulo === "Equipos" ? `<span>${selectorMarca(f)}</span>` : `<span class="p-editable" data-campo="marca">${e(f.marca)||'<span class="dim">—</span>'}</span>`}
+      ${filaPresentacion(f)}
       <b>Especificación</b><span class="p-editable" data-campo="especificacion">${e(f.especificacion)||'<span class="dim">—</span>'}</span>
       <b>Naturaleza</b><span>${e(f.naturaleza_valor)} <span class="dim">· costo = sin margen; sin IVA si IRM lo recupera, con IVA si no (regla 38)</span>${f.activo===false?' · <span class="p-vig" style="--c:#d03b3b">Eliminado</span> <button class="p-btn sec chico" onclick="restaurarRecurso(${f.recurso_id}, this).then(()=>abrirHoja(${f.recurso_id}))">Restaurar</button>':""}</span>
     </div>
@@ -1709,10 +1712,48 @@ function quitarEquipo(btn) {
 }
 /* Ir a «Registrar precio» con el recurso ya elegido. Recibe sólo el id (un nombre con apóstrofo rompía el
    onclick) y toma el resto de lo que ya está en pantalla: la ficha abierta o el insumo recién creado. */
+/* Presentación (2026-10-10): cuánto trae una unidad de compra (1 UN = 3 MT de riel, 1 GAL = 3,785 L). Solo
+   Materiales e Insumos, que son los que se gastan. Se escribe con core.panel_fijar_contenido, la misma puerta
+   de Dédalo. La deducida del nombre se muestra como tal hasta que una persona la confirme. */
+function filaPresentacion(f) {
+  if (!["Materiales", "Insumos"].includes(f.capitulo)) return "";
+  const hay = f.contenido != null, conf = f.contenido_confirmado;
+  const estado = !hay ? '<span class="dim">sin presentación: se compra y se usa en ' + e(f.unidad) + '</span>'
+    : conf ? '<span class="dim">confirmada</span>' : '<span class="p-vig" style="--c:#fab219">deducida del nombre, sin confirmar</span>';
+  return `<b>Presentación</b><span>1 ${e(f.unidad)} = <input id="pr-cant" type="number" min="0" step="any" inputmode="decimal" style="width:90px" value="${hay ? e(String(f.contenido)) : ""}" aria-label="Contenido de una unidad de compra">
+    <input id="pr-uni" list="dl-pr-uni" style="width:80px" value="${e(f.contenido_unidad || "")}" placeholder="MT, KG, L" aria-label="Unidad del contenido" autocomplete="off">
+    <datalist id="dl-pr-uni">${UNIDADES.filter(u => u !== String(f.unidad).toUpperCase()).map(u => `<option value="${u}">`).join("")}</datalist>
+    ${hay && !conf ? '<button type="button" class="p-btn sec chico" onclick="guardarPresentacion(this, true)">Confirmar</button>' : ""}
+    <br>${estado} · <span class="dim">vacío = no tiene presentación</span></span>`;
+}
+function guardarPresentacion(btn, confirmar) {
+  const f = FICHA.ficha, c = $("#pr-cant").value === "" ? null : Number($("#pr-cant").value), u = $("#pr-uni").value.trim().toUpperCase() || null;
+  const antes = { c: f.contenido ?? null, u: f.contenido_unidad || null };
+  if (!confirmar && c === antes.c && u === antes.u) return;
+  if (c != null && !u) { $("#pr-uni").focus(); return; }   // falta la unidad: se espera a que la escriba
+  return accion(btn, async () => {
+    const quien = (SESION && SESION.user && SESION.user.email) || "Linneo";
+    const r = await rpc("panel_fijar_contenido", { p_codigo_recurso: f.codigo, p_contenido: c, p_unidad: u, p_quien: quien });
+    if (!r || r.ok === false) throw new Error((r && r.error) || "No se guardó la presentación.");
+    trasFicha(await rpc("ime_recurso", { p_id: f.recurso_id }));
+    aviso(c == null ? `${e(f.codigo)}: sin presentación.` : `${e(f.codigo)}: 1 ${e(f.unidad)} = <b>${num(c)} ${e(u)}</b>${confirmar ? " (confirmada)" : ""}.`,
+      { deshacer: async () => { await rpc("panel_fijar_contenido", { p_codigo_recurso: f.codigo, p_contenido: antes.c, p_unidad: antes.u, p_quien: quien }); trasFicha(await rpc("ime_recurso", { p_id: f.recurso_id })); } });
+  });
+}
+document.addEventListener("change", ev => { if (ev.target && (ev.target.id === "pr-cant" || ev.target.id === "pr-uni")) guardarPresentacion(ev.target, false); });
+
+/* Volver a la ficha (pedido del usuario, 2026-10-10): quien llega a «Registrar precio» desde la ficha de un
+   recurso tiene cómo regresar a ella sin registrar nada. */
+let VOLVER_A = null;
+function pintarVolver() {
+  const b = $("#p-volver"); if (!b) return;
+  b.hidden = !VOLVER_A; if (VOLVER_A) b.textContent = `← Volver a la ficha de ${VOLVER_A.codigo}`;
+}
 async function irARegistrar(id) {
   let f = FICHA?.ficha?.recurso_id === id ? FICHA.ficha : CREADO?.recurso_id === id ? CREADO : null;
   if (!f) { try { f = (await rpc("ime_recurso", { p_id: id })).ficha; } catch (err) { aviso(explicar(err), { tipo:"atencion", ms: 9000 }); return; } }
   $("#p-busca").value = `${f.codigo} — ${f.nombre}`; elegirRecurso(f); cerrarHoja(); ir("registrar"); setTimeout(()=>$("#p-prov").focus(), 60);
+  VOLVER_A = { id: Number(f.recurso_id), codigo: f.codigo }; pintarVolver();
 }
 
 // edición en sitio
@@ -2029,6 +2070,7 @@ function entregaTxt(p) {
 }
 function elegirRecurso(f) {
   cargarIncoterms();
+  if (VOLVER_A && Number(f.recurso_id) !== VOLVER_A.id) { VOLVER_A = null; pintarVolver(); }   // eligió otro recurso: el «volver» ya no aplica
   $("#p-rid").value = f.recurso_id; $("#p-elegido").textContent = `${f.codigo} · ${f.unidad||""} · precio actual ${f.precio!=null?cop(f.precio):"sin precio"}`;
   $("#p-form2").hidden = false; $("#p-paso").innerHTML = `Paso 2 de 2 — Completá proveedor, precio y de dónde sale, y presioná <kbd>⌘⏎</kbd>.`;
   // Lo que ya se sabe del recurso no se vuelve a preguntar: unidad de alquiler → Alquiler; comprado en dólares → USD.
