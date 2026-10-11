@@ -1208,7 +1208,12 @@ function cerrarForm(sel) { $(sel || "#hoja-form").innerHTML = ""; }
 document.addEventListener("keydown", ev => {
   const meta = ev.metaKey || ev.ctrlKey, tag = (ev.target.tagName||"").toLowerCase(), escribiendo = ["input","textarea","select"].includes(tag);
   if (meta && ev.key.toLowerCase()==="z" && !escribiendo && ULTIMO_DESHACER) { ev.preventDefault(); const u = ULTIMO_DESHACER; ULTIMO_DESHACER = null; u.t.remove(); deshacerYa(u.fn); }
-  if (ev.key === "Escape") { if ($("#hoja").classList.contains("on")) cerrarHoja(); }
+  if (ev.key === "Escape") {
+    if ($("#hoja").classList.contains("on")) cerrarHoja();
+    // En «Registrar precio» abierto desde una ficha, Esc vuelve a esa ficha (pedido del usuario, 2026-10-10).
+    // Si está abierto el formulario de crear proveedor, Esc solo cierra ese formulario.
+    else if (VOLVER_A && $('.p-vista[data-v="registrar"]').classList.contains("on") && !$("#pv-nombre")) { ev.preventDefault(); abrirHoja(VOLVER_A.id); }
+  }
   if (ev.key === "/" && !escribiendo) { ev.preventDefault(); $("#g-q").focus(); $("#g-q").select(); }
   if (meta && ev.key === "Enter") { const btn = ev.target.closest(".p-form, .p-hoja")?.querySelector("[data-principal]"); if (btn) { ev.preventDefault(); btn.click(); } }
 });
@@ -1747,7 +1752,7 @@ document.addEventListener("change", ev => { if (ev.target && (ev.target.id === "
 let VOLVER_A = null;
 function pintarVolver() {
   const b = $("#p-volver"); if (!b) return;
-  b.hidden = !VOLVER_A; if (VOLVER_A) b.textContent = `← Volver a la ficha de ${VOLVER_A.codigo}`;
+  b.hidden = !VOLVER_A; if (VOLVER_A) b.innerHTML = `← Volver a la ficha de ${e(VOLVER_A.codigo)} <kbd>esc</kbd>`;
 }
 async function irARegistrar(id) {
   let f = FICHA?.ficha?.recurso_id === id ? FICHA.ficha : CREADO?.recurso_id === id ? CREADO : null;
