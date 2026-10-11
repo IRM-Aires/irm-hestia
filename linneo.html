@@ -618,6 +618,7 @@ th.irm-caneca-col, td.irm-caneca-col { width: 38px; text-align: center; padding-
       <label class="p-campo">Vigente hasta <small>opcional</small><input id="p-vig" type="date"></label>
       <details class="ancho p-entrega" id="p-entrega"><summary><b>Condiciones de entrega (Incoterm)</b> <small>solo si el proveedor las especifica: sobre todo equipos mayores y sistemas</small></summary>
       <div class="p-form" style="margin-top:8px">
+      <label class="p-campo">¿Para qué propuesta? <small>el proveedor fija estas condiciones para UNA propuesta: número de C-001-01, obra o cliente; obligatoria si eliges Incoterm</small><input id="p-prop" list="dl-prop" autocomplete="off" placeholder="1140 · AUTOLAND LAS VEGAS"><datalist id="dl-prop"></datalist></label>
       <label class="p-campo">Término de entrega (Incoterm) <small>hasta dónde lleva el proveedor la mercancía; si no lo elegís queda «sin declarar»</small><select id="p-inc"><option value="">Sin declarar</option></select></label>
       <label class="p-campo">Lugar de entrega <small id="p-lugar-que">va pegado al Incoterm: «FCA Shanghái»</small><input id="p-lugar" placeholder="Shanghái · puerto de Cartagena · la obra" autocomplete="off"></label>
       <label class="p-campo">Días de entrega <small>opcional</small><input id="p-dias" type="number" min="0" step="1" inputmode="numeric"></label>
@@ -1224,7 +1225,7 @@ document.addEventListener("keydown", ev => {
 });
 
 const PASOS = { panel_control_ime: "Leyendo el catálogo completo…", ime_buscar: "Buscando en el catálogo…", ime_recurso: "Abriendo la ficha del recurso…",
-  ime_registrar_precio: "Guardando el precio…", ime_incoterms: "Leyendo los términos de entrega…", panel_fijar_contenido: "Guardando la presentación…", ime_marcas_equipo: "Leyendo las marcas de equipos…", ime_crear_marca_equipo: "Creando la marca…", ime_fijar_precio_usuario: "Guardando tu precio…", ime_editar_ficha: "Guardando la ficha…",
+  ime_registrar_precio: "Guardando el precio…", ime_incoterms: "Leyendo los términos de entrega…", panel_fijar_contenido: "Guardando la presentación…", ime_buscar_propuesta: "Buscando la propuesta en C-001-01…", ime_marcas_equipo: "Leyendo las marcas de equipos…", ime_crear_marca_equipo: "Creando la marca…", ime_fijar_precio_usuario: "Guardando tu precio…", ime_editar_ficha: "Guardando la ficha…",
   ime_resolver_solicitud: "Aplicando tu decisión…", ime_bitacora: "Leyendo la actividad…", ime_crear_recurso: "Creando el insumo…", ime_equipos_resumen: "Contando los equipos…", ime_clasificar_equipo: "Guardando la clase del equipo…", ime_depreciacion_clases: "Leyendo la tabla de depreciación…", ime_equipo_calcular: "Calculando el costo por día…", ime_equipo_propio_guardar: "Guardando el costo propio…", ime_equipo_propio_quitar: "Quitando el costo propio…", ime_ajuste_previa: "Buscando los precios que entran en el ajuste…", ime_ajuste_aplicar: "Ajustando los precios…", ime_ajuste_deshacer: "Devolviendo los precios a su valor anterior…", ime_ajuste_lotes: "Leyendo los ajustes anteriores…", ime_parecidos: "Buscando parecidos (palabras y sinónimos)…", ime_sinonimos: "Leyendo los sinónimos…", ime_guardar_sinonimo: "Guardando el sinónimo y recalculando el catálogo…", ime_eliminar_recurso_reciente: "Deshaciendo la creación…", ime_reabrir_solicitud: "Deshaciendo…", ime_deshacer_aprobacion: "Deshaciendo la aprobación…",
   ime_retirar_recurso: "Eliminando el insumo…", ime_restaurar_recurso: "Devolviendo el insumo al catálogo…", ime_quitar_precio: "Eliminando el precio…", ime_restaurar_precio: "Devolviendo el precio…",
   ime_reemplazo_previa: "Calculando en qué recetas cambia y cuánto…", ime_reemplazar_y_eliminar: "Cambiando el insumo en las recetas…", ime_reemplazo_deshacer: "Devolviendo las recetas como estaban…",
@@ -2074,9 +2075,18 @@ function verLugar() {
     : i.requiere_lugar ? `obligatorio con ${i.codigo}: ${i.que_es_el_lugar}` : `opcional: ${i.que_es_el_lugar}`;
 }
 const DESDE = { orden: "la orden", pago: "el pago", carta_credito: "la carta de crédito" };
+/* PILAR (2026-10-10): el Incoterm es una condición de la OFERTA del proveedor para una propuesta, no del recurso.
+   IRM es intermediaria: este tramo (proveedor → IRM) lo lee Rómulo y Remo al armar el tramo IRM → cliente. */
+const propuestaId = v => { const m = String(v || "").trim().match(/^(\d+)/); return m ? Number(m[1]) : null; };
+let TMR_PROP = null;
+document.addEventListener("input", ev => {
+  if (ev.target.id !== "p-prop") return; clearTimeout(TMR_PROP); const q = ev.target.value.trim(); if (q.length < 2 || /·/.test(q)) return;
+  TMR_PROP = setTimeout(async () => { try { const L = await rpc("ime_buscar_propuesta", { p_texto: q });
+    $("#dl-prop").innerHTML = L.map(x => `<option value="${e(x.id + " · " + (x.obra || "") + " · " + (x.cliente || ""))}">`).join(""); } catch (_) {} }, 300);
+});
 function entregaTxt(p) {
   const t = !p.incoterm ? "entrega sin declarar" : p.incoterm === "NACIONAL_OBRA" ? "nacional, entregado en obra" : `${p.incoterm} ${p.lugar_entrega || ""}`.trim();
-  return t + (p.dias_entrega != null ? ` · ${num(p.dias_entrega)} días desde ${DESDE[p.dias_desde] || "—"}` : "");
+  return t + (p.dias_entrega != null ? ` · ${num(p.dias_entrega)} días desde ${DESDE[p.dias_desde] || "—"}` : "") + (p.propuesta_id ? ` · oferta para la propuesta #${p.propuesta_id}` : "");
 }
 function elegirRecurso(f) {
   cargarIncoterms();
@@ -2156,14 +2166,16 @@ $("#p-btn").onclick = async () => {
     p_vigencia_hasta: $("#p-vig").value||null, p_incluye_iva: valor("#p-iva")==="si",
     p_notas: [valor("#p-iva")==="costo" ? "IVA incluido y NO recuperable (sin factura a IRM): va al costo — regla 38" : "", $("#p-notas").value].filter(Boolean).join(" · ") || null,
     p_incoterm: $("#p-inc").value || null, p_lugar_entrega: $("#p-lugar").value.trim() || null,
-    p_dias_entrega: $("#p-dias").value === "" ? null : Number($("#p-dias").value), p_dias_desde: $("#p-desde").value || null };
+    p_dias_entrega: $("#p-dias").value === "" ? null : Number($("#p-dias").value), p_dias_desde: $("#p-desde").value || null,
+    p_propuesta_id: propuestaId($("#p-prop").value) };
   const inc = incoterm(args.p_incoterm);
   if (inc && inc.requiere_lugar && !args.p_lugar_entrega) { $("#p-lugar").focus(); aviso(`<b>${e(inc.codigo)} sin lugar no se guarda</b>: el Incoterm vale con su lugar (${e(inc.que_es_el_lugar)}). Ejemplo: «${e(inc.codigo)} Shanghái».`, { tipo: "atencion", ms: 9000 }); return; }
+  if (args.p_incoterm && !args.p_propuesta_id) { $("#p-prop").focus(); aviso(`El Incoterm <b>${e(args.p_incoterm)}</b> es una condición de la oferta del proveedor para <b>una propuesta</b>: elegí para cuál (número de C-001-01).`, { tipo: "atencion", ms: 9000 }); return; }
   if (args.p_dias_entrega != null && !args.p_dias_desde) { $("#p-desde").focus(); aviso("Los días de entrega se cuentan desde algo: elegí si es desde la orden de compra, el pago o la carta de crédito.", { tipo: "atencion" }); return; }
   await accion($("#p-btn"), async () => {
     trasFicha(await rpc("ime_registrar_precio", args), true);
     const pid = (FICHA.bitacora[0]?.detalle||{}).precio_id, f = FICHA.ficha;
-    ["p-precio","p-fdet","p-cod","p-notas","p-inc","p-lugar","p-dias","p-desde"].forEach(i=>$("#"+i).value=""); verLugar();   // la próxima oferta elige su propio término
+    ["p-precio","p-fdet","p-cod","p-notas","p-inc","p-lugar","p-dias","p-desde","p-prop"].forEach(i=>$("#"+i).value=""); verLugar();   // la próxima oferta elige su propio término
     aviso(`Precio registrado para <b>${e(f.codigo)}</b>${args.p_proveedor.trim() ? "" : " (proveedor no identificado)"}. Ahora gobierna ${precioTxt(f)}.`, { deshacer: pid ? () => deshacerRegistro(pid) : null });
     $("#p-prov-ayuda").innerHTML = "";
   });
