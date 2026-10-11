@@ -1530,10 +1530,15 @@ $("#fondo").onclick = cerrarHoja;
 function pintarHoja() {
   $("#hoja").classList.remove("p-editando");   // guardar, cancelar o deshacer cierran la edición: la barra no queda pegada
   const d = FICHA, f = d.ficha;
-  const precios = tabla(["Proveedor","Precio","Tipo","Fecha","Vigente hasta","De dónde sale"],
-    d.precios.map(p=>[["",`${e(p.proveedor)}<br><span class="dim" style="font-size:11px">${e(p.modo_adquisicion)}${p.codigo_proveedor?` · ref. ${e(p.codigo_proveedor)}`:""}<br>${e(entregaTxt(p))}</span>`],["num",p.moneda==="USD"?`${usd(p.precio_moneda_original)}<br><span class="dim" style="font-size:11px">≈ ${cop(p.precio,0)} a TRM ${cop(p.trm_aplicada,2)}</span>`:cop(p.precio)],["",p.tipo_precio==="lista"?"Lista":"Facturado"],["",e(p.fecha_precio)],["",e(p.vigencia_hasta)||"—"],["",`<span class="dim">${e(p.fuente_tipo)}</span> · ${e(p.fuente_detalle)}`]]),
-    "Todavía no hay precios de proveedor. Usá <b>Registrar precio</b> cuando tengas una cotización, factura o mensaje del proveedor.", undefined,
-    i => caneca(`el precio de ${d.precios[i].proveedor}`, { attrs: `data-acc="precio" data-id="${Number(d.precios[i].id)}"` }));
+  /* PILAR (2026-10-10, TK-0074): la oferta para una propuesta vale SOLO para ese proyecto. En la ficha es
+     referencia de consulta, aparte de los precios de catálogo, porque no fija el precio del recurso. */
+  const filaPrecio = p => [["",`${e(p.proveedor)}<br><span class="dim" style="font-size:11px">${e(p.modo_adquisicion)}${p.codigo_proveedor?` · ref. ${e(p.codigo_proveedor)}`:""}<br>${e(entregaTxt(p))}</span>`],["num",p.moneda==="USD"?`${usd(p.precio_moneda_original)}<br><span class="dim" style="font-size:11px">≈ ${cop(p.precio,0)} a TRM ${cop(p.trm_aplicada,2)}</span>`:cop(p.precio)],["",p.tipo_precio==="lista"?"Lista":"Facturado"],["",e(p.fecha_precio)],["",e(p.vigencia_hasta)||"—"],["",`<span class="dim">${e(p.fuente_tipo)}</span> · ${e(p.fuente_detalle)}`]];
+  const delCatalogo = d.precios.filter(p => p.propuesta_id == null), dePropuesta = d.precios.filter(p => p.propuesta_id != null);
+  const precios = tabla(["Proveedor","Precio","Tipo","Fecha","Vigente hasta","De dónde sale"], delCatalogo.map(filaPrecio),
+    dePropuesta.length ? "No hay precios de catálogo: solo ofertas para una propuesta (abajo), que no fijan el precio del recurso." : "Todavía no hay precios de proveedor. Usá <b>Registrar precio</b> cuando tengas una cotización, factura o mensaje del proveedor.", undefined,
+    i => caneca(`el precio de ${delCatalogo[i].proveedor}`, { attrs: `data-acc="precio" data-id="${Number(delCatalogo[i].id)}"` }));
+  const referencia = dePropuesta.length ? tabla(["Proveedor","Precio","Tipo","Fecha","Vigente hasta","De dónde sale"], dePropuesta.map(filaPrecio), "", undefined,
+    i => caneca(`la oferta de ${dePropuesta[i].proveedor}`, { attrs: `data-acc="precio" data-id="${Number(dePropuesta[i].id)}"` })) : "";
   /* En un recurso que se cobra por tiempo, un precio tuyo en modo compra es el VALOR del equipo, no lo
      que se cobra por día: no manda (regla 2026-10-06, caso de la bomba de vacío). Se dice así, no «manda». */
   const noManda = u => POR_TIEMPO[String(f.unidad||"").toUpperCase()] && u.modo_adquisicion !== "alquiler";
@@ -1563,6 +1568,7 @@ function pintarHoja() {
     </div>
     ${pu}
     <h3>Precios de proveedor</h3>${precios}
+    ${referencia?`<h3>Ofertas para una propuesta <span class="dim" style="text-transform:none;letter-spacing:0">(solo valen para ese proyecto; acá son referencia de consulta)</span></h3>${referencia}`:""}
     ${fact?`<h3>Facturado en Siigo <span class="dim" style="text-transform:none;letter-spacing:0">(referencia, no gobierna)</span></h3>${fact}`:""}
     <h3>Recetas donde se usa (${d.apus.length})</h3><p>${apus}</p>
     <h3>Cambios recientes</h3>${bit}
