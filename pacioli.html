@@ -1,0 +1,1348 @@
+<!doctype html>
+<html lang="es">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Pacioli — Costos del proyecto de IA · IRM Aires</title>
+<link rel="icon" type="image/png" href="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAEAAAABACAYAAACqaXHeAAAE/klEQVR4nOyb208cVRzHv2d2ue1Cty2XYoW2IYpSbWXBINbEiE1LvRRvDUmTeidqfNE/QKPW+GDiq1pN05j4QrBpahuVQlJSozUksmxLrdKHFlpagYqwwLI3do6/swRhd3aX2Z1Jt8zsJxl25lyWOd/zO7/fmTN7rFBDl2snZDwJ8AYwbATYBkq14/bCS/c3Bo4bdH+9gPQD9tT2rFSJJczp4VYE+tuoxPt0tRGrExKDf4TcuiNoYvPxCigF4FxCV38rnR2k424YAY5LkNh72FV7FIzx5VlKATrdrWDhbyirAEaC8zkSYT92151YnhwtwE99z5NC31GqBCPCyZNB2k++oWMxaUmA7vPbIId6DdfzCrgPTNqB3U63uFroaTHuw/Ptxm+8gNrI5W8jbcaiAKf63yBb2ArTwO6PtFmcoedCIQLBy3RWCnMxDrvtLitCoX0mbLygDHO+F6w0Fh6DWeG80UofW2Be7pUoNm6BWeG8XFhAOcwKAwnAkAfTwhzGnPKmQFYAmBwrNNJcXIQGhx0WxlKqZ5MkVNsX3M+g1w+fzFOqH+YcvR4vuiZmoAVNAhzaWok3K0qgHQfS5auRf/DWxWtIF01DoKU0/RvXi70l2u5BkwCz82FkGr8sQwuaBPj6+gQyzZc0BLTAcMqVmveJ4R5bHvaVr0NOCk7QWVSAlrJo0z0x7kH/jE/tVyBAPX9sbAqDcwFoQXMUEDfwyeXRlOq8fmexQoDvb3pwJAMWlZ0IweRoHgLxqCrIxab8XEX6XFjG79NzCetZ6KhfY4PNouyXYX8QV3xB6I2uAogG9O+owbbC/IRlpudlfHHtpiK9mpzp1M4HUGhJbJTCSdb/9hc0ee0YdB0Cj64vTNp4wRqrhAepl2MR0+lkjReI6PHIWn3fyeoqQEVerqpyxblKw1uXY4EaKvPV/Q+16CrA8fEpekhZuVyfR+kHXEl8wyIhegA6SeFST3T1ATPk5CrODODZsrUoz8tR5M+GwzhNT29OGgJtFcVReb9OeSO+4fH1RbBblNZwIxAkgT30HdqmvrHoHgVGg/M4tML01BnHBwj6pn2R41aSnQdAZz6vqcRzNM29I84Q8JL5nv53BmfJ3GPZQI7xpLMKTZEhoOyXvwMhdIxO4d3BEeiJrhawnULg25UlcRsvEA3bS2sIjQ5lKHuYwtvTlGdPEArFd76zuRQ19uRhNlV0FaDBoS5GV9mUoayqQN3qfKPDBj3RVYCuiWlV5S7O+pVpXj/U0K1xDTAWXQW46g+h7Y+ruJTgGX2SVpA+vTKGXyZnFXlnyDd8NjQOT4JVpj9JoFcuDGOEfIGeaF4QSQexHnD4vk3RaSRcdj0gA2QFgMnJCgCTkxUAJicrADJAx+gkgnxp/iVWekRaJhC/EtP2bikNxMrRywPDkSVycRw4P6T7So86uIeh0zVEE+LNMCOcD0pgPLUXe0aCsVHyAcwNs8K5m3wAPw6zYkH7wkv9zj4XmYMT5uIcmutqF8Igkw7CdLAPI3//vzaXFUR6X5wsmwixVyMbigwPtVGyvrh4tSTAnrpzJMJLMDJi25yMA9i1fWAxKXoq3Fx3lAbFM5FNhoZDWDdrwRP1x5anxv9pV7fbibDcTrnVMAJi6yzQumDl0STfPB10vUZFPsBq3jzN8THynIfVb56OR6e7CZCfIikfWgXb569DYmfp80ca0j+vVOk/AAAA//9fZSnCAAAABklEQVQDAAAik5LJxtJRAAAAAElFTkSuQmCC">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Poppins:wght@600;700&family=Inter:wght@400;500;600&display=swap">
+<style>
+:root {
+  --irm-cian: #00B9CE;
+  --irm-lima: #96D416;
+  --irm-gris-azul: #B7C6CE;
+  --superficie: #fcfcfb;
+  --plano: #f9f9f7;
+  --tinta: #0b0b0b;
+  --tinta-2: #52514e;
+  --tinta-apagada: #898781;
+  --cuadricula: #e1e0d9;
+  --sans: Inter, system-ui, -apple-system, "Segoe UI", sans-serif;
+  --display: Poppins, Inter, system-ui, sans-serif;
+  --mono: ui-monospace, "SF Mono", Menlo, "Cascadia Code", monospace;
+}
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme="light"]) {
+    --superficie: #1a1a19; --plano: #0d0d0d; --tinta: #ffffff;
+    --tinta-2: #c3c2b7; --cuadricula: #2c2c2a;
+  }
+}
+:root[data-theme="dark"] {
+  --superficie: #1a1a19; --plano: #0d0d0d; --tinta: #ffffff;
+  --tinta-2: #c3c2b7; --cuadricula: #2c2c2a;
+}
+* { box-sizing: border-box; }
+body {
+  margin: 0; padding: 0 clamp(16px, 5vw, 56px) 48px;
+  background: var(--plano); color: var(--tinta);
+  font: 15px/1.6 var(--sans);
+  -webkit-font-smoothing: antialiased;
+}
+h1, h2, h3 { font-family: var(--display); font-weight: 600; letter-spacing: -.01em; }
+h1 { font-size: clamp(24px, 3.2vw, 34px); margin: 0 0 4px; }
+h2 { font-size: 20px; margin: 40px 0 12px; color: var(--tinta); }
+
+/* Encabezado. El `height` de abajo cae sobre el LIENZO del archivo, no sobre la
+   tinta, y los dos no son lo mismo: el vector tiene viewBox 1288x513 con la
+   tinta en 1256,49 x 476,21 (§1.1.bis). Con `height: 42px` la tinta terminaba
+   en 39,0 x 102,9 px — 14,3 % por debajo del mínimo de 120 px de ancho que fija
+   §1.5, que manda sobre cualquier altura escrita en otra sección.
+
+   49px de lienzo = 45,5px de tinta = 120,2px de ancho: el piso de §1.5, justo.
+   Para el "típico" de 48px de tinta que pide §4.3 son 52px de lienzo.
+   NO bajar de 49 y NO dimensionar por la relación del viewBox (§1.1.bis).
+
+   Aire (§1.4): >= 1/2 de la altura del logo por lado, y ahí no entra nada — ni
+   el borde lima. Con 49px eso son >= 24,5px: por eso el padding inferior es 26
+   y no 20, que ya quedaba corto cuando el logo medía 42. */
+.irm-encabezado {
+  display: flex; align-items: center; gap: 28px;
+  padding: 28px 0 26px; margin-bottom: 28px;
+  border-bottom: 2px solid var(--irm-lima);
+}
+.irm-encabezado img { height: 49px; width: auto; display: block; }
+.irm-encabezado .titulo { flex: 1; min-width: 0; }
+.irm-encabezado .fecha {
+  font-family: var(--mono); font-size: 12px; color: var(--tinta-apagada);
+  font-variant-numeric: tabular-nums; white-space: nowrap;
+}
+.irm-banda {
+  background: var(--irm-cian); margin: 0 calc(-1 * clamp(16px, 5vw, 56px));
+  padding: 26px clamp(16px, 5vw, 56px); border-bottom: none;
+}
+.irm-banda, .irm-banda h1, .irm-banda .fecha { color: #ffffff; }
+/* En el celular (pilar «se ve bien en el celular», 2026-10-04) el título no se aprieta en
+   una columna al lado del logo: baja a su propia línea. El aire del logo (§1.4, >= 24,5 px)
+   se respeta también en vertical, por eso el gap de fila es 26. */
+@media (max-width: 560px) {
+  .irm-encabezado { flex-wrap: wrap; gap: 26px 28px; }
+  .irm-encabezado .titulo { order: 3; flex: 1 1 100%; }
+  .irm-encabezado .fecha { margin-left: auto; }
+  /* Lo largo baja de línea en vez de empujar la página de lado; las tablas anchas se deslizan
+     dentro de su propio marco; y los campos van en 16 px para que el iPhone no haga zoom. */
+  body { overflow-wrap: anywhere; }
+  code, kbd, a { overflow-wrap: anywhere; }
+  pre { overflow-x: auto; }
+  table:not(.irm-tabla-fija) { display: block; overflow-x: auto; -webkit-overflow-scrolling: touch; }
+  input:not([type=checkbox]):not([type=radio]), select, textarea { font-size: 16px !important; }
+  img, svg, video, canvas { max-width: 100%; }
+}
+
+table { border-collapse: collapse; width: 100%; font-size: 14px; }
+th { background: var(--irm-cian); color: #fff; text-align: left;
+     font-family: var(--display); font-weight: 600; }
+th, td { padding: 8px 12px; border-bottom: 1px solid var(--cuadricula); }
+td.num { font-family: var(--mono); font-variant-numeric: tabular-nums; text-align: right; }
+.scroll-x { overflow-x: auto; }
+/* Un fieldset por defecto no se deja angostar más que su contenido: en el celular eso empuja
+   la página de lado aunque la tabla tenga su propio marco con scroll. */
+fieldset { min-width: 0; }
+
+.irm-pie {
+  margin-top: 56px; padding-top: 14px; border-top: 1px solid var(--cuadricula);
+  display: flex; flex-wrap: wrap; gap: 12px; justify-content: space-between;
+  font-size: 11px; color: var(--tinta-apagada);
+}
+.irm-contacto { display: flex; flex-wrap: wrap; gap: 14px; font-size: 11px; }
+.irm-contacto b { color: var(--irm-cian); font-weight: 600; }
+/* El rótulo va en el token declarado, NO en el cian de las plantillas Word:
+   esa excepción (BRAND_IRM.md §2.3 regla 4) existía porque el membrete ya
+   venía impreso en la hoja. Retirado Word como vehículo (2026-09-21), se
+   queda sin objeto. Nota: no se escribe acá el hex viejo ni en comentario —
+   el validador audita el archivo entero, y hace bien. */
+
+/* ── Impresión. El entregable es el PDF, y la paginación no puede quedar a
+   criterio del navegador de quien imprima (BRAND_IRM.md §5.1). Márgenes
+   tomados de PL-HM-0001, que es el membrete que esto reemplaza: 3,75 cm
+   arriba · 2,54 abajo · 2,50 a los lados. */
+@page {
+  size: Letter;
+  margin: 3.75cm 2.5cm 2.54cm 2.5cm;
+}
+@media print {
+  :root { color-scheme: light; }
+  body { background: #fff; padding: 0; }
+  /* El encabezado con el logo se repite en toda página, como el membrete. */
+  thead { display: table-header-group; }
+  .irm-cabecera { position: running(membrete); }
+  .irm-pie { position: running(pie); }
+  @page { @top-center { content: element(membrete); }
+          @bottom-center { content: element(pie); } }
+  /* Respaldo para motores sin `running()` (Chrome incluido): el encabezado va
+     en la primera página y la numeración la lleva el pie fijo. */
+  .irm-paginacion::after { content: "página " counter(page) " de " counter(pages); }
+  h1, h2, h3 { break-after: avoid; }
+  table, figure, pre { break-inside: avoid; }
+  a[href^="http"]::after { content: " (" attr(href) ")"; font-size: 9px; }
+}
+</style>
+
+</head>
+<body>
+<header class="irm-cabecera irm-encabezado">
+  <img src="data:image/svg+xml;base64,PD94bWwgdmVyc2lvbj0iMS4wIiBlbmNvZGluZz0idXRmLTgiPz4KPCEtLSBHZW5lcmF0b3I6IEFkb2JlIElsbHVzdHJhdG9yIDI4LjAuMCwgU1ZHIEV4cG9ydCBQbHVnLUluIC4gU1ZHIFZlcnNpb246IDYuMDAgQnVpbGQgMCkgIC0tPgo8c3ZnIHZlcnNpb249IjEuMSIgaWQ9IkNhcGFfMSIgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIiB4bWxuczp4bGluaz0iaHR0cDovL3d3dy53My5vcmcvMTk5OS94bGluayIgeD0iMHB4IiB5PSIwcHgiCgkgdmlld0JveD0iMCAwIDEyODggNTEzIiBzdHlsZT0iZW5hYmxlLWJhY2tncm91bmQ6bmV3IDAgMCAxMjg4IDUxMzsiIHhtbDpzcGFjZT0icHJlc2VydmUiPgo8c3R5bGUgdHlwZT0idGV4dC9jc3MiPgoJLnN0MHtmaWxsOiMwNUMwREI7fQoJLnN0MXtmaWxsOiNBOUQ0MzM7fQoJLnN0MntmaWxsOiMwNUJGREI7fQoJLnN0M3tmaWxsOiMwNkMwREI7fQo8L3N0eWxlPgo8cGF0aCBjbGFzcz0ic3QwIiBkPSJNMTAyMS45NCwyOTcuODRjMC0yNC4xNS0wLjAzLTQ4LjMsMC4wMS03Mi40NmMwLjAyLTkuMzgsMS42LTE4LjUzLDQuMzYtMjcuNWMyLjk4LTkuNjksMS4xNy0xNC43OC03LjM5LTIwLjMzCgljLTEyLjk0LTguNC0yNy4zOC04LjQzLTQxLjk3LTcuMWMtMy40NiwwLjMxLTYuOTEsMS4xMS0xMC4yNywyLjAxYy0yMS41NSw1LjgtMzMuNjUsMjAuNDgtMzYuNzksNDMuOTgKCWMtMS4wOSw4LjE0LTEuMDMsMTYuMjgtMS4wNSwyNC40M2MtMC4wOCw0My44MS0wLjAxLDg3LjYyLTAuMDUsMTMxLjQzYy0wLjAyLDE4Ljg4LTcuOTksMzEuMTUtMjMuNTgsMzYuNjgKCWMtMjAuMSw3LjEyLTQyLjM3LTYuMzktNDUuMTItMjcuNWMtMC42Mi00Ljc3LTAuOTItOS42Mi0wLjkzLTE0LjQzYy0wLjA3LTQzLjE0LTAuMjYtODYuMjksMC4wNC0xMjkuNDMKCWMwLjE4LTI1Ljg4LDQuNjMtNTEuMDEsMTYuNi03NC4zMWMxNi44NS0zMi43OSw0NS4zMi01MC41LDc5LjYtNjAuMTZjMzYuNTItMTAuMyw3MC40Ni0zLjkyLDEwMS45MywxNi44NQoJYzAuOTcsMC42NCwxLjk0LDEuMjksMi45MSwxLjk0YzYuNjMsNC40Myw3LjkzLDQuNDcsMTQuMjEtMC4yYzE0LjM5LTEwLjcsMzAuMjktMTguMTMsNDgtMjEuMDYKCWM3NC45MS0xMi4zOSwxMzAuMzIsMjcuOTYsMTQ3Ljg4LDkzLjk3YzMuMDIsMTEuMzYsMy4wNCwyMy4xLDMuMDgsMzQuNzNjMC4xOCw0OC40NywwLjExLDk2Ljk1LDAuMDYsMTQ1LjQyCgljLTAuMDIsMTcuOTItOS4zNiwzMS4xNi0yNC45LDM1LjU3Yy0xOS43Nyw1LjYxLTQyLjA0LTEwLjI2LTQyLjUtMzAuNzNjLTAuNDQtMTkuNjUtMC4zLTM5LjMxLTAuMzEtNTguOTYKCWMwLTI4Ljc5LDAuMTktNTcuNTksMC4wOS04Ni4zOGMtMC4wNC0xMi40My0yLjgtMjQuNDEtNy40My0zNS45NWMtNS45NC0xNC43OS0xNi42OC0yMy41Ni0zMi40NC0yNi40NQoJYy0xMS4wOS0yLjA0LTIyLjE3LTIuNjEtMzMuMjctMC42NmMtMjEuOTYsMy44NS0zMy4zMywxOC40Ni0zOC42NiwzOC44N2MtMS41Niw1Ljk2LTIuMjgsMTIuMDktMi4yOSwxOC4yOQoJYy0wLjA3LDM4Ljk4LTAuMjIsNzcuOTUtMC4yMSwxMTYuOTNjMCwxMS4zMSwwLjczLDIyLjYzLTAuNTEsMzMuOTNjLTEuOSwxNy4zOS0xNS4yNSwzMC45NS0zMS4yMiwzMS42OAoJYy0xOS4wNiwwLjg3LTMzLjI4LTEwLjIzLTM2Ljg5LTI4LjczYy0wLjg3LTQuNDQtMS4xNy04Ljg5LTEuMTYtMTMuNGMwLjAyLTIzLjY1LDAuMDEtNDcuMzEsMC4wMS03MC45NgoJQzEwMjEuODMsMjk3Ljg0LDEwMjEuODksMjk3Ljg0LDEwMjEuOTQsMjk3Ljg0eiIvPgo8cGF0aCBjbGFzcz0ic3QxIiBkPSJNOTcuNzYsNDM2LjU5Yy01LjU3LTIuNTgtMTAuMDgtNi40Ni0xNC4wMi0xMC44OWMtMjkuNzEtMzMuMzgtNTIuMS03MC44OS02MC45NC0xMTUuMQoJQzYuNTksMjI5LjQ0LDI0LjI4LDE1Ni41OCw3OS41Myw5NC4xNmMzNi42LTQxLjM1LDgyLjY1LTY3LjIsMTM2Ljg4LTc3LjZjNTMuMzQtMTAuMjMsMTA0LjYyLTIuNDUsMTUzLjc2LDIwLjI2CgljMjQuNjQsMTEuMzksNDUuNjIsMjcuOTMsNjUuMDMsNDYuNjJjMi40LDIuMzEsNC45LDQuNTEsNy4yMSw2LjkxYzEuMzMsMS4zOCwyLjI1LDMuMywwLjY3LDQuOTFjLTEuNTEsMS41NC0yLjYxLTAuNTItMy42OC0xLjIxCgljLTMzLjI0LTIxLjQ2LTY5LjM3LTM1LjQ2LTEwOC43Mi0zOS42M2MtNzEuNzQtNy41OS0xMzUuNDgsMTEuODktMTg5Ljk4LDU5LjQ1Yy0zOC41NiwzMy42NS02NC42NSw3NS4zMS03Ni41NiwxMjUuMwoJYy0xMi40Nyw1Mi4zNi02LjgsMTAzLjM2LDEyLjY0LDE1My4xNkM4Mi43MSw0MDcuNTMsODkuOTcsNDIyLjA5LDk3Ljc2LDQzNi41OXoiLz4KPHBhdGggY2xhc3M9InN0MiIgZD0iTTczNS4xNSwzMDQuOTFjMCwyMy4xNSwwLjA3LDQ2LjMxLTAuMDIsNjkuNDZjLTAuMDYsMTYuNzYtNy44NiwyOC45My0yMS43NCwzNC4zNwoJYy0yMi44Nyw4Ljk2LTQ2Ljk5LTcuMzktNDcuNDItMzIuNzdjLTAuNDYtMjcuNjQtMC4wMy01NS4zLTAuMDctODIuOTVjLTAuMDItMTIuNDgtMC4yLTI0Ljk3LTAuMzgtMzcuNDUKCWMtMC4zOS0yNi43NiwxLjIyLTUzLjI0LDEwLjc4LTc4LjYyYzEzLjEzLTM0Ljg1LDM4LjMxLTU2Ljg0LDcyLjc2LTY5LjkyYzI3LjQ5LTEwLjQ0LDU0LjgzLTEwLjc4LDgyLjczLTMKCWMxOC42Niw1LjIsMjkuODQsMjIuMzksMjYuMDgsNDAuMThjLTQuMDUsMTkuMTUtMjIuMSwzMS42LTQxLjQzLDI4LjExYy0xNS43NS0yLjg0LTMxLjMyLTMuOC00Ni45NywwLjYzCgljLTEyLjU4LDMuNTYtMjEuMjQsMTEuMjktMjYuNDQsMjMuMTVjLTUuNDMsMTIuMzgtNy44MiwyNS4zOS03Ljg2LDM4Ljg0QzczNS4xLDI1OC4yNyw3MzUuMTUsMjgxLjU5LDczNS4xNSwzMDQuOTF6Ii8+CjxwYXRoIGNsYXNzPSJzdDMiIGQ9Ik0yMzIuNzMsNDg4LjM0Yy0yNy43NS01LjI1LTUyLjQxLTE3LjU4LTc0LjcyLTM0LjU5QzEyMy41LDQyNy40Niw5OS40MiwzOTMuNTksODcsMzUxLjg4CgljLTI1LjE3LTg0LjQ4LDYuODYtMTc0LjQsNzkuNDUtMjIzLjU3YzY4LjIzLTQ2LjIyLDE1NC40LTQxLjI3LDIwMy41Mi0xMS4zM2MtMTUuMjctMS4xOS0yOS42My0wLjk4LTQzLjk2LDAuMQoJYy00NC45MiwzLjM5LTg2LjEzLDE2LjQ2LTEyMC42NCw0Ni43Yy0yNy4xLDIzLjc1LTQ0LjkxLDUzLjctNTcuMTIsODcuMTZjLTMxLjA5LDg1LjE1LTEuNDQsMTc2LjQ4LDc0LjEyLDIyOC45MwoJYzMuNTQsMi40Niw3LjE1LDQuODEsMTAuNzIsNy4yMUMyMzIuOTYsNDg3LjUsMjMyLjg1LDQ4Ny45MiwyMzIuNzMsNDg4LjM0eiIvPgo8cGF0aCBjbGFzcz0ic3QzIiBkPSJNMjA1LjAzLDQzOC45OGMxMC42MSwwLjY3LDIxLjIxLDEuNTgsMzEuODIsMS45N2MyOS4zNCwxLjA4LDU4LjE0LTEuODgsODYuMDItMTEuNzYKCWMzNS4zOS0xMi41NSw2My42Ny0zNC40MSw4NC44MS02NS4yNmMyMi41OS0zMi45NiwzNy02OS4yLDQwLjI1LTEwOS4yNWMzLjgtNDYuNzItMTEuMTEtODcuODEtMzkuMjctMTI0LjU5CgljLTEwLjE2LTEzLjI3LTIxLjY5LTI1LjI1LTM0LjAxLTM2LjVjLTAuOTMtMC44NS0xLjk3LTEuNTYtMy41OC0yLjgyYzQuNzMtMS40Miw4LjAxLTAuNjMsMTEuMiwwLjgxCgljNjYuOTYsMzAuMTIsMTA4LjYsODAuNiwxMTkuMjEsMTUzLjY3YzkuMDEsNjItOS4yOCwxMTYuNjktNTIuMzksMTYyLjI3Yy0zNi4xOSwzOC4yNi04MS4yMyw1OC4wOC0xMzMuODYsNjAuNTcKCWMtMzcuODcsMS43OS03My4zNC02LjMzLTEwNi0yNS44OGMtMS41LTAuOS0zLjQ1LTEuMzMtNC4xMi0zLjNMMjA1LjAzLDQzOC45OHoiLz4KPHBhdGggY2xhc3M9InN0MCIgZD0iTTYyMS44NSwyNTUuMTJjMCwzOS40NywwLjA0LDc4LjkzLTAuMDIsMTE4LjRjLTAuMDMsMjEuODYtMTMuNzEsMzYuNjctMzQuNDUsMzcuNTUKCWMtMTguMDUsMC43Ni0zNC4wOC0xMy41Ny0zNS4zNS0zMS42NGMtMC4xNi0yLjMyLTAuMTctNC42Ni0wLjE3LTYuOTljLTAuMDEtNTAuNjIsMC4wMy0xMDEuMjUtMC4wMy0xNTEuODcKCWMtMC4wMi0xOC40OC0wLjY5LTM2Ljk2LTAuMjctNTUuNDJjMC4yOS0xMi42Mi0wLjYzLTI1LjMyLDEuMzYtMzcuODdjMi44OC0xOC4xOSwxNS43NC0yOS42LDMyLjgxLTI5LjM2CgljMTguNCwwLjI2LDMzLjA3LDEyLjk5LDM1LjQzLDMwLjg1YzAuNDEsMy4xMiwwLjY1LDYuMywwLjY1LDkuNDVDNjIxLjg3LDE3Ny4xOSw2MjEuODUsMjE2LjE2LDYyMS44NSwyNTUuMTJ6Ii8+CjxwYXRoIGNsYXNzPSJzdDEiIGQ9Ik0zMTAuMTcsMTM4LjVjMjguMjctMi43Nyw4MC4wMiwyMS40MSw5OC45NCw3My4zOWMxOS44Niw1NC41NiwzLjc1LDEwNi4xOS00Mi45OSwxMzguMzIKCWMtNDQuOTcsMzAuOTEtOTguODksMjQuNi0xMzAuMDUsMC40OGM1NS4yNi0yLjIsOTYuNDItMjUuNTIsMTE0Ljk1LTc4LjkyQzM2OS41LDIxOC40NywzNTMuMjUsMTc0LjI4LDMxMC4xNywxMzguNXoiLz4KPHBhdGggY2xhc3M9InN0MyIgZD0iTTIwNS4xMiw0MzguOWMtMC4xNC0wLjA0LTAuMjktMC4wNi0wLjQtMC4xNGMtMC4wNS0wLjA0LTAuMDQtMC4xOC0wLjA1LTAuMjhjMC4xMiwwLjE2LDAuMjQsMC4zMywwLjM2LDAuNDkKCUMyMDUuMDMsNDM4Ljk4LDIwNS4xMiw0MzguOSwyMDUuMTIsNDM4Ljl6Ii8+Cjwvc3ZnPg==" alt="IRM Aires">
+  <div class="titulo"><h1><span title="La T de la cuenta: cada asiento al debe tiene su contrapartida al haber — la partida doble, literal." style="display:inline-block;vertical-align:-4px;margin-right:8px"><svg width="26" height="26" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 6h16"/><path d="M12 6v15"/><path d="M6.5 11h3M6.5 15h3"/><path d="M14.5 11h3M14.5 15h3" stroke="#00B9CE"/></svg></span>PACIOLI</h1><div style="font:600 13px var(--display);color:var(--tinta-2);margin-top:2px">Cuánto cuesta el ecosistema de IA mes a mes: suscripciones, consultoría, desarrollo, lo certificado y lo que viene · v1.0</div><div style="font-size:12.5px;color:var(--tinta-2);margin-top:2px">Luca Pacioli escribió la partida doble, donde cada cobro tiene su contrapartida: por eso el que audita las cuentas del propio proyecto lleva su nombre.</div></div>
+  <div class="fecha">2026-10-12</div>
+</header>
+
+<main>
+<style>
+
+/* Caneca de eliminar — componente canónico IRM (IMAGEN CORPORATIVA/memoria_procedimental/componente_caneca.py) */
+.irm-caneca { display: inline-flex; align-items: center; justify-content: center; width: 30px; height: 30px; padding: 0;
+  border: 1px solid transparent; border-radius: 8px; background: transparent; color: #898781; cursor: pointer;
+  transition: color .15s, background .15s; vertical-align: middle; }
+.irm-caneca .irm-caneca-ico { width: 16px; height: 16px; display: block; }
+.irm-caneca:hover, .irm-caneca:focus-visible { color: #d03b3b; background: color-mix(in srgb, #d03b3b 10%, transparent); outline: none; }
+.irm-caneca:focus-visible { border-color: #d03b3b; }
+.irm-caneca:active { color: #fff; background: #d03b3b; }
+.irm-caneca[aria-disabled="true"] { opacity: .35; cursor: not-allowed; }
+.irm-caneca[aria-disabled="true"]:hover, .irm-caneca[aria-disabled="true"]:active { color: #898781; background: transparent; }
+.irm-caneca[aria-busy="true"] { cursor: progress; }
+.irm-caneca[aria-busy="true"] .irm-caneca-ico { display: none; }
+.irm-caneca[aria-busy="true"]::after { content: ""; width: 12px; height: 12px; border: 2px solid currentColor;
+  border-top-color: transparent; border-radius: 50%; animation: irmcanegira .7s linear infinite; }
+@keyframes irmcanegira { to { transform: rotate(360deg); } }
+@media (prefers-reduced-motion: reduce) { .irm-caneca[aria-busy="true"]::after { animation: none; } }
+/* Celular (pilar 2026-10-04): el dedo necesita ~44 px; el dibujo no cambia, crece el área que se toca. */
+@media (max-width: 560px) { .irm-caneca { width: 40px; height: 40px; } }
+th.irm-caneca-col, td.irm-caneca-col { width: 38px; text-align: center; padding-left: 4px; padding-right: 4px; position: relative; }
+.irm-oculto { position: absolute; left: 0; top: 0; width: 1px; height: 1px; overflow: hidden; clip: rect(0 0 0 0); white-space: nowrap; }
+
+
+/* Tarjetas que se mueven — componente canónico IRM v2 (IMAGEN CORPORATIVA/memoria_procedimental/componente_mover.py) */
+[data-irm-mover] > [data-mover-id] { position: relative; }
+[data-irm-mover] > [data-mover-id]::after { content: ""; position: absolute; top: 7px; right: 7px; width: 10px; height: 14px; opacity: 0;
+  background: radial-gradient(circle, currentColor 1.3px, transparent 1.6px) 0 0 / 5px 5px; color: var(--tinta-apagada, #898781);
+  transition: opacity .15s; pointer-events: none; }
+[data-irm-mover] > [data-mover-id]:hover::after, [data-irm-mover] > [data-mover-id]:focus-visible::after { opacity: .9; }
+[data-irm-mover].irm-moviendo, [data-irm-mover].irm-moviendo * { user-select: none; -webkit-user-select: none; cursor: grabbing !important; }
+[data-irm-mover] > .irm-levantada { z-index: 2; border-color: #00B9CE !important;
+  box-shadow: 0 0 0 2px #00B9CE, 0 10px 26px rgba(0,0,0,.18) !important; transform: scale(1.02); }
+[data-irm-mover] > .irm-levantada::after { opacity: .9; color: #00B9CE; }
+.irm-mover-restablecer { display: inline-block; margin: 4px 0 8px; padding: 3px 9px; min-height: 32px; border: 1px solid transparent; border-radius: 8px;
+  background: transparent; color: #00B9CE; font: 600 12px var(--display, Poppins, Inter, system-ui, sans-serif); cursor: pointer; }
+.irm-mover-restablecer:hover { border-color: #00B9CE; }
+.irm-mover-restablecer:active { background: #00B9CE; color: #fff; }
+.irm-mover-voz { position: absolute; left: 0; top: 0; width: 1px; height: 1px; overflow: hidden; clip: rect(0 0 0 0); white-space: nowrap; }
+@media (prefers-reduced-motion: reduce) { [data-irm-mover] > .irm-levantada { transform: none; } }
+@media (max-width: 560px) { .irm-mover-restablecer { min-height: 40px; } }
+@media print { [data-irm-mover] > [data-mover-id]::after, .irm-mover-restablecer { display: none !important; } }
+
+
+/* Explicaciones plegables — componente canónico IRM v2 (IMAGEN CORPORATIVA/memoria_procedimental/componente_plegable.py) */
+details.irm-explica { margin: 4px 0 10px; }
+details.irm-explica > summary { cursor: pointer; display: inline-flex; align-items: center; gap: 6px; min-height: 28px; list-style: none;
+  font: 600 12.5px var(--display, Poppins, Inter, system-ui, sans-serif); color: var(--irm-cian, #00B9CE); border-radius: 6px; padding: 0 4px; }
+details.irm-explica > summary::-webkit-details-marker { display: none; }
+details.irm-explica > summary::before { content: ""; width: 7px; height: 7px; border-right: 2px solid currentColor; border-bottom: 2px solid currentColor;
+  transform: rotate(-45deg); transition: transform .15s; margin-right: 2px; }
+details.irm-explica[open] > summary::before { transform: rotate(45deg); }
+details.irm-explica > summary:hover { background: color-mix(in srgb, var(--irm-cian, #00B9CE) 10%, transparent); }
+details.irm-explica > summary:active { background: var(--irm-cian, #00B9CE); color: #fff; }
+details.irm-explica > summary:focus-visible { outline: 2px solid var(--irm-cian, #00B9CE); outline-offset: 2px; }
+details.irm-explica > .irm-explica-cuerpo { margin: 6px 0 0; padding-left: 12px; border-left: 2px solid var(--cuadricula, #e1e0d9); }
+@media (prefers-reduced-motion: reduce) { details.irm-explica > summary::before { transition: none; } }
+@media (max-width: 560px) { details.irm-explica > summary { min-height: 40px; } }
+@media print { details.irm-explica > .irm-explica-cuerpo { display: block !important; } }
+
+.pa-ficha{border:1px solid var(--linea);border-radius:10px;padding:12px 14px;margin:0 0 16px}
+.pa-ficha>summary{font:700 14px var(--display);cursor:pointer;color:var(--tinta-1);min-height:40px;display:flex;align-items:center}
+.pa-ficha h4{font:700 12.5px var(--display);margin:14px 0 4px;color:var(--irm-cian);text-transform:uppercase;letter-spacing:.04em}
+.pa-ficha p,.pa-ficha li{font-size:13.5px;line-height:1.55}
+.pa-sub{color:var(--tinta-2);font-size:12.5px}
+.pa-cifras{display:grid;grid-template-columns:repeat(auto-fit,minmax(170px,1fr));gap:10px;margin:0 0 18px}
+.pa-cifra{border:1px solid var(--linea);border-left:4px solid var(--irm-cian);border-radius:10px;padding:12px 14px;background:var(--papel-2)}
+.pa-cifra b{display:block;font:700 22px var(--display);color:var(--tinta-1);line-height:1.1;font-variant-numeric:tabular-nums}
+.pa-cifra span{display:block;font-size:12px;color:var(--tinta-2);margin-top:3px}
+.pa-cifra.cert{border-left-color:#00B9CE}.pa-cifra.verif{border-left-color:#1baf7a}.pa-cifra.detec{border-left-color:#eda100}.pa-cifra.proy{border-left-color:#eb6834}.pa-cifra.neutro{border-left-color:#B7C6CE}
+.pa-cifra.atencion{border-color:#fab219}
+.pa-barra{display:none;align-items:center;gap:9px;margin:10px 0;font-size:13px;color:var(--tinta-2)}
+.pa-barra[hidden]{display:none}.pa-barra:not([hidden]){display:flex}
+.pa-giro{width:13px;height:13px;border:2px solid var(--linea);border-top-color:var(--irm-cian);border-radius:50%;animation:pa-gira .8s linear infinite;flex:none;display:inline-block;margin-left:7px;vertical-align:-1px}
+@keyframes pa-gira{to{transform:rotate(360deg)}}
+@media (prefers-reduced-motion:reduce){.pa-giro{animation:none}}
+.pa-aviso{border-left:3px solid var(--irm-cian);background:var(--papel-2);padding:10px 13px;border-radius:0 8px 8px 0;font-size:13.5px;margin:10px 0;display:flex;gap:10px;align-items:center;flex-wrap:wrap}
+.pa-aviso.pa-error{border-left-color:#d03b3b}
+.pa-tabs{display:flex;gap:6px;flex-wrap:wrap;margin:0 0 14px;border-bottom:1px solid var(--linea)}
+.pa-tab{font:600 13px var(--display);padding:9px 14px;min-height:40px;border:1px solid transparent;border-bottom:none;border-radius:8px 8px 0 0;background:none;color:var(--tinta-2);cursor:pointer}
+.pa-tab:hover{background:var(--papel-2)}
+.pa-tab[aria-selected=true]{background:var(--papel-2);border-color:var(--linea);color:var(--irm-cian)}
+.pa-tab:active{background:color-mix(in srgb,var(--irm-cian) 14%,transparent)}
+.pa-panel[hidden]{display:none}
+.pa-filtros{display:flex;gap:8px;flex-wrap:wrap;align-items:end;margin:0 0 10px}
+.pa-campo{display:flex;flex-direction:column;gap:3px}
+.pa-campo label{font:600 11.5px var(--display);color:var(--tinta-2);text-transform:uppercase;letter-spacing:.04em}
+.pa-campo input,.pa-campo select,.pa-campo textarea{font:400 16px var(--cuerpo);padding:8px 10px;border:1px solid var(--linea);border-radius:7px;background:var(--papel);color:var(--tinta-1);min-height:40px}
+.pa-campo textarea{min-height:64px;field-sizing:content}
+.pa-tabla{overflow-x:auto;border:1px solid var(--linea);border-radius:9px;margin:0 0 12px}
+.pa-tabla table{width:100%;border-collapse:collapse;font-size:13px}
+.pa-tabla th{background:var(--irm-cian);color:#0b0b0b;font:700 11.5px var(--display);text-transform:uppercase;letter-spacing:.04em;padding:9px 10px;text-align:left;position:sticky;top:0}
+.pa-tabla td{padding:8px 10px;border-top:1px solid var(--linea);vertical-align:top}
+.pa-tabla tbody tr:nth-child(even){background:var(--papel-2)}
+.pa-tabla .num{text-align:right;font-variant-numeric:tabular-nums;white-space:nowrap}
+.pa-tabla tr.total td{font-weight:700;border-top:2px solid var(--tinta-2)}
+.pa-tag{display:inline-block;padding:1px 7px;border-radius:9px;font:600 11px var(--display);color:var(--tinta-1);background:transparent;border:1.5px solid var(--linea);white-space:nowrap}
+.pa-tag.certificado{border-color:#00B9CE}.pa-tag.verificado{border-color:#1baf7a}.pa-tag.detectado{border-color:#eda100}.pa-tag.descartado{border-color:#898781;color:var(--tinta-2)}.pa-tag.proyeccion{border-color:#eb6834}
+.pa-chip{display:inline-block;padding:1px 8px;border-radius:9px;font:600 11px var(--display);color:#0b0b0b}
+.pa-chip.bien{background:#0ca30c;color:#fff}.pa-chip.atencion{background:#fab219}.pa-chip.serio{background:#ec835a}.pa-chip.critico{background:#d03b3b;color:#fff}
+.pa-btn{font:600 13px var(--display);padding:9px 14px;min-height:40px;border:1px solid var(--irm-cian);border-radius:8px;background:var(--irm-cian);color:#0b0b0b;cursor:pointer}
+.pa-btn.sec{background:none;color:var(--irm-cian)}
+.pa-btn:active{filter:brightness(.88)}
+.pa-btn[disabled]{opacity:.55;cursor:default}
+.pa-btn.mini{font-size:12px;padding:6px 10px;min-height:40px;white-space:nowrap}
+.pa-form{display:grid;grid-template-columns:repeat(auto-fit,minmax(170px,1fr));gap:10px;align-items:end;border:1px solid var(--linea);border-radius:0 0 9px 9px;border-top:none;padding:13px;background:var(--papel-2);margin:0 0 14px}
+.pa-form .ancho{grid-column:1/-1}
+.pa-banner{background:var(--irm-cian);color:#0b0b0b;font:700 11.5px var(--display);text-transform:uppercase;letter-spacing:.04em;padding:7px 11px;border-radius:7px 7px 0 0;margin:16px 0 0}
+.pa-acciones{display:flex;gap:6px;flex-wrap:wrap;align-items:center}
+.pa-plan{border:1px solid var(--linea);border-radius:9px;padding:10px 12px;margin:0 0 8px}
+.pa-plan.obj{border-left:4px solid var(--irm-cian)}.pa-plan.alc{margin-left:18px;border-left:4px solid #1baf7a}.pa-plan.tar{margin-left:36px;border-left:4px solid #B7C6CE}
+.pa-plan h5{font:700 13.5px var(--display);margin:0 0 3px;display:flex;gap:8px;align-items:center;flex-wrap:wrap}
+.pa-plan .pa-sub{display:block}
+.pa-ley{display:flex;flex-wrap:wrap;gap:4px 14px;font-size:12px;color:var(--tinta-2);margin:4px 0 10px}
+.pa-ley i{display:inline-block;width:10px;height:10px;margin-right:5px;vertical-align:-1px}
+@media (max-width:560px){.pa-cifras{grid-template-columns:1fr 1fr}.pa-form{grid-template-columns:1fr}.pa-plan.alc{margin-left:8px}.pa-plan.tar{margin-left:16px}}
+</style>
+
+<div id="pa-aviso"></div>
+
+<details class="pa-ficha" id="pa-ficha" open>
+  <summary>Qué es Pacioli y cómo se usa</summary>
+  <h4>Qué hace</h4>
+  <p>Pacioli lleva las cuentas <b>del propio proyecto de IA</b> de IRM Aires: cuánto cuesta construirlo y operarlo, mes a mes. Entran las suscripciones (Anthropic/Claude, Supabase, Vercel, GitHub, Notion, OpenAI), la consultoría de VDA Studio por hitos, y el <b>costo de desarrollo</b> (las horas de quien construye los agentes).</p>
+  <p>Cada cobro lleva su <b>estado del dato</b>, que es cuánto se puede confiar en la cifra: <span class="pa-tag detectado">detectado</span> solo existe un correo que lo menciona; <span class="pa-tag verificado">verificado</span> alguien leyó la factura y confirmó el monto; <span class="pa-tag certificado">certificado</span> coincide con un asiento de Siigo, la contabilidad oficial. Los tres se suman <b>por separado</b> y nunca se mezclan con las proyecciones, que van marcadas como estimación.</p>
+  <p><b>Pacioli no paga, no envía correos y no toca Siigo.</b> Lee los buzones contables por Microsoft Graph, lee el espejo de Siigo, y escribe solo en su propio libro.</p>
+  <h4>Cómo se pone en marcha</h4>
+  <ol>
+    <li>Entrá primero en <b>Hestia</b> con tu correo. Pacioli usa esa misma sesión; si no la tenés, arriba vas a ver «No hay sesión» y un enlace.</li>
+    <li>Mirá <b>Resumen</b>: las tarjetas dicen cuánto hay certificado, verificado y detectado, y cuánto cuesta un mes típico.</li>
+    <li>En <b>Facturas</b> están los cobros uno por uno. Un cobro <i>detectado</i> se pasa a <i>verificado</i> con el botón de su fila cuando ya leíste la factura; a <i>certificado</i> solo con el comprobante de Siigo. Lo que no es un cobro se manda a la caneca y queda apagado, con Deshacer.</li>
+    <li>En <b>Desarrollo</b> fijá el <b>valor de la hora</b> de quien construye (solo el aprobador). Hasta entonces el costo de desarrollo se muestra «sin parametrizar»: no se inventa.</li>
+    <li>En <b>Plan</b> están los objetivos, sus alcances y las tareas. Nacen como <i>propuesto</i>; el aprobador los da por <i>vigentes</i>.</li>
+    <li><b>Proyección</b> calcula los próximos meses con el run-rate de las suscripciones, lo que falta facturar de VDA y el costo de desarrollo. Cada línea dice de qué supuesto sale.</li>
+  </ol>
+  <h4>Quién trabaja para él</h4>
+  <ul>
+    <li><b>Éaco</b> — decide quién entra y con qué rol (lector, editor, aprobador); <b>Hestia</b> es la puerta donde se inicia la sesión.</li>
+    <li><b>Larrey</b> — sus tickets son las tareas del proyecto y traen las horas estimadas que alimentan el costo de desarrollo. También recibe lo que reportes con el botón de abajo a la derecha.</li>
+    <li><b>Alejandría</b> — sincroniza el repositorio; los días con actividad en él son la evidencia de desarrollo.</li>
+    <li><b>El corte semanal de Pacioli</b> (GitHub Actions, lunes 06:30) — lee los buzones y trae los cobros nuevos sin gastar tokens.</li>
+  </ul>
+</details>
+
+<div class="pa-barra" id="pa-barra" role="status" aria-live="polite">
+  <span class="pa-giro" aria-hidden="true"></span><span id="pa-paso"></span>
+</div>
+
+<div class="pa-cifras" id="pa-cifras" data-irm-mover="pacioli.cifras"></div>
+
+<div class="pa-tabs" role="tablist">
+  <button class="pa-tab" role="tab" id="t-resumen" aria-controls="p-resumen" aria-selected="true">Resumen</button>
+  <button class="pa-tab" role="tab" id="t-costos" aria-controls="p-costos" aria-selected="false">Costos por periodo</button>
+  <button class="pa-tab" role="tab" id="t-facturas" aria-controls="p-facturas" aria-selected="false">Facturas</button>
+  <button class="pa-tab" role="tab" id="t-desarrollo" aria-controls="p-desarrollo" aria-selected="false">Desarrollo</button>
+  <button class="pa-tab" role="tab" id="t-plan" aria-controls="p-plan" aria-selected="false">Plan</button>
+  <button class="pa-tab" role="tab" id="t-proyeccion" aria-controls="p-proyeccion" aria-selected="false">Proyección</button>
+</div>
+
+<section class="pa-panel" id="p-resumen" role="tabpanel" aria-labelledby="t-resumen">
+  <h3 style="font:700 15px var(--display);margin:6px 0">Gasto mensual por estado del dato (COP, base sin IVA)</h3>
+  <div id="pa-grafico"></div>
+  <div class="pa-ley"><span><i style="background:#00B9CE"></i>Certificado (Siigo)</span><span><i style="background:#1baf7a"></i>Verificado (factura leída)</span><span><i style="background:#eda100"></i>Detectado (correo, sin leer)</span><span><i style="background:#eb6834"></i>Desarrollo (horas × valor hora)</span></div>
+  <div id="pa-hallazgos"></div>
+  <div id="pa-fuentes"></div>
+</section>
+
+<section class="pa-panel" id="p-costos" role="tabpanel" aria-labelledby="t-costos" hidden>
+  <div class="pa-filtros">
+    <div class="pa-campo"><label for="c-corte">Corte</label><select id="c-corte"><option value="mes">Mes</option><option value="semana">Semana ISO</option><option value="trimestre">Trimestre</option><option value="semestre">Semestre</option><option value="anio">Año</option></select></div>
+    <div class="pa-campo"><label for="c-estado">Estado del dato</label><select id="c-estado"><option value="">Certificado + verificado + detectado</option><option value="certificado">Solo certificado</option><option value="verificado">Solo verificado</option><option value="detectado">Solo detectado</option></select></div>
+  </div>
+  <div class="pa-tabla" id="pa-costos"></div>
+  <p class="pa-sub">Base sin IVA, en pesos. Los cobros en dólares se pasan a pesos con la TRM del día del cobro (la tasa oficial que publica el Banco de la República). El IVA y las retenciones van aparte, en Facturas.</p>
+</section>
+
+<section class="pa-panel" id="p-facturas" role="tabpanel" aria-labelledby="t-facturas" hidden>
+  <div class="pa-filtros">
+    <div class="pa-campo"><label for="f-estado">Estado</label><select id="f-estado"><option value="activos">Detectado, verificado y certificado</option><option value="detectado">Detectado</option><option value="verificado">Verificado</option><option value="certificado">Certificado</option><option value="descartado">Descartados (caneca)</option></select></div>
+    <div class="pa-campo"><label for="f-prov">Proveedor</label><select id="f-prov"><option value="">Todos</option></select></div>
+    <div class="pa-campo"><label for="f-buscar">Buscar</label><input id="f-buscar" type="search" placeholder="hito, invoice, JPMRFX…" autocomplete="off"></div>
+  </div>
+  <div class="pa-tabla" id="pa-facturas"></div>
+  <div class="pa-banner">Registrar un cobro a mano (una factura que no llegó por correo)</div>
+  <div class="pa-form">
+    <div class="pa-campo"><label for="g-fecha">Fecha de la factura</label><input id="g-fecha" type="date"></div>
+    <div class="pa-campo"><label for="g-prov">Proveedor</label><select id="g-prov"></select></div>
+    <div class="pa-campo ancho"><label for="g-concepto">Concepto</label><input id="g-concepto" placeholder="Claude Team · 3 asientos · octubre" autocomplete="off"></div>
+    <div class="pa-campo"><label for="g-moneda">Moneda</label><select id="g-moneda"><option value="USD">USD</option><option value="COP">COP</option></select></div>
+    <div class="pa-campo"><label for="g-monto">Monto (base, sin IVA)</label><input id="g-monto" type="number" step="any" min="0" inputmode="decimal"></div>
+    <div class="pa-campo"><label for="g-iva">IVA en pesos (si aplica)</label><input id="g-iva" type="number" step="any" min="0" inputmode="decimal" value="0"></div>
+    <div class="pa-campo"><label for="g-ref">Número de factura</label><input id="g-ref" placeholder="INV-0001" autocomplete="off"></div>
+    <div class="pa-campo ancho"><button class="pa-btn" id="g-guardar">Registrar el cobro</button></div>
+  </div>
+  <p class="pa-sub">Un cobro registrado a mano entra como <b>verificado</b>: alguien tuvo la factura al frente. Pasa a certificado cuando aparece en Siigo.</p>
+</section>
+
+<section class="pa-panel" id="p-desarrollo" role="tabpanel" aria-labelledby="t-desarrollo" hidden>
+  <div id="pa-desarrolladores"></div>
+  <div class="pa-tabla" id="pa-tiempo"></div>
+  <p class="pa-sub">Tres fuentes de esfuerzo, y no son lo mismo: <b>git</b> cuenta los días con cambios en el repositorio (evidencia de que se trabajó, no horas); <b>Larrey</b> suma las horas estimadas al evaluar cada ticket (estimación); <b>manual</b> son horas declaradas por una persona. El costo del mes = horas × valor hora. Si no hay horas manuales ni de Larrey, se usan los días de git por el parámetro «horas por día».</p>
+  <div class="pa-banner">Registrar horas de un mes (manual)</div>
+  <div class="pa-form">
+    <div class="pa-campo"><label for="h-mes">Mes</label><input id="h-mes" type="month"></div>
+    <div class="pa-campo"><label for="h-dev">Quién</label><select id="h-dev"></select></div>
+    <div class="pa-campo"><label for="h-horas">Horas</label><input id="h-horas" type="number" step="any" min="0" inputmode="decimal"></div>
+    <div class="pa-campo ancho"><label for="h-nota">De dónde sale la cifra</label><input id="h-nota" placeholder="Registro de tiempos de la semana / estimación propia" autocomplete="off"></div>
+    <div class="pa-campo ancho"><button class="pa-btn" id="h-guardar">Registrar las horas</button></div>
+  </div>
+  <div class="pa-banner">Tickets de Larrey (las tareas del proyecto y sus horas)</div>
+  <div class="pa-tabla" id="pa-tickets" style="border-radius:0 0 9px 9px"></div>
+</section>
+
+<section class="pa-panel" id="p-plan" role="tabpanel" aria-labelledby="t-plan" hidden>
+  <div id="pa-plan"></div>
+  <div class="pa-banner">Agregar al plan</div>
+  <div class="pa-form">
+    <div class="pa-campo"><label for="p-tipo">Qué es</label><select id="p-tipo"><option value="objetivo">Objetivo</option><option value="alcance">Alcance (parte de un objetivo)</option><option value="tarea">Tarea (parte de un alcance)</option></select></div>
+    <div class="pa-campo"><label for="p-padre">De cuál cuelga</label><select id="p-padre"><option value="">— ninguno —</option></select></div>
+    <div class="pa-campo ancho"><label for="p-titulo">Título</label><input id="p-titulo" autocomplete="off"></div>
+    <div class="pa-campo ancho"><label for="p-desc">Descripción</label><textarea id="p-desc"></textarea></div>
+    <div class="pa-campo"><label for="p-resp">Responsable</label><input id="p-resp" autocomplete="off"></div>
+    <div class="pa-campo"><label for="p-meta">Fecha meta</label><input id="p-meta" type="date"></div>
+    <div class="pa-campo"><label for="p-horas">Horas estimadas</label><input id="p-horas" type="number" step="any" min="0" inputmode="decimal"></div>
+    <div class="pa-campo"><label for="p-ticket">Ticket de Larrey</label><input id="p-ticket" placeholder="TK-0135" autocomplete="off"></div>
+    <div class="pa-campo ancho"><button class="pa-btn" id="p-guardar">Agregar al plan</button></div>
+  </div>
+  <p class="pa-sub">Lo que agrega el editor nace <b>propuesto</b>. El aprobador lo pasa a <b>vigente</b> con el botón de la fila; de ahí a <b>en curso</b> y <b>hecho</b> lo mueve cualquier editor. La caneca lo descarta sin borrarlo (Deshacer).</p>
+</section>
+
+<section class="pa-panel" id="p-proyeccion" role="tabpanel" aria-labelledby="t-proyeccion" hidden>
+  <div id="pa-proy-texto"></div>
+  <div class="pa-tabla" id="pa-proyeccion"></div>
+  <div class="pa-banner">Parámetros (solo el aprobador)</div>
+  <div class="pa-form" id="pa-parametros"></div>
+</section>
+
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.117.2/dist/umd/supabase.js" integrity="sha384-Rj26LVGvoeRVR6+mwQmFfcR3QOBEwT+ZmuCWpuiqeTzJpCs0ER4ITAWGb4Hiy3Ok" crossorigin="anonymous"></script>
+<script>
+
+/* Caneca de eliminar — componente canónico IRM. caneca(etiqueta, {bloqueo}) devuelve el HTML del botón;
+   si hay bloqueo, la caneca sale apagada y el clic explica el porqué. canecaOcupada(b) la pone a girar
+   y devuelve la función que la restaura (va en el finally). */
+const CANECA_SVG = "<svg class=\"irm-caneca-ico\" viewBox=\"0 0 24 24\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"2\" stroke-linecap=\"round\" stroke-linejoin=\"round\" aria-hidden=\"true\" focusable=\"false\"><path d=\"M3 6h18\"/><path d=\"M8 6V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2\"/><path d=\"M19 6l-1 14a2 2 0 0 1-2 2H8a2 2 0 0 1-2-2L5 6\"/><path d=\"M10 11v6M14 11v6\"/></svg>";
+function caneca(etiqueta, { bloqueo = "", attrs = "" } = {}) {
+  const esc = s => String(s ?? "").replace(/[&<>"']/g, c => ({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c]));
+  const t = bloqueo ? `No se puede eliminar: ${bloqueo}` : `Eliminar ${etiqueta}`;
+  return `<button type="button" class="irm-caneca" aria-label="${esc(t)}" title="${esc(t)}"${bloqueo ? ` aria-disabled="true" data-bloqueo="${esc(bloqueo)}"` : ""} ${attrs}>${CANECA_SVG}</button>`;
+}
+function canecaOcupada(b) {
+  if (!b || b.getAttribute("aria-busy") === "true") return () => {};
+  b.setAttribute("aria-busy", "true"); b.disabled = true;
+  return () => { b.removeAttribute("aria-busy"); b.disabled = false; };
+}
+
+(function () {
+  "use strict";
+  var URL_SB = "https://oixizeqfuxsbjqcvzpbe.supabase.co", LLAVE = "sb_publishable_Yfu9GwQGe9w5NsGVmC3BvQ_Gj7k4DGi";
+  function $(id) { return document.getElementById(id); }
+  function esc(s) { return String(s == null ? "" : s).replace(/[&<>"']/g, function (c) { return {"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c]; }); }
+  function leerLS(k) { try { return localStorage.getItem(k); } catch (e) { return null; } }
+  function guardarLS(k, v) { try { localStorage.setItem(k, v); } catch (e) {} }
+  function cop(v) { if (v == null || isNaN(v)) return "—"; return "$ " + Math.round(Number(v)).toLocaleString("es-CO"); }
+  function usd(v) { if (v == null || isNaN(v)) return "—"; return "US$ " + Number(v).toLocaleString("en-US", { minimumFractionDigits: 2, maximumFractionDigits: 2 }); }
+  function num(v, d) { return v == null || isNaN(v) ? "—" : Number(v).toLocaleString("es-CO", { maximumFractionDigits: d == null ? 1 : d }); }
+  function fecha(iso) { if (!iso) return "—"; var d = new Date(String(iso).slice(0, 10) + "T12:00:00"); return isNaN(d) ? "—" : d.toLocaleDateString("es-CO", { day: "2-digit", month: "short", year: "2-digit" }); }
+  var NOMBRE_ESTADO = { certificado: "Certificado (Siigo)", verificado: "Verificado", detectado: "Detectado", descartado: "Descartado", proyeccion: "Proyección" };
+  var COLOR = { certificado: "#00B9CE", verificado: "#1baf7a", detectado: "#eda100", desarrollo: "#eb6834" };
+  function tag(e) { return '<span class="pa-tag ' + e + '">' + (NOMBRE_ESTADO[e] || e) + "</span>"; }
+  function chip(t, n) { return '<span class="pa-chip ' + n + '">' + esc(t) + "</span>"; }
+
+  var ficha = $("pa-ficha");
+  if (leerLS("pacioli.ficha") === "cerrada") ficha.removeAttribute("open");
+  ficha.addEventListener("toggle", function () { guardarLS("pacioli.ficha", ficha.open ? "abierta" : "cerrada"); });
+
+  function paso(t) { $("pa-paso").textContent = t || ""; $("pa-barra").hidden = !t; }
+  function ocupar(b, t) { b.disabled = true; b.setAttribute("aria-busy", "true"); b.dataset.etq = b.textContent; if (t) b.textContent = t; b.insertAdjacentHTML("beforeend", '<span class="pa-giro" aria-hidden="true"></span>'); }
+  function liberar(b) { b.disabled = false; b.removeAttribute("aria-busy"); if (b.dataset.etq) b.textContent = b.dataset.etq; var g = b.querySelector(".pa-giro"); if (g) g.remove(); }
+  var DESHACER = null;
+  function aviso(html, error, deshacer) {
+    DESHACER = deshacer || null;
+    $("pa-aviso").innerHTML = html ? '<div class="pa-aviso' + (error ? " pa-error" : "") + '" role="alert"><span style="flex:1">' + html + "</span>" +
+      (deshacer ? '<button class="pa-btn sec mini" id="pa-deshacer">Deshacer ⌘Z</button>' : "") + "</div>" : "";
+  }
+  document.addEventListener("click", function (ev) { if (ev.target && ev.target.id === "pa-deshacer" && DESHACER) { var f = DESHACER; DESHACER = null; f(); } });
+  document.addEventListener("keydown", function (ev) { if ((ev.metaKey || ev.ctrlKey) && ev.key.toLowerCase() === "z" && DESHACER) { ev.preventDefault(); var f = DESHACER; DESHACER = null; f(); } });
+
+  if (!window.supabase || !window.supabase.createClient) { aviso("<b>NO SE PUDO CARGAR.</b> No llegó la librería de Supabase. Recargá la página.", true); return; }
+  var memoria = {};
+  var almacen = { getItem: function (k) { try { return localStorage.getItem(k); } catch (e) { return memoria[k] || null; } },
+                  setItem: function (k, v) { try { localStorage.setItem(k, v); } catch (e) { memoria[k] = v; } },
+                  removeItem: function (k) { try { localStorage.removeItem(k); } catch (e) { delete memoria[k]; } } };
+  var sb = window.supabase.createClient(URL_SB, LLAVE, { auth: { persistSession: true, autoRefreshToken: true, storage: almacen } });
+  var D = null, YO = "", ROL = "";
+
+  async function rpc(fn, args, texto) {
+    paso(texto || "Consultando…");
+    try { var r = await sb.schema("core").rpc(fn, args || {}); if (r.error) throw new Error(r.error.message || "la base no respondió"); return r.data; }
+    finally { paso(null); }
+  }
+  async function accion(fn, args, texto) {
+    var r = await rpc(fn, args, texto);
+    if (r && r.ok === false) throw new Error(r.error || "la base rechazó la acción");
+    return r;
+  }
+  function puede(min) { var o = { lector: 1, editor: 2, aprobador: 3, administrador: 4 }; return (o[ROL] || 0) >= (o[min] || 9); }
+
+  // ── pestañas ────────────────────────────────────────────────────────────────
+  var TABS = [["t-resumen","p-resumen"],["t-costos","p-costos"],["t-facturas","p-facturas"],["t-desarrollo","p-desarrollo"],["t-plan","p-plan"],["t-proyeccion","p-proyeccion"]];
+  function verTab(id) { TABS.forEach(function (t) { var sel = t[0] === id; $(t[0]).setAttribute("aria-selected", sel ? "true" : "false"); $(t[1]).hidden = !sel; }); guardarLS("pacioli.tab", id); }
+  TABS.forEach(function (t) { $(t[0]).addEventListener("click", function () { verTab(t[0]); }); });
+
+  // ── cálculos ────────────────────────────────────────────────────────────────
+  function activos() { return D.gastos.filter(function (g) { return g.estado !== "descartado"; }); }
+  function sumar(arr, f) { return arr.reduce(function (a, x) { return a + (Number(f(x)) || 0); }, 0); }
+  function param(k) { var p = D.parametros && D.parametros[k]; return p && p.valor != null ? Number(p.valor) : null; }
+  function provMap() { var m = {}; D.proveedores.forEach(function (p) { m[p.proveedor_id] = p; }); return m; }
+  function runRate() {
+    var pm = provMap(), rec = activos().filter(function (g) { var p = pm[g.proveedor_id]; return p && p.recurrente && p.categoria !== "tarjeta" && g.monto_cop != null; });
+    var meses = {}; rec.forEach(function (g) { meses[g.mes] = (meses[g.mes] || 0) + Number(g.monto_cop); });
+    var ks = Object.keys(meses).sort().slice(-3);
+    if (!ks.length) return { valor: 0, meses: [] };
+    return { valor: ks.reduce(function (a, k) { return a + meses[k]; }, 0) / ks.length, meses: ks };
+  }
+  function horasMes(mes, dev) {
+    var t = D.tiempo.filter(function (x) { return x.mes === mes && x.desarrollador_id === dev; });
+    var man = t.filter(function (x) { return x.fuente === "manual" && x.horas != null; })[0];
+    if (man) return { horas: Number(man.horas), fuente: "manual" };
+    var lar = t.filter(function (x) { return x.fuente === "larrey" && x.horas != null; })[0];
+    if (lar) return { horas: Number(lar.horas), fuente: "Larrey (estimación)" };
+    var git = t.filter(function (x) { return x.fuente === "git" && x.dias_actividad != null; })[0];
+    var hpd = param("horas_por_dia_desarrollo");
+    if (git && hpd) return { horas: Number(git.dias_actividad) * hpd, fuente: git.dias_actividad + " días × " + hpd + " h" };
+    if (git) return { horas: null, fuente: git.dias_actividad + " días de git, sin «horas por día»" };
+    return { horas: null, fuente: "" };
+  }
+  function costoDesarrolloMes(mes) {
+    var total = 0, falta = false, detalle = [];
+    D.desarrolladores.filter(function (d) { return d.activo && d.tipo === "interno"; }).forEach(function (d) {
+      var h = horasMes(mes, d.desarrollador_id);
+      if (h.horas == null) { if (h.fuente) { falta = true; detalle.push(d.nombre.split(" (")[0] + ": " + h.fuente); } return; }
+      if (d.valor_hora_cop == null) { falta = true; detalle.push(d.nombre.split(" (")[0] + ": " + num(h.horas) + " h sin valor hora"); return; }
+      total += h.horas * Number(d.valor_hora_cop); detalle.push(d.nombre.split(" (")[0] + ": " + num(h.horas) + " h (" + h.fuente + ")");
+    });
+    return { total: total, falta: falta, detalle: detalle };
+  }
+  function mesesDesde() { var ms = {}; activos().forEach(function (g) { ms[g.mes] = 1; }); D.tiempo.forEach(function (t) { ms[t.mes] = 1; }); return Object.keys(ms).sort(); }
+
+  // ── pintado ─────────────────────────────────────────────────────────────────
+  function pintarCifras() {
+    var a = activos(), porE = {};
+    a.forEach(function (g) { porE[g.estado] = (porE[g.estado] || 0) + (Number(g.monto_cop) || 0); });
+    var sinMonto = a.filter(function (g) { return g.monto_cop == null; }).length;
+    var rr = runRate(), ult = mesesDesde().slice(-1)[0], dev = ult ? costoDesarrolloMes(ult) : { total: 0, falta: true };
+    var bz = D.buzones.filter(function (b) { return b.estado === "accesible"; }).length;
+    function c(cl, v, s, id) { return '<div class="pa-cifra ' + cl + '" data-mover-id="' + id + '"><b>' + v + "</b><span>" + s + "</span></div>"; }
+    $("pa-cifras").innerHTML =
+      c("cert", cop(porE.certificado), "certificado en Siigo · " + a.filter(function (g) { return g.estado === "certificado"; }).length + " cobros", "cert") +
+      c("verif", cop(porE.verificado), "verificado con factura · " + a.filter(function (g) { return g.estado === "verificado"; }).length + " cobros", "verif") +
+      c("detec" + (sinMonto ? " atencion" : ""), cop(porE.detectado), "detectado sin leer · " + sinMonto + " sin monto todavía", "detec") +
+      c("neutro", cop((porE.certificado || 0) + (porE.verificado || 0) + (porE.detectado || 0)), "total registrado, base sin IVA", "total") +
+      c("proy", cop(rr.valor), "run-rate mensual de suscripciones (" + (rr.meses.join(", ") || "sin datos") + ")", "runrate") +
+      c("proy" + (dev.falta ? " atencion" : ""), dev.falta && !dev.total ? "sin parametrizar" : cop(dev.total), "costo de desarrollo " + (ult || "") + (dev.falta ? " · falta valor hora u horas" : ""), "desarrollo") +
+      c("neutro" + (bz < D.buzones.length ? " atencion" : ""), bz + " de " + D.buzones.length, "buzones que Pacioli puede leer", "buzones");
+  }
+
+  function pintarGrafico() {
+    var meses = mesesDesde(), a = activos();
+    if (!meses.length) { $("pa-grafico").innerHTML = '<div class="pa-aviso">Sin datos todavía.</div>'; return; }
+    var serie = meses.map(function (m) {
+      var r = { mes: m, certificado: 0, verificado: 0, detectado: 0, desarrollo: 0 };
+      a.forEach(function (g) { if (g.mes === m) r[g.estado] += Number(g.monto_cop) || 0; });
+      r.desarrollo = costoDesarrolloMes(m).total; return r;
+    });
+    var W = 720, H = 230, base = 200, alto = 150;
+    var tot = serie.map(function (s) { return s.certificado + s.verificado + s.detectado + s.desarrollo; });
+    var mx = Math.max.apply(null, tot) || 1;
+    var izq = 14 + 7 * cop(mx).replace("$ ", "").length, ancho = (W - izq - 20) / meses.length, barra = Math.min(48, ancho * 0.6);
+    var out = ['<svg viewBox="0 0 ' + W + ' ' + H + '" width="100%" role="img" aria-label="Gasto mensual por estado del dato" style="font-family:Inter,system-ui,sans-serif;font-size:11px">'];
+    for (var k = 0; k <= 4; k++) { var y = base - alto * k / 4; out.push('<line x1="' + izq + '" y1="' + y + '" x2="' + (W - 20) + '" y2="' + y + '" style="stroke:var(--linea)"/><text x="' + (izq - 6) + '" y="' + (y + 4) + '" text-anchor="end" style="fill:var(--tinta-2)">' + cop(mx * k / 4).replace("$ ", "") + "</text>"); }
+    serie.forEach(function (s, i) {
+      var x = izq + i * ancho + (ancho - barra) / 2, y = base;
+      ["certificado", "verificado", "detectado", "desarrollo"].forEach(function (e) { var v = s[e]; if (v <= 0) return; var h = Math.max(alto * v / mx, 1); y -= h; out.push('<rect x="' + x.toFixed(1) + '" y="' + y.toFixed(1) + '" width="' + barra.toFixed(1) + '" height="' + h.toFixed(1) + '" fill="' + COLOR[e] + '"><title>' + s.mes + " · " + (NOMBRE_ESTADO[e] || "Desarrollo") + ": " + cop(v) + "</title></rect>"); });
+      out.push('<text x="' + (x + barra / 2).toFixed(1) + '" y="' + (y - 4).toFixed(1) + '" text-anchor="middle" font-weight="600" style="fill:var(--tinta-1)">' + cop(tot[i]).replace("$ ", "") + "</text>");
+      out.push('<text x="' + (x + barra / 2).toFixed(1) + '" y="' + (base + 16) + '" text-anchor="middle" style="fill:var(--tinta-2)">' + s.mes + "</text>");
+    });
+    out.push("</svg>");
+    $("pa-grafico").innerHTML = out.join("");
+  }
+
+  function pintarHallazgos() {
+    var h = [], a = activos(), pm = provMap();
+    D.buzones.forEach(function (b) { if (b.estado !== "accesible") h.push(chip(b.estado === "sin_probar" ? "PENDIENTE" : "BLOQUEA", b.estado === "sin_probar" ? "atencion" : "critico") + " <b>" + esc(b.buzon) + "</b> — " + esc(b.nota || b.estado)); });
+    var sinReg = D.proveedores.filter(function (p) { return ["modelo_ia", "plataforma", "infraestructura"].indexOf(p.categoria) >= 0 && !a.some(function (g) { return g.proveedor_id === p.proveedor_id; }); }).map(function (p) { return p.nombre; });
+    if (sinReg.length) h.push(chip("SERIO", "serio") + " Sin ningún cobro registrado para <b>" + esc(sinReg.join(", ")) + "</b>: sus recibos no llegan a los buzones leídos.");
+    var sinMonto = a.filter(function (g) { return g.monto_cop == null; });
+    if (sinMonto.length) h.push(chip("ATENCIÓN", "atencion") + " " + sinMonto.length + " cobro(s) detectados <b>sin monto</b>: hay que leer la factura y verificarlos en la pestaña Facturas.");
+    a.filter(function (g) { return g.es_estimacion; }).forEach(function (g) { h.push(chip("ESTIMACIÓN", "atencion") + " " + fecha(g.fecha) + " · " + esc(pm[g.proveedor_id] ? pm[g.proveedor_id].nombre : g.proveedor_id) + " · " + cop(g.monto_cop) + " — " + esc((g.notas || "").slice(-160))); });
+    var vda = a.filter(function (g) { return g.proveedor_id === "vda" && g.estado === "certificado"; }), vb = sumar(vda, function (g) { return g.monto_cop; }), ct = param("vda_contrato_base_cop");
+    if (vda.length) h.push(chip("INFO", "bien") + " VDA Studio: " + vda.length + " factura(s) certificada(s) por " + cop(vb) + " base" + (ct ? " de " + cop(ct) + " del contrato (" + num(vb / ct * 100, 0) + " %); restan " + cop(Math.max(ct - vb, 0)) + " base por facturar" : "") + ".");
+    var ext = D.extracto_tc.filter(function (x) { return Number(x.n_cargos) > 1; });
+    if (ext.length) { var me = ext.map(function (x) { return x.mes; }).sort(); h.push(chip("ATENCIÓN", "atencion") + " El extracto de la tarjeta " + esc(ext[0].tarjeta) + " está asentado en Siigo hasta <b>" + me[me.length - 1] + "</b>: de " + me[0] + " a " + me[me.length - 1] + " cargó " + cop(sumar(ext, function (x) { return x.cargos_cop; })) + " y solo " + cop(sumar(ext, function (x) { return x.identificado_ia_cop; })) + " se pudo atribuir a IA por la descripción del asiento."); }
+    $("pa-hallazgos").innerHTML = '<h3 style="font:700 15px var(--display);margin:16px 0 6px">Hallazgos</h3><ul style="font-size:13.5px;line-height:1.55">' + h.map(function (x) { return "<li>" + x + "</li>"; }).join("") + "</ul>";
+    var c = D.corridas && D.corridas[0];
+    $("pa-fuentes").innerHTML = '<p class="pa-sub">Fuentes: libro <code>control_ia</code> en Supabase (leído ahora, ' + esc(String(D.generado).slice(0, 16).replace("T", " ")) + '); Siigo por el espejo FinOps IRM; buzones por Microsoft Graph' + (c ? "; última corrida del rastreador " + esc(c.tipo) + " el " + esc(String(c.inicio).slice(0, 16).replace("T", " ")) : "") + ". Documento interno con costos reales de IRM Aires.</p>";
+  }
+
+  function pintarCostos() {
+    var corte = $("c-corte").value, est = $("c-estado").value, a = activos().filter(function (g) { return !est || g.estado === est; }), pm = provMap();
+    var provs = {}; a.forEach(function (g) { provs[g.proveedor_id] = 1; }); var ps = Object.keys(provs).sort();
+    var per = {}; a.forEach(function (g) { var k = g[corte]; per[k] = per[k] || {}; per[k][g.proveedor_id] = (per[k][g.proveedor_id] || 0) + (Number(g.monto_cop) || 0); });
+    var ks = Object.keys(per).sort(), tot = {};
+    var filas = ks.map(function (k) { var t = 0; var tds = ps.map(function (p) { var v = per[k][p] || 0; t += v; tot[p] = (tot[p] || 0) + v; return '<td class="num">' + (v ? cop(v) : "—") + "</td>"; }).join(""); return "<tr><td><b>" + esc(k) + "</b></td>" + tds + '<td class="num"><b>' + cop(t) + "</b></td></tr>"; });
+    var gt = 0; var tdt = ps.map(function (p) { gt += tot[p] || 0; return '<td class="num">' + cop(tot[p] || 0) + "</td>"; }).join("");
+    $("pa-costos").innerHTML = "<table><thead><tr><th>" + esc(corte === "anio" ? "Año" : corte.charAt(0).toUpperCase() + corte.slice(1)) + "</th>" + ps.map(function (p) { return '<th class="num">' + esc(pm[p] ? pm[p].nombre.split(" — ")[0] : p) + "</th>"; }).join("") + '<th class="num">Total</th></tr></thead><tbody>' + filas.join("") + '<tr class="total"><td>Total</td>' + tdt + '<td class="num">' + cop(gt) + "</td></tr></tbody></table>";
+  }
+
+  function pintarFacturas() {
+    var est = $("f-estado").value, pv = $("f-prov").value, q = $("f-buscar").value.trim().toLowerCase(), pm = provMap();
+    var rows = D.gastos.filter(function (g) { return (est === "activos" ? g.estado !== "descartado" : g.estado === est) && (!pv || g.proveedor_id === pv) && (!q || ((g.concepto || "") + " " + (g.referencia || "") + " " + (g.notas || "")).toLowerCase().indexOf(q) >= 0); });
+    if (!rows.length) { $("pa-facturas").innerHTML = '<div class="pa-aviso">Nada con ese filtro.</div>'; return; }
+    $("pa-facturas").innerHTML = '<table><thead><tr><th>Fecha</th><th>Proveedor</th><th>Concepto y respaldo</th><th class="num">Monto</th><th class="num">En pesos (base)</th><th>Estado</th><th>Acciones</th></tr></thead><tbody>' + rows.map(function (g) {
+      var p = pm[g.proveedor_id], acc = [];
+      if (puede("editor") && g.estado === "detectado") acc.push('<button class="pa-btn sec mini" data-estado="verificado" data-id="' + g.gasto_id + '">Verificar</button>');
+      if (puede("aprobador") && (g.estado === "verificado" || g.estado === "detectado")) acc.push('<button class="pa-btn sec mini" data-estado="certificado" data-id="' + g.gasto_id + '">Certificar</button>');
+      if (g.estado === "descartado") { if (puede("editor")) acc.push('<button class="pa-btn sec mini" data-estado="detectado" data-id="' + g.gasto_id + '">Restaurar</button>'); }
+      else if (typeof caneca === "function") acc.push(caneca("el cobro " + (g.concepto || "").slice(0, 40), { bloqueo: !puede("editor") ? "hace falta el rol de editor" : (g.fuente === "siigo" ? "viene de Siigo: se corrige en Siigo, no acá" : "") }).replace("<button ", '<button data-descartar="' + g.gasto_id + '" '));
+      return "<tr><td>" + fecha(g.fecha) + "</td><td>" + esc(p ? p.nombre.split(" — ")[0] : g.proveedor_id) + "</td><td>" + esc(g.concepto || "") +
+        (g.adjunto ? '<br><span class="pa-sub">📎 ' + esc(g.adjunto) + "</span>" : "") + (g.referencia ? '<br><span class="pa-sub">ref. ' + esc(g.referencia) + (g.comprobante_siigo ? " · Siigo " + esc(g.comprobante_siigo) : "") + (g.buzon ? " · " + esc(g.buzon) : "") + "</span>" : "") +
+        (g.notas ? '<details><summary class="pa-sub" style="cursor:pointer">notas</summary><span class="pa-sub">' + esc(g.notas) + "</span></details>" : "") + "</td>" +
+        '<td class="num">' + (g.moneda === "USD" ? usd(g.monto_original) : cop(g.monto_original)) + (g.iva_cop > 0 ? '<br><span class="pa-sub">IVA ' + cop(g.iva_cop) + "</span>" : "") + "</td>" +
+        '<td class="num">' + cop(g.monto_cop) + (g.es_estimacion ? "<br>" + tag("proyeccion").replace("Proyección", "estimación") : "") + "</td><td>" + tag(g.estado) + '</td><td><div class="pa-acciones">' + acc.join("") + "</div></td></tr>";
+    }).join("") + "</tbody></table>";
+  }
+
+  function pintarDesarrollo() {
+    $("pa-desarrolladores").innerHTML = '<div class="pa-tabla"><table><thead><tr><th>Quién</th><th>Tipo</th><th class="num">Valor hora (COP)</th><th>Fuente</th><th>Acción</th></tr></thead><tbody>' + D.desarrolladores.map(function (d) {
+      return "<tr><td><b>" + esc(d.nombre) + "</b>" + (d.nota ? '<br><span class="pa-sub">' + esc(d.nota) + "</span>" : "") + "</td><td>" + esc(d.tipo) + '</td><td class="num">' + (d.valor_hora_cop == null ? chip("sin parametrizar", "atencion") : cop(d.valor_hora_cop)) + "</td><td>" + esc(d.fuente || "—") + "</td><td>" +
+        (puede("aprobador") && d.tipo === "interno" ? '<button class="pa-btn sec mini" data-valorhora="' + esc(d.desarrollador_id) + '">Fijar valor hora</button>' : (d.tipo === "externo" ? '<span class="pa-sub">por factura</span>' : "")) + "</td></tr>";
+    }).join("") + "</tbody></table></div>";
+    var meses = mesesDesde(), devs = D.desarrolladores.filter(function (d) { return d.tipo === "interno"; });
+    $("pa-tiempo").innerHTML = "<table><thead><tr><th>Mes</th><th>Quién</th><th class=\"num\">Días con commits (git)</th><th class=\"num\">Commits</th><th class=\"num\">Horas Larrey (est.)</th><th class=\"num\">Horas manuales</th><th class=\"num\">Horas que se usan</th><th>De dónde</th><th class=\"num\">Costo del mes</th></tr></thead><tbody>" + meses.map(function (m) {
+      return devs.map(function (d) {
+        var t = D.tiempo.filter(function (x) { return x.mes === m && x.desarrollador_id === d.desarrollador_id; });
+        var g = t.filter(function (x) { return x.fuente === "git"; })[0], l = t.filter(function (x) { return x.fuente === "larrey"; })[0], mn = t.filter(function (x) { return x.fuente === "manual"; })[0];
+        if (!g && !l && !mn) return "";
+        var h = horasMes(m, d.desarrollador_id), costo = h.horas != null && d.valor_hora_cop != null ? h.horas * Number(d.valor_hora_cop) : null;
+        return "<tr><td><b>" + m + "</b></td><td>" + esc(d.nombre.split(" (")[0]) + '</td><td class="num">' + (g ? num(g.dias_actividad, 0) : "—") + '</td><td class="num">' + (g ? num(g.commits, 0) : "—") + '</td><td class="num">' + (l ? num(l.horas) : "—") + '</td><td class="num">' + (mn ? num(mn.horas) : "—") + '</td><td class="num"><b>' + (h.horas == null ? "—" : num(h.horas)) + "</b></td><td>" + esc(h.fuente) + '</td><td class="num">' + (costo == null ? chip("sin parametrizar", "atencion") : cop(costo)) + "</td></tr>";
+      }).join("");
+    }).join("") + "</tbody></table>";
+    var tk = D.tickets || [];
+    $("pa-tickets").innerHTML = "<table><thead><tr><th>Ticket</th><th>Herramienta</th><th>Qué pide</th><th>Estado</th><th class=\"num\">Horas est.</th><th class=\"num\">Tokens (miles)</th><th>Creado</th></tr></thead><tbody>" + tk.map(function (t) {
+      return "<tr><td><b>" + esc(t.codigo) + "</b></td><td>" + esc(t.artefacto || "") + "</td><td>" + esc(t.descripcion || "") + "</td><td>" + esc(t.estado) + '</td><td class="num">' + (t.horas != null ? num(t.horas) : (t.minutos != null ? num(t.minutos / 60) : "—")) + '</td><td class="num">' + (t.tokens_miles != null ? num(t.tokens_miles, 0) : "—") + "</td><td>" + fecha(t.creado) + "</td></tr>";
+    }).join("") + '<tr class="total"><td colspan="4">Total (' + tk.length + " tickets)</td><td class=\"num\">" + num(sumar(tk, function (t) { return t.horas != null ? t.horas : (t.minutos || 0) / 60; })) + '</td><td class="num">' + num(sumar(tk, function (t) { return t.tokens_miles; }), 0) + "</td><td></td></tr></tbody></table>";
+    var sel = $("h-dev"); sel.innerHTML = devs.map(function (d) { return '<option value="' + esc(d.desarrollador_id) + '">' + esc(d.nombre.split(" (")[0]) + "</option>"; }).join("");
+    if (!$("h-mes").value) $("h-mes").value = new Date().toISOString().slice(0, 7);
+  }
+
+  function pintarPlan() {
+    var P = D.plan.filter(function (p) { return p.estado !== "descartado"; }), desc = D.plan.filter(function (p) { return p.estado === "descartado"; });
+    var hijos = function (id, tipo) { return P.filter(function (p) { return p.tipo === tipo && p.padre_id === id; }).sort(function (a, b) { return a.orden - b.orden || a.plan_id - b.plan_id; }); };
+    function fila(p, cls) {
+      var acc = [];
+      if (puede("aprobador") && p.estado === "propuesto") acc.push('<button class="pa-btn sec mini" data-plan-estado="vigente" data-plan="' + p.plan_id + '">Dar por vigente</button>');
+      if (puede("editor") && (p.estado === "vigente")) acc.push('<button class="pa-btn sec mini" data-plan-estado="en_curso" data-plan="' + p.plan_id + '">Empezar</button>');
+      if (puede("editor") && (p.estado === "en_curso" || p.estado === "vigente")) acc.push('<button class="pa-btn sec mini" data-plan-estado="hecho" data-plan="' + p.plan_id + '">Hecho</button>');
+      if (typeof caneca === "function") acc.push(caneca(p.tipo + " «" + p.titulo + "»", { bloqueo: puede("editor") ? "" : "hace falta el rol de editor" }).replace("<button ", '<button data-plan-descartar="' + p.plan_id + '" '));
+      return '<div class="pa-plan ' + cls + '"><h5>' + esc(p.titulo) + " " + tag(p.estado === "propuesto" ? "detectado" : (p.estado === "hecho" ? "certificado" : "verificado")).replace(/>[^<]+</, ">" + esc(p.estado.replace("_", " ")) + "<") + "</h5>" +
+        (p.descripcion ? '<span class="pa-sub">' + esc(p.descripcion) + "</span>" : "") +
+        '<span class="pa-sub">' + [p.responsable ? "resp. " + esc(p.responsable) : "", p.fecha_meta ? "meta " + fecha(p.fecha_meta) : "", p.horas_estimadas != null ? num(p.horas_estimadas) + " h est." : "", p.costo_estimado_cop != null ? cop(p.costo_estimado_cop) : "", p.ticket ? "ticket " + esc(p.ticket) : ""].filter(Boolean).join(" · ") + "</span>" +
+        '<div class="pa-acciones" style="margin-top:6px">' + acc.join("") + "</div></div>";
+    }
+    var html = hijos(null, "objetivo").map(function (o) { return fila(o, "obj") + hijos(o.plan_id, "alcance").map(function (a) { return fila(a, "alc") + hijos(a.plan_id, "tarea").map(function (t) { return fila(t, "tar"); }).join(""); }).join(""); }).join("");
+    var sueltos = P.filter(function (p) { return p.tipo !== "objetivo" && !P.some(function (q) { return q.plan_id === p.padre_id; }); });
+    if (sueltos.length) html += '<h4 class="pa-sub" style="margin:12px 0 4px">Sin objetivo padre</h4>' + sueltos.map(function (p) { return fila(p, p.tipo === "alcance" ? "alc" : "tar"); }).join("");
+    if (desc.length) html += '<details><summary class="pa-sub" style="cursor:pointer;min-height:40px;display:flex;align-items:center">' + desc.length + " descartado(s)</summary>" + desc.map(function (p) { return '<div class="pa-plan"><h5>' + esc(p.titulo) + " " + tag("descartado") + "</h5>" + (puede("editor") ? '<button class="pa-btn sec mini" data-plan-estado="propuesto" data-plan="' + p.plan_id + '">Restaurar</button>' : "") + "</div>"; }).join("") + "</details>";
+    $("pa-plan").innerHTML = html || '<div class="pa-aviso">El plan está vacío. Agregá el primer objetivo abajo.</div>';
+    var sel = $("p-padre"), tipo = $("p-tipo").value, padres = P.filter(function (p) { return tipo === "alcance" ? p.tipo === "objetivo" : (tipo === "tarea" ? p.tipo === "alcance" : false); });
+    sel.innerHTML = '<option value="">— ninguno —</option>' + padres.map(function (p) { return '<option value="' + p.plan_id + '">' + esc(p.titulo) + "</option>"; }).join("");
+  }
+
+  function pintarProyeccion() {
+    var n = param("meses_proyeccion") || 12, rr = runRate(), ct = param("vda_contrato_base_cop");
+    var vb = sumar(activos().filter(function (g) { return g.proveedor_id === "vda" && g.estado === "certificado"; }), function (g) { return g.monto_cop; });
+    var vdaRest = ct ? Math.max(ct - vb, 0) : 0, vdaMeses = param("vda_meses_restantes") || 2;
+    var ult = mesesDesde().slice(-1)[0], dev = ult ? costoDesarrolloMes(ult) : { total: 0, falta: true };
+    var hoy = new Date(), filas = [], acum = 0;
+    for (var i = 1; i <= n; i++) {
+      var d = new Date(hoy.getFullYear(), hoy.getMonth() + i, 1), m = d.toISOString().slice(0, 7);
+      var v = i <= vdaMeses ? vdaRest / vdaMeses : 0, t = rr.valor + v + dev.total; acum += t;
+      filas.push("<tr><td><b>" + m + '</b></td><td class="num">' + cop(rr.valor) + '</td><td class="num">' + (v ? cop(v) : "—") + '</td><td class="num">' + (dev.falta && !dev.total ? "—" : cop(dev.total)) + '</td><td class="num"><b>' + cop(t) + '</b></td><td class="num">' + cop(acum) + "</td></tr>");
+    }
+    $("pa-proy-texto").innerHTML = '<p style="font-size:13.5px;line-height:1.55">' + tag("proyeccion") + " <b>Todo lo de esta pestaña es estimación.</b> Suscripciones = run-rate de " + cop(rr.valor) + "/mes (promedio de " + (rr.meses.join(", ") || "sin meses con datos") + ", solo proveedores recurrentes). VDA = " + (ct ? "lo que falta del contrato (" + cop(vdaRest) + " base) repartido en " + vdaMeses + " mes(es); el contrato real manda" : "sin valor de contrato parametrizado") + ". Desarrollo = " + (dev.falta && !dev.total ? "<b>sin parametrizar</b> (" + esc(dev.detalle.join("; ")) + ")" : "el costo del último mes con datos (" + esc(dev.detalle.join("; ")) + ")") + ". Ningún valor de esta tabla es un compromiso contable.</p>";
+    $("pa-proyeccion").innerHTML = '<table><thead><tr><th>Mes</th><th class="num">Suscripciones</th><th class="num">VDA (hitos)</th><th class="num">Desarrollo</th><th class="num">Total del mes</th><th class="num">Acumulado</th></tr></thead><tbody>' + filas.join("") + "</tbody></table>";
+    var ps = D.parametros || {};
+    $("pa-parametros").innerHTML = Object.keys(ps).sort().map(function (k) {
+      var p = ps[k]; return '<div class="pa-campo"><label for="prm-' + esc(k) + '">' + esc(k.replace(/_/g, " ")) + '</label><input id="prm-' + esc(k) + '" type="number" step="any" value="' + (p.valor == null ? "" : p.valor) + '" data-param="' + esc(k) + '"' + (puede("aprobador") ? "" : " disabled") + '><span class="pa-sub">' + esc(p.nota || "") + (p.actualizado_por ? " · " + esc(p.actualizado_por) : "") + "</span></div>";
+    }).join("") + (puede("aprobador") ? '<div class="pa-campo ancho"><button class="pa-btn" id="prm-guardar">Guardar parámetros</button></div>' : '<div class="pa-campo ancho"><span class="pa-sub">Solo el aprobador cambia los parámetros.</span></div>');
+  }
+
+  function pintarTodo() { pintarCifras(); pintarGrafico(); pintarHallazgos(); pintarCostos(); pintarFacturas(); pintarDesarrollo(); pintarPlan(); pintarProyeccion(); if (typeof window.IRMMover === "function") window.IRMMover(); }
+
+  // ── acciones ────────────────────────────────────────────────────────────────
+  ["c-corte", "c-estado"].forEach(function (i) { $(i).addEventListener("change", pintarCostos); });
+  ["f-estado", "f-prov"].forEach(function (i) { $(i).addEventListener("change", pintarFacturas); });
+  $("f-buscar").addEventListener("input", pintarFacturas);
+  $("p-tipo").addEventListener("change", pintarPlan);
+
+  document.addEventListener("click", async function (ev) {
+    var b = ev.target.closest("button"); if (!b) return;
+    if (b.dataset.estado && b.dataset.id) {
+      var id = Number(b.dataset.id), est = b.dataset.estado, g = D.gastos.filter(function (x) { return x.gasto_id === id; })[0], comp = null, monto = null;
+      if (est === "certificado") { comp = prompt("Comprobante de Siigo que respalda este cobro (ej. FC-1-1570 o CC-9-4):", g.comprobante_siigo || ""); if (comp === null) return; }
+      if (est === "verificado" && g.monto_cop == null) { var m = prompt("Monto base de la factura (en " + g.moneda + ", sin IVA):"); if (m === null) return; monto = Number(String(m).replace(",", ".")); if (!(monto > 0)) { aviso("<b>NO SE VERIFICÓ.</b> El monto tiene que ser un número mayor que cero.", true); return; } }
+      ocupar(b);
+      try {
+        var r = await accion("pacioli_gasto_estado", { p_id: id, p_estado: est, p_nota: null, p_comprobante: comp, p_monto_cop: monto != null && g.moneda === "COP" ? monto : null }, "Cambiando el estado…");
+        if (monto != null && g.moneda === "USD") { aviso("<b>ESTADO CAMBIADO.</b> El monto en dólares se registra con «Registrar un cobro a mano» para que la TRM lo convierta.", false); }
+        var antes = r.antes; aviso("<b>" + esc(NOMBRE_ESTADO[est].toUpperCase()) + ".</b> Antes estaba " + esc(antes) + ".", false, async function () { try { await accion("pacioli_gasto_estado", { p_id: id, p_estado: antes, p_nota: "deshacer" }, "Deshaciendo…"); aviso("<b>DESHECHO.</b>"); await cargar(); } catch (e) { aviso("<b>NO SE DESHIZO.</b> " + esc(e.message), true); } });
+        await cargar();
+      } catch (e) { aviso("<b>NO SE CAMBIÓ.</b> " + esc(e.message), true); } finally { liberar(b); }
+      return;
+    }
+    if (b.dataset.descartar) {
+      if (b.getAttribute("aria-disabled") === "true") { aviso("<b>NO SE PUEDE ELIMINAR.</b> " + esc(b.dataset.bloqueo), true); return; }
+      var id2 = Number(b.dataset.descartar), g2 = D.gastos.filter(function (x) { return x.gasto_id === id2; })[0], fin = (typeof canecaOcupada === "function") ? canecaOcupada(b) : function () {};
+      try {
+        await accion("pacioli_gasto_estado", { p_id: id2, p_estado: "descartado", p_nota: "caneca" }, "Descartando…");
+        aviso("<b>DESCARTADO.</b> No se borró: queda apagado en «Descartados».", false, async function () { try { await accion("pacioli_gasto_estado", { p_id: id2, p_estado: g2.estado, p_nota: "deshacer" }, "Deshaciendo…"); aviso("<b>DESHECHO.</b>"); await cargar(); } catch (e) { aviso("<b>NO SE DESHIZO.</b> " + esc(e.message), true); } });
+        await cargar();
+      } catch (e) { aviso("<b>NO SE DESCARTÓ.</b> " + esc(e.message), true); } finally { fin(); }
+      return;
+    }
+    if (b.dataset.plan && b.dataset.planEstado) {
+      var p = D.plan.filter(function (x) { return x.plan_id === Number(b.dataset.plan); })[0]; if (!p) return;
+      ocupar(b);
+      try {
+        var antesP = p.estado, np = Object.assign({}, p, { estado: b.dataset.planEstado });
+        await accion("pacioli_plan_guardar", { p: np }, "Guardando…");
+        aviso("<b>PLAN ACTUALIZADO.</b> «" + esc(p.titulo) + "» pasó a " + esc(b.dataset.planEstado.replace("_", " ")) + ".", false, async function () { try { await accion("pacioli_plan_guardar", { p: Object.assign({}, p, { estado: antesP }) }, "Deshaciendo…"); aviso("<b>DESHECHO.</b>"); await cargar(); } catch (e) { aviso("<b>NO SE DESHIZO.</b> " + esc(e.message), true); } });
+        await cargar();
+      } catch (e) { aviso("<b>NO SE GUARDÓ.</b> " + esc(e.message), true); } finally { liberar(b); }
+      return;
+    }
+    if (b.dataset.planDescartar) {
+      if (b.getAttribute("aria-disabled") === "true") { aviso("<b>NO SE PUEDE ELIMINAR.</b> " + esc(b.dataset.bloqueo), true); return; }
+      var p2 = D.plan.filter(function (x) { return x.plan_id === Number(b.dataset.planDescartar); })[0], fin2 = (typeof canecaOcupada === "function") ? canecaOcupada(b) : function () {};
+      try {
+        var antes2 = p2.estado;
+        await accion("pacioli_plan_guardar", { p: Object.assign({}, p2, { estado: "descartado" }) }, "Descartando…");
+        aviso("<b>DESCARTADO.</b> «" + esc(p2.titulo) + "» queda apagado, no borrado.", false, async function () { try { await accion("pacioli_plan_guardar", { p: Object.assign({}, p2, { estado: antes2 }) }, "Deshaciendo…"); aviso("<b>DESHECHO.</b>"); await cargar(); } catch (e) { aviso("<b>NO SE DESHIZO.</b> " + esc(e.message), true); } });
+        await cargar();
+      } catch (e) { aviso("<b>NO SE DESCARTÓ.</b> " + esc(e.message), true); } finally { fin2(); }
+      return;
+    }
+    if (b.dataset.valorhora) {
+      var d = D.desarrolladores.filter(function (x) { return x.desarrollador_id === b.dataset.valorhora; })[0];
+      var v = prompt("Valor de la hora de " + d.nombre.split(" (")[0] + " en pesos (costo para IRM, con prestaciones si aplica):", d.valor_hora_cop || ""); if (v === null) return;
+      var nv = Number(String(v).replace(/\./g, "").replace(",", ".")); if (!(nv > 0)) { aviso("<b>NO SE FIJÓ.</b> Tiene que ser un número mayor que cero.", true); return; }
+      ocupar(b);
+      try { var r2 = await accion("pacioli_desarrollador", { p_id: d.desarrollador_id, p_nombre: d.nombre, p_tipo: d.tipo, p_valor_hora: nv, p_nota: null }, "Guardando el valor hora…");
+        var ant = r2.antes; aviso("<b>VALOR HORA FIJADO:</b> " + cop(nv) + ".", false, ant ? async function () { try { await accion("pacioli_desarrollador", { p_id: ant.desarrollador_id, p_nombre: ant.nombre, p_tipo: ant.tipo, p_valor_hora: ant.valor_hora_cop, p_nota: ant.nota }, "Deshaciendo…"); aviso("<b>DESHECHO.</b>"); await cargar(); } catch (e) { aviso("<b>NO SE DESHIZO.</b> " + esc(e.message), true); } } : null);
+        await cargar(); } catch (e) { aviso("<b>NO SE FIJÓ.</b> " + esc(e.message), true); } finally { liberar(b); }
+      return;
+    }
+    if (b.id === "g-guardar") {
+      ocupar(b, "Registrando…");
+      try {
+        await accion("pacioli_gasto_manual", { p_fecha: $("g-fecha").value || null, p_proveedor: $("g-prov").value, p_concepto: $("g-concepto").value.trim(), p_moneda: $("g-moneda").value, p_monto: Number($("g-monto").value), p_iva: Number($("g-iva").value || 0), p_referencia: $("g-ref").value.trim() || null, p_nota: null }, "Registrando el cobro…");
+        aviso("<b>COBRO REGISTRADO</b> como verificado. Si fue un error, mandalo a la caneca desde su fila."); ["g-concepto", "g-monto", "g-ref"].forEach(function (i) { $(i).value = ""; }); await cargar();
+      } catch (e) { aviso("<b>NO SE REGISTRÓ.</b> " + esc(e.message), true); } finally { liberar(b); }
+      return;
+    }
+    if (b.id === "h-guardar") {
+      ocupar(b, "Registrando…");
+      try { await accion("pacioli_tiempo", { p_mes: $("h-mes").value, p_desarrollador: $("h-dev").value, p_horas: Number($("h-horas").value), p_nota: $("h-nota").value.trim() || null }, "Registrando las horas…"); aviso("<b>HORAS REGISTRADAS.</b>"); $("h-horas").value = ""; await cargar(); }
+      catch (e) { aviso("<b>NO SE REGISTRARON.</b> " + esc(e.message), true); } finally { liberar(b); }
+      return;
+    }
+    if (b.id === "p-guardar") {
+      ocupar(b, "Agregando…");
+      try {
+        await accion("pacioli_plan_guardar", { p: { tipo: $("p-tipo").value, padre_id: $("p-padre").value || null, titulo: $("p-titulo").value.trim(), descripcion: $("p-desc").value.trim() || null, responsable: $("p-resp").value.trim() || null, fecha_meta: $("p-meta").value || null, horas_estimadas: $("p-horas").value || null, ticket: $("p-ticket").value.trim() || null } }, "Agregando al plan…");
+        aviso("<b>AGREGADO AL PLAN</b> como propuesto."); ["p-titulo", "p-desc", "p-resp", "p-meta", "p-horas", "p-ticket"].forEach(function (i) { $(i).value = ""; }); await cargar();
+      } catch (e) { aviso("<b>NO SE AGREGÓ.</b> " + esc(e.message), true); } finally { liberar(b); }
+      return;
+    }
+    if (b.id === "prm-guardar") {
+      ocupar(b, "Guardando…");
+      try {
+        var inputs = Array.prototype.slice.call(document.querySelectorAll("[data-param]"));
+        for (var i = 0; i < inputs.length; i++) { var k = inputs[i].dataset.param, val = inputs[i].value === "" ? null : Number(inputs[i].value); var cur = D.parametros[k] ? D.parametros[k].valor : null; if ((cur == null ? null : Number(cur)) !== val) await accion("pacioli_parametro", { p_clave: k, p_valor: val, p_texto: null, p_nota: null }, "Guardando " + k + "…"); }
+        aviso("<b>PARÁMETROS GUARDADOS.</b>"); await cargar();
+      } catch (e) { aviso("<b>NO SE GUARDARON.</b> " + esc(e.message), true); } finally { liberar(b); }
+      return;
+    }
+  });
+
+  // ── carga ───────────────────────────────────────────────────────────────────
+  async function cargar() {
+    try {
+      var s = await sb.auth.getSession();
+      if (!(s.data && s.data.session)) { aviso('<b>No hay sesión.</b> Entrá primero en <a href="./" style="color:var(--irm-cian);font-weight:600">Hestia</a> con tu correo y volvé a esta página.', true); return; }
+      YO = (s.data.session.user && s.data.session.user.email) || "sin identificar";
+      var t = await rpc("pacioli_tablero", {}, "Leyendo el libro de costos…");
+      if (!t || t.ok === false) { aviso("<b>" + esc((t && t.error) || "No se pudo leer.") + "</b>" + (t && t.motivo === "sin_permiso" ? ' Pedí acceso a Pacioli desde <a href="./" style="color:var(--irm-cian);font-weight:600">Hestia</a>.' : ""), true); return; }
+      D = t; ROL = t.rol;
+      var pm = provMap(); $("f-prov").innerHTML = '<option value="">Todos</option>' + D.proveedores.map(function (p) { return '<option value="' + esc(p.proveedor_id) + '">' + esc(p.nombre.split(" — ")[0]) + "</option>"; }).join("");
+      $("g-prov").innerHTML = D.proveedores.filter(function (p) { return p.categoria !== "tarjeta"; }).map(function (p) { return '<option value="' + esc(p.proveedor_id) + '">' + esc(p.nombre.split(" — ")[0]) + "</option>"; }).join("");
+      if (!$("g-fecha").value) $("g-fecha").value = new Date().toISOString().slice(0, 10);
+      if (!DESHACER) aviso("");
+      pintarTodo();
+    } catch (e) { aviso("<b>NO SE PUDO LEER.</b> " + esc(e.message) + " — revisá tu conexión y recargá.", true); }
+  }
+
+  verTab(leerLS("pacioli.tab") || "t-resumen");
+  cargar();
+})();
+
+/* Tarjetas que se mueven — componente canónico IRM v2. Marca: data-irm-mover="<clave>" en la grilla
+   y data-mover-id="<id estable>" en cada tarjeta. Se activa solo, también en lo que se pinta después. */
+(function (global) {
+  "use strict";
+  if (global.IRMMover) return;
+  var ESPERA_DEDO = 450, UMBRAL = 6, PREFIJO = "irm.mover.";
+  var quieto = global.matchMedia && global.matchMedia("(prefers-reduced-motion: reduce)").matches;
+  function leer(k) { try { return JSON.parse(global.localStorage.getItem(PREFIJO + k) || "null"); } catch (e) { return null; } }
+  function guardar(k, v) { try { if (v) global.localStorage.setItem(PREFIJO + k, JSON.stringify(v)); else global.localStorage.removeItem(PREFIJO + k); } catch (e) {} }
+  var voz = null;
+  function decir(t) {
+    if (!voz) { voz = document.createElement("div"); voz.className = "irm-mover-voz"; voz.setAttribute("role", "status"); voz.setAttribute("aria-live", "polite"); document.body.appendChild(voz); }
+    voz.textContent = ""; setTimeout(function () { voz.textContent = t; }, 30);
+  }
+  function tarjetas(g) { return Array.prototype.filter.call(g.children, function (c) { return c.hasAttribute("data-mover-id"); }); }
+  function ids(g) { return tarjetas(g).map(function (c) { return c.getAttribute("data-mover-id"); }); }
+  // Lo último que dejó el propio componente: si la grilla cambia y no fue él (la página la
+  // volvió a pintar), se reaplica el orden guardado sobre lo nuevo.
+  function marcar(g) { g.__irmUltimo = ids(g).join("\u0001"); }
+  function nombre(c) { var t = c.getAttribute("aria-label") || c.textContent || ""; return t.replace(/\s+/g, " ").trim().split(":")[0].slice(0, 60); }
+
+  // FLIP: las demás tarjetas se corren con una animación corta en vez de saltar.
+  function conAnimacion(g, cambio) {
+    if (quieto || !Element.prototype.animate) { cambio(); return; }
+    var antes = new Map(); tarjetas(g).forEach(function (c) { antes.set(c, c.getBoundingClientRect()); });
+    cambio();
+    tarjetas(g).forEach(function (c) {
+      var a = antes.get(c); if (!a) return; var d = c.getBoundingClientRect(), dx = a.left - d.left, dy = a.top - d.top;
+      if (!dx && !dy) return;
+      c.animate([{ transform: "translate(" + dx + "px," + dy + "px)" }, { transform: "none" }], { duration: 160, easing: "ease-out" });
+    });
+  }
+
+  function ordenarSegun(g, orden) {
+    var porId = {}; tarjetas(g).forEach(function (c) { porId[c.getAttribute("data-mover-id")] = c; });
+    var primera = tarjetas(g)[0], ancla = primera ? primera.previousSibling : null, frag = document.createDocumentFragment();
+    orden.forEach(function (id) { if (porId[id]) { frag.appendChild(porId[id]); delete porId[id]; } });
+    (g.__irmOriginal || []).forEach(function (id) { if (porId[id]) { frag.appendChild(porId[id]); delete porId[id]; } });
+    Object.keys(porId).forEach(function (id) { frag.appendChild(porId[id]); });       // nuevas: al final
+    g.insertBefore(frag, ancla ? ancla.nextSibling : g.firstChild);
+  }
+  // Alt+flechas necesita poder pararse en la tarjeta: un <div> o un <li> no se enfocan solos.
+  function enfocables(g) { tarjetas(g).forEach(function (c) {
+    if (!c.matches("a[href], button, input, select, textarea, summary, [tabindex]")) c.tabIndex = 0; }); }
+  function aplicarOrden(g) {
+    enfocables(g);
+    g.__irmOriginal = ids(g);
+    var orden = leer(g.getAttribute("data-irm-mover"));
+    if (orden && orden.length) ordenarSegun(g, orden);
+    marcar(g); pintarRestablecer(g);
+  }
+  function guardarOrden(g) {
+    var actual = ids(g), igual = actual.join("\u0001") === (g.__irmOriginal || []).join("\u0001");
+    guardar(g.getAttribute("data-irm-mover"), igual ? null : actual); pintarRestablecer(g);
+  }
+  function pintarRestablecer(g) {
+    var b = g.__irmRestablecer, distinto = ids(g).join("\u0001") !== (g.__irmOriginal || []).join("\u0001");
+    if (!distinto) { if (b) { b.remove(); g.__irmRestablecer = null; } return; }
+    if (b && b.isConnected) return;
+    b = document.createElement("button"); b.type = "button"; b.className = "irm-mover-restablecer"; b.textContent = "Volver al orden original";
+    b.addEventListener("click", function () {
+      conAnimacion(g, function () { ordenarSegun(g, g.__irmOriginal || []); }); marcar(g);
+      guardar(g.getAttribute("data-irm-mover"), null); b.remove(); g.__irmRestablecer = null; decir("Tarjetas en su orden original.");
+    });
+    g.insertAdjacentElement("afterend", b); g.__irmRestablecer = b;
+  }
+
+  function activar(g) {
+    if (g.__irmMover) return;
+    g.__irmMover = true;
+    var faltan = Array.prototype.filter.call(g.children, function (c) { return !c.hasAttribute("data-mover-id"); });
+    if (faltan.length) { faltan.forEach(function (c, i) { c.setAttribute("data-mover-id", "pos-" + i); });
+      if (global.console) console.warn("IRMMover: tarjetas sin data-mover-id en", g.getAttribute("data-irm-mover")); }
+    aplicarOrden(g);
+    var arr = null, timer = null, suprimirClic = false;
+    function soltar(guardarlo) {
+      clearTimeout(timer); timer = null;
+      if (arr && arr.activo) { arr.c.classList.remove("irm-levantada"); g.classList.remove("irm-moviendo");
+        if (guardarlo) { guardarOrden(g); decir(nombre(arr.c) + ": quedó en la posición " + (tarjetas(g).indexOf(arr.c) + 1) + " de " + tarjetas(g).length + "."); } }
+      arr = null;
+    }
+    function levantar() { if (!arr) return; arr.activo = true; arr.c.classList.add("irm-levantada"); g.classList.add("irm-moviendo");
+      if (arr.dedo && global.navigator && navigator.vibrate) { try { navigator.vibrate(15); } catch (e) {} } }
+    g.addEventListener("pointerdown", function (ev) {
+      var c = ev.target.closest && ev.target.closest("[data-mover-id]");
+      if (!c || c.parentNode !== g || ev.button > 0) return;
+      if (ev.target.closest("input, textarea, select, a[href], .irm-caneca, .irm-copiar")) return;
+      arr = { c: c, x: ev.clientX, y: ev.clientY, dedo: ev.pointerType !== "mouse", activo: false };
+      if (arr.dedo) timer = setTimeout(levantar, ESPERA_DEDO);
+    });
+    document.addEventListener("pointermove", function (ev) {
+      if (!arr) return;
+      var lejos = Math.abs(ev.clientX - arr.x) > UMBRAL || Math.abs(ev.clientY - arr.y) > UMBRAL;
+      if (!arr.activo) { if (arr.dedo) { if (lejos) soltar(false); return; } if (!lejos) return; levantar(); }
+      ev.preventDefault();
+      var bajo = document.elementFromPoint(ev.clientX, ev.clientY), otra = bajo && bajo.closest && bajo.closest("[data-mover-id]");
+      if (!otra || otra === arr.c || otra.parentNode !== g) return;
+      var lista = tarjetas(g), antes = lista.indexOf(arr.c) > lista.indexOf(otra);
+      conAnimacion(g, function () { g.insertBefore(arr.c, antes ? otra : otra.nextSibling); }); marcar(g);
+    });
+    // En el celular, una vez levantada la tarjeta, el dedo ya no hace scroll.
+    g.addEventListener("touchmove", function (ev) { if (arr && arr.activo) ev.preventDefault(); }, { passive: false });
+    document.addEventListener("pointerup", function () { if (!arr) return; if (arr.activo) suprimirClic = true; soltar(true); });
+    document.addEventListener("pointercancel", function () { if (arr) soltar(true); });
+    g.addEventListener("contextmenu", function (ev) { if (arr) ev.preventDefault(); });
+    g.addEventListener("click", function (ev) { if (suprimirClic) { suprimirClic = false; ev.preventDefault(); ev.stopImmediatePropagation(); } }, true);
+    g.addEventListener("keydown", function (ev) {
+      if (!ev.altKey || !/^Arrow(Left|Right|Up|Down)$/.test(ev.key)) return;
+      var c = ev.target.closest && ev.target.closest("[data-mover-id]"); if (!c || c.parentNode !== g) return;
+      ev.preventDefault();
+      var lista = tarjetas(g), i = lista.indexOf(c), atras = ev.key === "ArrowLeft" || ev.key === "ArrowUp", j = atras ? i - 1 : i + 1;
+      if (j < 0 || j >= lista.length) { decir(nombre(c) + ": ya está " + (atras ? "primera." : "última.")); return; }
+      conAnimacion(g, function () { g.insertBefore(c, atras ? lista[j] : lista[j].nextSibling); }); marcar(g);
+      c.focus(); guardarOrden(g); decir(nombre(c) + ": posición " + (j + 1) + " de " + lista.length + ".");
+    });
+  }
+  function barrer(raiz) {
+    if (!raiz || !raiz.querySelectorAll) return;
+    if (raiz.matches && raiz.matches("[data-irm-mover]")) activar(raiz);
+    Array.prototype.forEach.call(raiz.querySelectorAll("[data-irm-mover]"), activar);
+  }
+  function arrancar() {
+    barrer(document.body);
+    var revisar = [];
+    new MutationObserver(function (ms) {
+      ms.forEach(function (m) {
+        Array.prototype.forEach.call(m.addedNodes, function (n) { if (n.nodeType === 1) barrer(n); });
+        // Una grilla ya activa a la que la página le cambió las tarjetas (pintó con innerHTML).
+        if (m.target && m.target.__irmMover && revisar.indexOf(m.target) < 0) revisar.push(m.target);
+      });
+      if (revisar.length) Promise.resolve().then(function () {
+        revisar.splice(0).forEach(function (g) {
+          if (!g.classList.contains("irm-moviendo") && ids(g).join("\u0001") !== g.__irmUltimo) {
+            var faltan = Array.prototype.filter.call(g.children, function (c) { return !c.hasAttribute("data-mover-id"); });
+            faltan.forEach(function (c, i) { c.setAttribute("data-mover-id", "pos-" + i); });
+            aplicarOrden(g);
+          }
+        });
+      });
+    }).observe(document.body, { childList: true, subtree: true });
+  }
+  if (document.readyState === "loading") document.addEventListener("DOMContentLoaded", arrancar); else arrancar();
+  global.IRMMover = { activar: activar, version: "2" };
+})(window);
+
+
+/* Explicaciones plegables — componente canónico IRM v2: recuerda, por visor, cuál dejó abierta cada persona. */
+(function (global) {
+  "use strict";
+  if (global.IRMPlegable) return;
+  var P = "irm.explica.";
+  function leer(k) { try { return global.localStorage.getItem(P + k); } catch (e) { return null; } }
+  function guardar(k, v) { try { if (v) global.localStorage.setItem(P + k, "1"); else global.localStorage.removeItem(P + k); } catch (e) {} }
+  function enganchar(d) {
+    if (d.__irmExplica) return; d.__irmExplica = true;
+    var k = d.getAttribute("data-explica"); if (!k) return;
+    if (document.querySelectorAll('details.irm-explica[data-explica="' + k.replace(/"/g, '') + '"]').length > 1 && global.console)
+      console.warn("IRMPlegable: la clave «" + k + "» se repite; abrir una abriría todas. Dale a cada instancia su clave.");
+    if (leer(k)) d.open = true;
+    d.addEventListener("toggle", function () { guardar(k, d.open); });
+  }
+  function barrer(r) { if (r && r.querySelectorAll) Array.prototype.forEach.call(r.querySelectorAll("details.irm-explica"), enganchar); }
+  function arrancar() {
+    barrer(document);
+    new MutationObserver(function (ms) { ms.forEach(function (m) { Array.prototype.forEach.call(m.addedNodes, function (n) {
+      if (n.nodeType === 1) { if (n.matches && n.matches("details.irm-explica")) enganchar(n); barrer(n); } }); }); })
+      .observe(document.body, { childList: true, subtree: true });
+  }
+  if (document.readyState === "loading") document.addEventListener("DOMContentLoaded", arrancar); else arrancar();
+  global.IRMPlegable = { version: "2" };
+})(window);
+
+</script>
+
+</main>
+
+<footer class="irm-pie">
+  <div class="irm-contacto"><span><b>C.</b> 318 3591189</span><span><b>D.</b> Cra. 36 #10B-39 el poblado, Medellín, Ant.</span><span>www.irmaires.com</span></div>
+  <span>Confidencial — uso interno IRM Aires</span>
+  <span class="irm-paginacion">2026-10-12</span>
+</footer>
+<style>
+/* Botón «Reportar» — componente canónico IRM v6 (IMAGEN CORPORATIVA/memoria_procedimental/componente_reporte.py) */
+.irm-reporte-raiz { --irmr-tinta: var(--tinta, #0b0b0b); --irmr-tinta-2: var(--tinta-2, #52514e);
+  --irmr-sup: var(--superficie, #fcfcfb); --irmr-borde: var(--cuadricula, #e1e0d9); --irmr-cian: #00B9CE;
+  --irmr-mal: #d03b3b; font: 14px/1.5 var(--sans, Inter, system-ui, -apple-system, "Segoe UI", sans-serif); color: var(--irmr-tinta); }
+@media (prefers-color-scheme: dark) { .irm-reporte-raiz { --irmr-tinta: var(--tinta, #fff); --irmr-tinta-2: var(--tinta-2, #c3c2b7);
+  --irmr-sup: var(--superficie, #1a1a19); --irmr-borde: var(--cuadricula, #2c2c2a); } }
+/* Franja de abajo de los dos botones: todo aviso fijo abajo se apoya encima (componente_volver.py). */
+:root { --irm-franja-abajo: 68px; }
+@media (max-width: 560px) { :root { --irm-franja-abajo: 76px; } }
+.irm-reporte-btn { position: fixed; bottom: 16px; right: 16px; z-index: 2147483000; display: inline-flex; align-items: center; gap: 6px;
+  padding: 8px 14px 8px 11px; border: 1px solid var(--irmr-borde); border-radius: 999px; background: var(--irmr-sup);
+  color: var(--irmr-tinta-2); font: 600 13px var(--display, Poppins, Inter, system-ui, sans-serif); cursor: pointer;
+  box-shadow: 0 2px 10px rgba(0,0,0,.12); transition: color .15s, background .15s, border-color .15s; }
+.irm-reporte-btn.izq { right: auto; left: 16px; }
+.irm-reporte-btn .irm-reporte-ico { width: 17px; height: 17px; }
+.irm-reporte-btn:hover, .irm-reporte-btn:focus-visible { color: var(--irmr-cian); border-color: var(--irmr-cian); outline: none; }
+.irm-reporte-btn:active, .irm-reporte-btn[aria-expanded="true"] { color: #fff; background: var(--irmr-cian); border-color: var(--irmr-cian); }
+@media print { .irm-reporte-btn { display: none; } }
+@media (max-width: 560px) { .irm-reporte-raiz { display: block; height: 72px; }
+  .irm-reporte-btn { padding: 11px; bottom: calc(12px + env(safe-area-inset-bottom, 0px)); right: 12px; }
+  .irm-reporte-btn.izq { left: 12px; right: auto; }
+  .irm-reporte-btn span { position: absolute; width: 1px; height: 1px; overflow: hidden; clip: rect(0 0 0 0); white-space: nowrap; }
+  .irm-reporte-btn .irm-reporte-ico { width: 20px; height: 20px; }
+  .irm-reporte-dlg textarea, .irm-reporte-dlg input[type=text] { font-size: 16px; }
+  .irm-reporte-seg button, .irm-reporte-acciones button, .irm-reporte-img input[type=file], .irm-reporte-img .vista button, .irm-reporte-mios summary { min-height: 44px; } }
+.irm-reporte-dlg { width: min(520px, calc(100vw - 32px)); max-height: calc(100vh - 32px); padding: 0; border: 1px solid var(--irmr-borde);
+  border-radius: 14px; background: var(--irmr-sup); color: var(--irmr-tinta); box-shadow: 0 12px 40px rgba(0,0,0,.25); }
+.irm-reporte-dlg::backdrop { background: rgba(0,0,0,.35); }
+.irm-reporte-dlg form { padding: 20px 20px 16px; margin: 0; }
+.irm-reporte-dlg h2 { font: 600 18px var(--display, Poppins, Inter, sans-serif); margin: 0 0 2px; }
+.irm-reporte-dlg .sub { margin: 0 0 14px; font-size: 12.5px; color: var(--irmr-tinta-2); }
+.irm-reporte-dlg fieldset { border: 0; padding: 0; margin: 0 0 12px; }
+.irm-reporte-dlg legend, .irm-reporte-dlg label { display: block; font-weight: 600; font-size: 13px; margin: 0 0 6px; }
+.irm-reporte-seg { display: flex; flex-wrap: wrap; gap: 6px; }
+.irm-reporte-seg button { flex: 1 1 auto; padding: 7px 10px; border: 1px solid var(--irmr-borde); border-radius: 8px; background: transparent;
+  color: var(--irmr-tinta); font: inherit; font-size: 13px; cursor: pointer; transition: background .15s, color .15s, border-color .15s; }
+.irm-reporte-seg button:hover { border-color: var(--irmr-cian); }
+.irm-reporte-seg button:active { background: color-mix(in srgb, var(--irmr-cian) 25%, transparent); }
+.irm-reporte-seg button[aria-pressed="true"] { background: var(--irmr-cian); border-color: var(--irmr-cian); color: #fff; }
+.irm-reporte-dlg textarea, .irm-reporte-dlg input[type=text] { width: 100%; box-sizing: border-box; padding: 8px 10px; margin: 0 0 12px;
+  border: 1px solid var(--irmr-borde); border-radius: 8px; background: transparent; color: inherit; font: inherit; }
+.irm-reporte-dlg textarea { min-height: 84px; resize: vertical; }
+.irm-reporte-dlg textarea:focus, .irm-reporte-dlg input:focus { outline: 2px solid var(--irmr-cian); outline-offset: -1px; }
+.irm-reporte-adjunto { font-size: 11.5px; color: var(--irmr-tinta-2); margin: 0 0 12px; }
+.irm-reporte-img { margin: 0 0 12px; padding: 10px; border: 1px dashed var(--irmr-borde); border-radius: 8px; }
+.irm-reporte-img .aviso-img { font-size: 11.5px; color: var(--irmr-tinta-2); margin: 4px 0 8px; }
+.irm-reporte-img input[type=file] { font-size: 12.5px; max-width: 100%; }
+.irm-reporte-img .vista { display: flex; gap: 10px; align-items: center; margin-top: 8px; }
+.irm-reporte-img .vista img { max-width: 160px; max-height: 110px; border-radius: 6px; border: 1px solid var(--irmr-borde); }
+.irm-reporte-img .vista span { font-size: 12px; color: var(--irmr-tinta-2); flex: 1; }
+.irm-reporte-img .vista button { padding: 6px 12px; min-height: 36px; border: 1px solid var(--irmr-borde); border-radius: 8px; background: transparent;
+  color: var(--irmr-tinta); font: 600 12.5px var(--display, Poppins, Inter, sans-serif); cursor: pointer; }
+.irm-reporte-img .vista button:active { background: var(--irmr-cian); border-color: var(--irmr-cian); color: #fff; }
+.irm-reporte-acciones { display: flex; gap: 8px; justify-content: flex-end; }
+.irm-reporte-acciones button { padding: 8px 16px; border-radius: 8px; font: 600 13px var(--display, Poppins, Inter, sans-serif); cursor: pointer;
+  border: 1px solid var(--irmr-borde); background: transparent; color: var(--irmr-tinta); transition: background .15s, color .15s; display: inline-flex; align-items: center; gap: 8px; }
+.irm-reporte-acciones button:hover { border-color: var(--irmr-cian); }
+.irm-reporte-acciones .enviar { background: var(--irmr-cian); border-color: var(--irmr-cian); color: #fff; }
+.irm-reporte-acciones .enviar:hover { background: color-mix(in srgb, var(--irmr-cian) 85%, #000); }
+.irm-reporte-acciones .enviar:active { background: color-mix(in srgb, var(--irmr-cian) 70%, #000); }
+.irm-reporte-acciones button[disabled] { cursor: progress; opacity: .85; }
+.irm-reporte-giro { width: 12px; height: 12px; border: 2px solid currentColor; border-top-color: transparent; border-radius: 50%;
+  animation: irmrgira .7s linear infinite; }
+@keyframes irmrgira { to { transform: rotate(360deg); } }
+@media (prefers-reduced-motion: reduce) { .irm-reporte-giro { animation: none; } }
+.irm-reporte-estado { min-height: 1.4em; margin: 10px 0 0; font-size: 13px; }
+.irm-reporte-estado b { font-family: var(--display, Poppins, Inter, sans-serif); }
+.irm-reporte-estado.ok b { color: var(--irmr-cian); }
+.irm-reporte-estado.mal b { color: var(--irmr-mal); }
+.irm-reporte-mios { margin-top: 12px; border-top: 1px solid var(--irmr-borde); padding-top: 10px; font-size: 12.5px; }
+.irm-reporte-mios summary { cursor: pointer; font-weight: 600; }
+.irm-reporte-mios ul { list-style: none; padding: 0; margin: 8px 0 0; }
+.irm-reporte-mios li { padding: 6px 0; border-bottom: 1px solid var(--irmr-borde); }
+.irm-reporte-mios .cod { font-family: var(--mono, ui-monospace, Menlo, monospace); font-weight: 600; }
+.irm-reporte-mios .resp { display: block; color: var(--irmr-tinta-2); margin-top: 2px; }
+.irm-reporte-oculto { display: none !important; }
+/* Donde la página no alcanza la base (dentro de claude.ai), no se ofrece un formulario que va a fallar:
+   se manda directo al de Hestia, que sí llega y deja adjuntar la imagen. */
+.irm-reporte-sobre { display: flex; flex-wrap: wrap; gap: 6px 10px; align-items: center; margin: 0 0 12px; padding: 8px 10px; border: 1px solid var(--irmr-cian); border-radius: 8px; font-size: 13px; overflow-wrap: anywhere; }
+.irm-reporte-sobre span { flex: 1 1 200px; }
+.irm-reporte-sobre .quitar-sobre { border: 1px solid var(--irmr-borde); background: transparent; color: inherit; border-radius: 999px; padding: 4px 12px; min-height: 32px; font: inherit; font-size: 12px; cursor: pointer; }
+.irm-reporte-sobre .quitar-sobre:active { background: color-mix(in srgb, var(--irmr-cian) 25%, transparent); }
+.irm-reporte-fuera { margin: 0 0 12px; padding: 12px; border: 1px solid var(--irmr-borde); border-left: 4px solid var(--irmr-cian); border-radius: 8px; font-size: 13px; }
+.irm-reporte-fuera a { display: inline-flex; align-items: center; gap: 6px; margin-top: 8px; padding: 9px 16px; min-height: 40px; border-radius: 8px; background: var(--irmr-cian);
+  color: #fff; text-decoration: none; font: 600 13px var(--display, Poppins, Inter, sans-serif); }
+.irm-reporte-fuera a:active { background: color-mix(in srgb, var(--irmr-cian) 70%, #000); }
+.irm-reporte-dlg.sin-red .irm-reporte-campos, .irm-reporte-dlg.sin-red .enviar, .irm-reporte-dlg.sin-red .irm-reporte-mios { display: none !important; }
+</style>
+<script>
+/* Botón «Reportar» — componente canónico IRM v6. IRMReporte.iniciar({artefacto, nombre, version})
+   Reportar sobre un registro (v6, 2026-10-06): IRMReporte.sobre({tipo: 'apu'|'insumo'|'propuesta', codigo, nombre})
+   abre la ventana con ese registro; IRMReporte.contexto(function () { return registroAbierto; }) lo propone al tocar «Reportar».
+   pone el botón y la ventana. El reporte llega a Larrey (mesa de tickets). No depende de nada de la página. */
+(function (global) {
+  "use strict";
+  if (global.IRMReporte) return;
+  var URL_RPC = "https://oixizeqfuxsbjqcvzpbe.supabase.co" + "/rest/v1/rpc/", LLAVE = "sb_publishable_Yfu9GwQGe9w5NsGVmC3BvQ_Gj7k4DGi", SVG = "<svg class=\"irm-reporte-ico\" viewBox=\"0 0 24 24\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"2\" stroke-linecap=\"round\" stroke-linejoin=\"round\" aria-hidden=\"true\" focusable=\"false\"><path d=\"M21 12a8 8 0 0 1-11.6 7.1L4 20l1-4.6A8 8 0 1 1 21 12z\"/><path d=\"M12 8v4\"/><path d=\"M12 15.5v.01\"/></svg>", WEB = "https://irm-hestia.vercel.app/reportar.html";
+  var errores = [];
+  function anotar(m) { try { errores.push(String(m).slice(0, 300)); if (errores.length > 5) errores.shift(); } catch (e) {} }
+  global.addEventListener("error", function (ev) { anotar((ev && ev.message) || "error"); });
+  global.addEventListener("unhandledrejection", function (ev) { anotar("promesa: " + ((ev && ev.reason && ev.reason.message) || ev.reason)); });
+  var ce = global.console && global.console.error;
+  if (ce) global.console.error = function () { try { anotar([].slice.call(arguments).join(" ")); } catch (e) {} return ce.apply(this, arguments); };
+
+  function leer(k) { try { return global.localStorage.getItem(k); } catch (e) { return null; } }
+  function guardar(k, v) { try { global.localStorage.setItem(k, v); } catch (e) {} }
+  var huellaMemoria = null;
+  function huella() {   // la misma huella de equipo que usa Éaco, para que el equipo sea uno solo
+    var h = leer("eaco.huella");
+    if (h) return h;
+    if (huellaMemoria) return huellaMemoria;
+    h = (global.crypto && global.crypto.randomUUID) ? global.crypto.randomUUID()
+      : "h-" + Date.now() + "-" + Math.random().toString(36).slice(2, 12);
+    guardar("eaco.huella", h); huellaMemoria = h; return h;
+  }
+  function esc(s) { return String(s == null ? "" : s).replace(/[&<>"']/g, function (c) {
+    return {"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c]; }); }
+  function rpc(fn, cuerpo) {
+    return fetch(URL_RPC + fn, { method: "POST", headers: { "apikey": LLAVE, "Content-Profile": "core",
+      "Content-Type": "application/json" }, body: JSON.stringify(cuerpo) })
+      .then(function (r) { return r.json().then(function (j) { if (!r.ok) throw new Error((j && j.message) || ("HTTP " + r.status)); return j; }); });
+  }
+  var ESTADO = { nuevo: "recibido, por evaluar", en_revision: "en revisión", evaluado: "evaluado, esperando aprobación", aprobado: "aprobado",
+                 rechazado: "no aprobado", en_curso: "en arreglo", resuelto: "resuelto", descartado: "descartado" };
+  var RIESGO = { bajo: "riesgo bajo", medio: "riesgo medio", alto: "riesgo alto", critico: "riesgo crítico" };
+  // La imagen se achica en el navegador antes de salir: máximo 1600 px por lado y 700 KB.
+  function prepararImagen(archivo) {
+    return new Promise(function (ok, mal) {
+      if (!/^image\/(png|jpeg|webp)$/.test(archivo.type)) return mal(new Error("Solo imágenes PNG, JPG o WEBP."));
+      if (archivo.size > 15 * 1024 * 1024) return mal(new Error("La imagen pesa más de 15 MB: recortala antes."));
+      var url = URL.createObjectURL(archivo), img = new Image();
+      img.onload = function () {
+        var max = 1600, w = img.naturalWidth, h = img.naturalHeight, f = Math.min(1, max / Math.max(w, h));
+        var c = document.createElement("canvas"); c.width = Math.round(w * f); c.height = Math.round(h * f);
+        c.getContext("2d").drawImage(img, 0, 0, c.width, c.height); URL.revokeObjectURL(url);
+        var tipo = c.toDataURL("image/webp").indexOf("data:image/webp") === 0 ? "image/webp" : "image/jpeg", q = 0.85, d;
+        do { d = c.toDataURL(tipo, q); q -= 0.12; } while (d.length * 0.75 > 700 * 1024 && q > 0.3);
+        if (d.length * 0.75 > 700 * 1024) return mal(new Error("La imagen sigue pesando demasiado: recortá solo la parte que importa."));
+        ok({ tipo: tipo, base64: d.split(",")[1], src: d, ancho: c.width, alto: c.height, kb: Math.round(d.length * 0.75 / 1024) });
+      };
+      img.onerror = function () { URL.revokeObjectURL(url); mal(new Error("No se pudo leer la imagen.")); };
+      img.src = url;
+    });
+  }
+  var PRIO = { prioritario: "PRIORITARIO", neutro: "NEUTRO", no_prioritario: "NO PRIORITARIO" };
+
+  function iniciar(cfg) {
+    cfg = cfg || {};
+    if (!cfg.artefacto) { anotar("IRMReporte sin artefacto"); return; }
+    if (document.querySelector(".irm-reporte-btn")) return;
+    var raiz = document.createElement("div"); raiz.className = "irm-reporte-raiz";
+    raiz.innerHTML =
+      '<button type="button" class="irm-reporte-btn' + (cfg.posicion === "izquierda" ? " izq" : "") + '" aria-haspopup="dialog" aria-expanded="false" ' +
+        'title="Reportar una falla o dejar una idea sobre ' + esc(cfg.nombre || "esta herramienta") + '">' + SVG + '<span>Reportar</span></button>' +
+      '<dialog class="irm-reporte-dlg" aria-labelledby="irm-reporte-tit"><form method="dialog" novalidate>' +
+        '<h2 id="irm-reporte-tit">Reportar una falla o una idea</h2>' +
+        '<p class="sub">Sobre <b>' + esc(cfg.nombre || cfg.artefacto) + '</b>' + (cfg.version ? ' · ' + esc(cfg.version) : '') +
+          '. Llega a la mesa de <b>Larrey</b>, que atiende primero lo que no deja trabajar — como el cirujano que inventó el triaje.</p>' +
+        '<div class="irm-reporte-fuera irm-reporte-oculto" role="status"><b>Desde esta herramienta el reporte se escribe en Hestia.</b> ' +
+          'Acá adentro (claude.ai) la página no puede hablar con la base, así que el formulario no llegaría. En Hestia llega igual a Larrey, y ahí sí podés adjuntar la imagen.<br>' +
+          '<a href="' + esc(enlaceWeb()) + '" target="_blank" rel="noopener">Abrir el formulario de reporte ↗</a></div>' +
+        '<div class="irm-reporte-sobre irm-reporte-oculto" role="note"><span></span><button type="button" class="quitar-sobre">No es sobre esto</button></div>' +
+        '<div class="irm-reporte-campos">' +
+        '<fieldset><legend>¿Qué querés contar?</legend><div class="irm-reporte-seg" data-campo="tipo">' +
+          '<button type="button" data-v="falla" aria-pressed="false">Algo falla</button>' +
+          '<button type="button" data-v="sugerencia" aria-pressed="false">Tengo una idea</button></div></fieldset>' +
+        '<fieldset class="irm-reporte-oculto" data-bloque="funciona"><legend>¿La herramienta sigue funcionando?</legend><div class="irm-reporte-seg" data-campo="funciona">' +
+          '<button type="button" data-v="no" aria-pressed="false">No, me tiene bloqueado</button>' +
+          '<button type="button" data-v="a_medias" aria-pressed="false">A medias</button>' +
+          '<button type="button" data-v="si" aria-pressed="false">Sí, pero algo está mal</button></div></fieldset>' +
+        '<label for="irm-reporte-que">Qué pasó (o qué se te ocurre)</label>' +
+        '<textarea id="irm-reporte-que" maxlength="2000" placeholder="Ej.: al tocar «Guardar el precio» se queda girando y no guarda."></textarea>' +
+        '<label for="irm-reporte-hacia">Qué estabas haciendo <span style="font-weight:400">(opcional)</span></label>' +
+        '<textarea id="irm-reporte-hacia" maxlength="1000" style="min-height:52px" placeholder="Ej.: editando el APU 2.01.03, con dos pestañas abiertas."></textarea>' +
+        '<label for="irm-reporte-quien">Tu nombre</label>' +
+        '<input id="irm-reporte-quien" type="text" maxlength="120" autocomplete="name">' +
+        '<div class="irm-reporte-img"><label for="irm-reporte-archivo">Una imagen que lo muestre <span style="font-weight:400">(opcional)</span></label>' +
+          '<p class="aviso-img">Antes de adjuntarla, <b>tapá o recortá datos de clientes, precios y nombres</b>. Solo la ve el administrador y se borra cuando se cierra el reporte. También podés pegarla con ⌘V / Ctrl+V.</p>' +
+          '<input id="irm-reporte-archivo" type="file" accept="image/png,image/jpeg,image/webp">' +
+          '<div class="vista irm-reporte-oculto"><img alt="Vista previa de la imagen adjunta"><span></span><button type="button" class="quitar-img">No adjuntar</button></div></div>' +
+        '<p class="irm-reporte-adjunto">Además de la imagen, si elegís una, se adjunta solo: el nombre y la versión de la herramienta, el navegador, el tamaño de la pantalla y los últimos errores técnicos de la página. Nada más.</p>' +
+        '</div>' +
+        '<div class="irm-reporte-acciones"><button type="button" class="cancelar">Cancelar</button>' +
+          '<button type="button" class="enviar">Enviar el reporte</button></div>' +
+        '<p class="irm-reporte-estado" role="status" aria-live="polite"></p>' +
+        '<details class="irm-reporte-mios"><summary>Mis reportes desde este equipo</summary><ul><li>Abrí para consultarlos.</li></ul></details>' +
+      '</form></dialog>';
+    document.body.appendChild(raiz);
+
+    var btn = raiz.querySelector(".irm-reporte-btn"), dlg = raiz.querySelector("dialog");
+    // Sobre qué registro es el reporte (un APU, un insumo, una propuesta). Lo da la herramienta:
+    // IRMReporte.sobre({tipo, codigo, nombre}) abre la ventana con ese registro, o
+    // IRMReporte.contexto(fn) registra una función que dice cuál está abierto cuando tocan «Reportar».
+    var sobre = null, cajaSobre = raiz.querySelector(".irm-reporte-sobre");
+    var NOMBRE_TIPO = { apu: "el APU", insumo: "el insumo", propuesta: "la propuesta" };
+    function limpiarRef(r) {
+      if (!r || !NOMBRE_TIPO[String(r.tipo || "").toLowerCase()] || !String(r.codigo || "").trim()) return null;
+      return { tipo: String(r.tipo).toLowerCase(), codigo: String(r.codigo).trim().slice(0, 60), nombre: String(r.nombre || "").trim().slice(0, 160) };
+    }
+    function ponerSobre(r) {
+      sobre = limpiarRef(r);
+      cajaSobre.classList.toggle("irm-reporte-oculto", !sobre);
+      if (sobre) cajaSobre.querySelector("span").innerHTML = 'Sobre ' + NOMBRE_TIPO[sobre.tipo] + ' <b>' + esc(sobre.codigo) + '</b>' + (sobre.nombre ? ' — ' + esc(sobre.nombre) : '');
+      var a = raiz.querySelector(".irm-reporte-fuera a"); if (a) a.href = enlaceWeb();
+    }
+    raiz.querySelector(".quitar-sobre").addEventListener("click", function () { ponerSobre(null); });
+    var est = raiz.querySelector(".irm-reporte-estado"), enviar = raiz.querySelector(".enviar");
+    var campos = { tipo: null, funciona: null };
+    var quien = raiz.querySelector("#irm-reporte-quien");
+    quien.value = leer("irm.reporte.nombre") || "";
+    var imagen = null, archivo = raiz.querySelector("#irm-reporte-archivo"), vista = raiz.querySelector(".irm-reporte-img .vista");
+    function ponerImagen(f) {
+      if (!f) return;
+      decir("", "Preparando la imagen…");
+      prepararImagen(f).then(function (im) {
+        imagen = im; vista.querySelector("img").src = im.src;
+        vista.querySelector("span").textContent = im.ancho + " × " + im.alto + " px · " + im.kb + " KB";
+        vista.classList.remove("irm-reporte-oculto"); decir("", "");
+      }).catch(function (e) { imagen = null; archivo.value = ""; vista.classList.add("irm-reporte-oculto"); decir("mal", "<b>LA IMAGEN NO SE ADJUNTÓ.</b> " + esc(e.message)); });
+    }
+    function quitarImagen() { imagen = null; archivo.value = ""; vista.classList.add("irm-reporte-oculto"); vista.querySelector("img").removeAttribute("src"); }
+    archivo.addEventListener("change", function () { ponerImagen(archivo.files && archivo.files[0]); });
+    raiz.querySelector(".quitar-img").addEventListener("click", quitarImagen);
+    dlg.addEventListener("paste", function (ev) {
+      var it = ev.clipboardData && ev.clipboardData.items; if (!it) return;
+      for (var i = 0; i < it.length; i++) if (it[i].kind === "file" && /^image\//.test(it[i].type)) { ponerImagen(it[i].getAsFile()); ev.preventDefault(); return; }
+    });
+
+    function decir(clase, html) { est.className = "irm-reporte-estado" + (clase ? " " + clase : ""); est.innerHTML = html; }
+    // ¿Esta página alcanza la base? Se prueba una vez, al abrir, con la consulta de conteo (no escribe nada).
+    var alcanza = null;
+    function sondear() {
+      if (alcanza !== null) return Promise.resolve(alcanza);
+      var ctl = global.AbortController ? new AbortController() : null, t = setTimeout(function () { if (ctl) ctl.abort(); }, 6000);
+      return fetch(URL_RPC + "tickets_resumen", { method: "POST", headers: { "apikey": LLAVE, "Content-Profile": "core", "Content-Type": "application/json" },
+          body: "{}", signal: ctl ? ctl.signal : undefined })
+        .then(function (r) { alcanza = r.ok; }, function () { alcanza = false; })
+        .then(function () { clearTimeout(t); return alcanza; });
+    }
+    function abrir(ref) {
+      decir("", "");
+      if (ref && ref.tipo) ponerSobre(ref);
+      else { var f = global.IRMReporte && global.IRMReporte._proveedor; try { ponerSobre(f ? f() : null); } catch (e) { ponerSobre(null); } }
+      if (alcanza === null) {
+        decir("", "Comprobando que el reporte pueda llegar a Larrey…");
+        sondear().then(function (ok) { dlg.classList.toggle("sin-red", !ok); raiz.querySelector(".irm-reporte-fuera").classList.toggle("irm-reporte-oculto", ok); decir("", ""); });
+      }
+      if (typeof dlg.showModal === "function") dlg.showModal(); else dlg.setAttribute("open", "");
+      btn.setAttribute("aria-expanded", "true");
+      var p = raiz.querySelector('[data-campo="tipo"] button'); if (p) p.focus();
+    }
+    function cerrar() { if (dlg.open && typeof dlg.close === "function") dlg.close(); else dlg.removeAttribute("open"); btn.setAttribute("aria-expanded", "false"); btn.focus(); }
+    btn.addEventListener("click", function () { abrir(null); });
+    abrirCon = abrir;
+    dlg.addEventListener("close", function () { btn.setAttribute("aria-expanded", "false"); });
+    raiz.querySelector(".cancelar").addEventListener("click", cerrar);
+    raiz.querySelector("form").addEventListener("submit", function (ev) { ev.preventDefault(); });
+    Array.prototype.forEach.call(raiz.querySelectorAll(".irm-reporte-seg"), function (seg) {
+      seg.addEventListener("click", function (ev) {
+        var b = ev.target.closest("button[data-v]"); if (!b) return;
+        Array.prototype.forEach.call(seg.querySelectorAll("button"), function (o) { o.setAttribute("aria-pressed", o === b ? "true" : "false"); });
+        campos[seg.getAttribute("data-campo")] = b.getAttribute("data-v");
+        if (seg.getAttribute("data-campo") === "tipo") {
+          raiz.querySelector('[data-bloque="funciona"]').classList.toggle("irm-reporte-oculto", campos.tipo !== "falla");
+        }
+      });
+    });
+
+    enviar.addEventListener("click", function () {
+      var que = raiz.querySelector("#irm-reporte-que").value.trim();
+      if (!campos.tipo) return decir("mal", "<b>Falta un dato.</b> Elegí arriba si algo falla o si tenés una idea.");
+      if (campos.tipo === "falla" && !campos.funciona) return decir("mal", "<b>Falta un dato.</b> Decí si la herramienta sigue funcionando: con eso se decide qué tan urgente es.");
+      if (que.length < 8) return decir("mal", "<b>Falta un dato.</b> Contá en una frase qué pasó.");
+      var nombre = quien.value.trim(); if (nombre) guardar("irm.reporte.nombre", nombre);
+      var etiqueta = enviar.textContent;
+      enviar.disabled = true; enviar.setAttribute("aria-busy", "true");
+      enviar.insertAdjacentHTML("beforeend", '<span class="irm-reporte-giro" aria-hidden="true"></span>');
+      decir("", "Enviando el reporte a la mesa de Larrey…");
+      var ctx = { navegador: navigator.userAgent, pantalla: global.innerWidth + "x" + global.innerHeight,
+                  idioma: navigator.language, errores: errores.slice(), en: new Date().toISOString() };
+      if (sobre) ctx.referencia = sobre;
+      rpc("ticket_reportar", { p_artefacto: cfg.artefacto, p_artefacto_nombre: cfg.nombre || null, p_version: cfg.version || null,
+          p_tipo: campos.tipo, p_funciona: campos.tipo === "sugerencia" ? "si" : campos.funciona,
+          p_descripcion: que, p_que_hacia: raiz.querySelector("#irm-reporte-hacia").value.trim(),
+          p_reportado_por: nombre || null, p_huella: huella(), p_contexto: ctx })
+        .then(function (r) {
+          if (r && r.ok && imagen && r.llave) {
+            decir("", "Reporte " + esc(r.codigo) + " recibido. Subiendo la imagen…");
+            return rpc("ticket_adjuntar", { p_codigo: r.codigo, p_llave: r.llave, p_tipo: imagen.tipo, p_base64: imagen.base64, p_ancho: imagen.ancho, p_alto: imagen.alto })
+              .then(function (a) { r.img = a; return r; }, function (e) { r.img = { ok: false, error: e.message }; return r; });
+          }
+          return r;
+        })
+        .then(function (r) {
+          if (r && r.ok) {
+            var conImg = !imagen ? "" : (r.img && r.img.ok ? " Con la imagen." : " <b>La imagen NO se adjuntó</b> (" + esc((r.img && r.img.error) || "sin respuesta") + "); el reporte sí quedó.");
+            decir("ok", "<b>REPORTE ENVIADO — " + esc(r.codigo) + ".</b> " + esc(r.mensaje) + conImg +
+              " Antes de hacer cualquier cambio, el administrador lo evalúa (riesgo y costo) y lo aprueba. Seguilo en «Mis reportes».");
+            raiz.querySelector("#irm-reporte-que").value = ""; raiz.querySelector("#irm-reporte-hacia").value = ""; quitarImagen();
+            enviar.textContent = "Enviar otro";
+          } else {
+            decir("mal", "<b>NO SE ENVIÓ.</b> " + esc((r && r.error) || "La base no confirmó el reporte."));
+          }
+        })
+        .catch(function (e) {
+          decir("mal", "<b>NO SE ENVIÓ desde acá.</b> Esta página no puede hablar con la base (pasa dentro de claude.ai). " +
+            "Copiá lo que escribiste y <a href=\"" + esc(enlaceWeb()) + "\" target=\"_blank\" rel=\"noopener\">abrí el formulario de reporte en otra pestaña ↗</a>: " +
+            "llega igual a Larrey. Si tampoco abre, mandalo a Soporte Sistemas (datos@irmaires.com).");
+        })
+        .finally(function () {
+          enviar.disabled = false; enviar.removeAttribute("aria-busy");
+          var g = enviar.querySelector(".irm-reporte-giro"); if (g) g.remove();
+          if (enviar.textContent !== "Enviar otro") enviar.textContent = etiqueta;
+        });
+    });
+
+    function enlaceWeb() {
+      return WEB + "?artefacto=" + encodeURIComponent(cfg.artefacto) + "&nombre=" + encodeURIComponent(cfg.nombre || "") +
+             "&version=" + encodeURIComponent(cfg.version || "") +
+             (sobre ? "&ref_tipo=" + encodeURIComponent(sobre.tipo) + "&ref_codigo=" + encodeURIComponent(sobre.codigo) + "&ref_nombre=" + encodeURIComponent(sobre.nombre || "") : "");
+    }
+    var mios = raiz.querySelector(".irm-reporte-mios");
+    mios.addEventListener("toggle", function () {
+      if (!mios.open) return;
+      var ul = mios.querySelector("ul");
+      ul.innerHTML = "<li>Buscando tus reportes en la mesa de Larrey…</li>";
+      rpc("ticket_mios", { p_huella: huella() }).then(function (lista) {
+        if (!lista || !lista.length) { ul.innerHTML = "<li>Todavía no reportaste nada desde este equipo.</li>"; return; }
+        ul.innerHTML = lista.map(function (t) {
+          return '<li><span class="cod">' + esc(t.codigo) + '</span> · ' + esc(t.artefacto_nombre || "") + ' · <b>' +
+            esc(ESTADO[t.estado] || t.estado) + '</b> · ' + esc(PRIO[t.prioridad] || t.prioridad) + (t.riesgo ? ' · ' + esc(RIESGO[t.riesgo] || t.riesgo) : '') +
+            '<span class="resp">' + esc(t.descripcion) + '</span>' +
+            (t.respuesta ? '<span class="resp">Respuesta: ' + esc(t.respuesta) + '</span>' : '') + '</li>';
+        }).join("");
+      }).catch(function () { ul.innerHTML = "<li>Desde acá no se pueden leer: <a href=\"" + esc(enlaceWeb()) + "\" target=\"_blank\" rel=\"noopener\">miralos en la página de reporte ↗</a> (desde el mismo navegador donde reportaste).</li>"; });
+    });
+  }
+  var abrirCon = null;
+  global.IRMReporte = { iniciar: iniciar, version: "6",
+    // Abre la ventana de reporte sobre un registro: IRMReporte.sobre({tipo: "apu", codigo: "IRM-S-DUC-005", nombre: "…"}).
+    sobre: function (ref) { if (abrirCon) abrirCon(ref || null); },
+    // La herramienta dice qué registro está abierto; el botón «Reportar» lo propone solo.
+    contexto: function (fn) { global.IRMReporte._proveedor = typeof fn === "function" ? fn : null; },
+    _proveedor: null };
+})(window);
+</script>
+<script>(function(){var go=function(){IRMReporte.iniciar({"artefacto": "pacioli", "nombre": "Pacioli", "version": "v1.0", "posicion": "derecha"});};if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',go);else go();})();</script>
+<style>
+/* Botón «Volver a Hestia» — componente canónico IRM v2 (IMAGEN CORPORATIVA/memoria_procedimental/componente_volver.py) */
+/* La franja de abajo es de los dos botones del ecosistema («Volver» a la izquierda, «Reportar» a la
+   derecha). Todo aviso fijo abajo (un «Deshacer», un estado) se apoya ENCIMA de ella con
+   bottom: var(--irm-franja-abajo): así nunca queda tapado por un botón (validar_marca, punto 20). */
+:root { --irm-franja-abajo: 68px; }
+@media (max-width: 560px) { :root { --irm-franja-abajo: 76px; } }
+.irm-volver { position: fixed; bottom: 16px; left: 16px; z-index: 2147483000; display: inline-flex; align-items: center; gap: 6px;
+  min-height: 40px; padding: 8px 14px; border-radius: 999px; border: 1px solid #00B9CE; text-decoration: none;
+  background: var(--superficie, #fcfcfb); color: var(--tinta, #0b0b0b); font: 600 13px var(--display, Poppins, system-ui, sans-serif);
+  box-shadow: 0 4px 16px rgba(0,0,0,.14); transition: background .15s, color .15s; -webkit-tap-highlight-color: transparent; }
+.irm-volver:hover { background: color-mix(in srgb, #00B9CE 12%, var(--superficie, #fcfcfb)); }
+.irm-volver:active, .irm-volver.irm-volver-tocado { background: #00B9CE; color: #fff; }
+.irm-volver:focus-visible { outline: 2px solid #00B9CE; outline-offset: 2px; }
+.irm-volver-ico { width: 18px; height: 18px; flex: none; }
+@media (prefers-color-scheme: dark) { .irm-volver { background: var(--superficie, #1a1a19); color: var(--tinta, #fff); } }
+@media (max-width: 560px) { .irm-volver { width: 44px; height: 44px; min-height: 44px; padding: 0; justify-content: center; }
+  .irm-volver .irm-volver-txt { position: absolute; width: 1px; height: 1px; overflow: hidden; clip: rect(0 0 0 0); white-space: nowrap; } }
+@media print { .irm-volver { display: none; } }
+</style>
+<script>
+/* Botón «Volver a Hestia» — componente canónico IRM v2 (componente_volver.py) */
+window.IRMVolver = window.IRMVolver || (function () {
+  var HESTIA = "https://irm-hestia.vercel.app/";
+  var ICONO = '<svg class="irm-volver-ico" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false"><path d="M3 11l9-7 9 7"/><path d="M5 10v10h14V10"/><path d="M10 20v-6h4v6"/></svg>';
+  function iniciar() {
+    if (document.querySelector(".irm-volver")) return;
+    var aqui = "", ruta = "";
+    try { aqui = location.origin; ruta = location.pathname; } catch (e) {}
+    var enHestia = aqui === HESTIA.replace(/\/$/, "");
+    if (enHestia && (ruta === "/" || ruta === "/index.html")) return;   // ya estás en casa
+    var a = document.createElement("a");
+    a.className = "irm-volver";
+    a.href = enHestia ? "./" : HESTIA;
+    if (!enHestia) { a.target = "irm-hestia"; }   // su propia pestaña: la herramienta no se cierra
+    a.setAttribute("aria-label", "Volver a Hestia para abrir otra herramienta");
+    a.title = "Volver a Hestia para abrir otra herramienta";
+    a.innerHTML = ICONO + '<span class="irm-volver-txt">Hestia</span>';
+    a.addEventListener("pointerdown", function () { a.classList.add("irm-volver-tocado"); });
+    ["pointerup", "pointercancel", "pointerleave"].forEach(function (t) { a.addEventListener(t, function () { a.classList.remove("irm-volver-tocado"); }); });
+    document.body.appendChild(a);
+  }
+  return { iniciar: iniciar, url: HESTIA };
+})();
+if (document.readyState === "loading") document.addEventListener("DOMContentLoaded", function () { IRMVolver.iniciar(); });
+else IRMVolver.iniciar();
+</script>
+
+
+</body>
+</html>
