@@ -342,6 +342,12 @@ details.irm-explica > .irm-explica-cuerpo { margin: 6px 0 0; padding-left: 12px;
 .pa-ley i{display:inline-block;width:10px;height:10px;margin-right:5px;vertical-align:-1px}
 .pa-dlg{border:1px solid var(--linea);border-radius:12px;padding:14px 16px;width:min(760px,calc(100vw - 32px));max-height:85vh;background:#fff;color:var(--tinta-1)}
 .pa-dlg::backdrop{background:rgba(11,11,11,.45)}
+.pa-dlg.pa-dlg-ancla{position:fixed;margin:0;width:min(440px,calc(100vw - 32px));max-height:70vh;box-shadow:0 12px 36px rgba(11,11,11,.22);z-index:60}
+.pa-dlg.pa-dlg-ancla .pa-dlg-log{max-height:32vh}
+.pa-chip-flot{position:fixed;z-index:70}
+.pa-dlg-ctx{display:flex;align-items:center;gap:8px;background:color-mix(in srgb,var(--irm-cian) 14%,transparent);border-left:3px solid var(--irm-cian);border-radius:0 8px 8px 0;padding:6px 10px;font-size:12.5px;margin:0 0 8px}
+.pa-dlg-ctx span{flex:1}
+@media (max-width:560px){.pa-dlg.pa-dlg-ancla{left:16px !important;right:16px;top:auto !important;bottom:var(--irm-franja-abajo,76px);width:auto}}
 .pa-dlg-cab{display:flex;justify-content:space-between;align-items:center;gap:10px}
 .pa-dlg-log{max-height:45vh;overflow:auto;display:flex;flex-direction:column;gap:8px;margin:0 0 10px}
 .pa-msg{border-radius:10px;padding:9px 12px;font-size:13.5px;line-height:1.55;max-width:92%}
@@ -403,10 +409,12 @@ details.irm-explica > .irm-explica-cuerpo { margin: 6px 0 0; padding-left: 12px;
 <dialog id="pa-dlg" class="pa-dlg" aria-labelledby="pa-dlg-t">
   <div class="pa-dlg-cab"><h3 id="pa-dlg-t" style="font:700 15px var(--display);margin:0">Preguntale a Pacioli</h3><button class="pa-btn sec mini" id="pa-dlg-cerrar" type="button">Cerrar</button></div>
   <details class="irm-explica" data-explica="pacioli.1"><summary>Cómo funciona</summary><div class="irm-explica-cuerpo"><p class="pa-sub ayuda" style="margin:4px 0 8px">Pacioli responde solo con lo que hay en este tablero: costos, lo que producen los agentes, impacto, propuestas y plan. Si un dato no está, lo dice. No ejecuta nada: para registrar o cambiar algo te indica en qué pestaña se hace. Cada pregunta gasta tokens de la cuenta de IRM y queda anotada con su costo.</p></div></details>
+  <div id="pa-dlg-ctx" class="pa-dlg-ctx" hidden><span id="pa-dlg-ctx-t"></span><button type="button" class="pa-btn sec mini" id="pa-dlg-ctx-x" aria-label="Quitar el dato señalado">✕</button></div>
   <div id="pa-dlg-log" class="pa-dlg-log" role="log" aria-live="polite"></div>
   <form id="pa-dlg-form" class="pa-dlg-form"><label for="pa-dlg-q" class="pa-sub">Tu pregunta</label><textarea id="pa-dlg-q" rows="2" placeholder="p. ej. ¿Cuánto nos ha costado el proyecto y cuánto ha devuelto? ¿Qué sigue en el plan?"></textarea>
     <div class="pa-acciones"><button class="pa-btn" id="pa-dlg-enviar" type="submit">Preguntar</button><button class="pa-btn sec mini" id="pa-dlg-borrar" type="button">Borrar la conversación</button><span class="pa-sub" id="pa-dlg-costo"></span></div></form>
 </dialog>
+<div id="pa-chip" class="pa-chip-flot" hidden><button type="button" class="pa-btn mini" id="pa-chip-btn">Preguntar sobre este dato</button></div>
 <div class="pa-tabs" role="tablist">
   <button class="pa-tab" role="tab" id="t-tablero" aria-controls="p-tablero" aria-selected="false">Tablero</button>
   <button class="pa-tab" role="tab" id="t-resumen" aria-controls="p-resumen" aria-selected="true">Resumen</button>
@@ -1200,18 +1208,64 @@ function canecaOcupada(b) {
     log.scrollTop = log.scrollHeight;
   }
   function guardarChat() { try { localStorage.setItem("pacioli.chat", JSON.stringify(CHAT.slice(-20))); } catch (e) {} }
-  $("pa-preguntar").addEventListener("click", function () { var d = $("pa-dlg"); pintarChat(); if (d.showModal) d.showModal(); else d.setAttribute("open", ""); $("pa-dlg-q").focus(); });
-  $("pa-dlg-cerrar").addEventListener("click", function () { var d = $("pa-dlg"); if (d.close) d.close(); else d.removeAttribute("open"); });
+  var CTX = null;
+  function pestanaActiva() { var b = document.querySelector('.pa-tab[aria-selected="true"]'); return b ? b.textContent.trim() : ""; }
+  function pintarCtx() { var c = $("pa-dlg-ctx"); if (CTX) { $("pa-dlg-ctx-t").textContent = "Sobre: " + CTX.dato + " (" + CTX.pestana + ")"; c.hidden = false; } else c.hidden = true; }
+  function abrirDialogo(ctx, x, y) {
+    var d = $("pa-dlg"); CTX = ctx || null; pintarCtx(); pintarChat();
+    if (d.open) { if (d.close) d.close(); else d.removeAttribute("open"); }
+    if (x != null && y != null && window.innerWidth > 560) {
+      d.classList.add("pa-dlg-ancla");
+      var w = Math.min(440, window.innerWidth - 32), h = Math.min(window.innerHeight * 0.7, 520);
+      d.style.left = Math.max(16, Math.min(x, window.innerWidth - w - 16)) + "px";
+      d.style.top = Math.max(16, Math.min(y + 8, window.innerHeight - h - 16)) + "px";
+      if (d.show) d.show(); else d.setAttribute("open", "");
+    } else if (x != null && y != null) {
+      d.classList.add("pa-dlg-ancla"); d.style.left = ""; d.style.top = "";
+      if (d.show) d.show(); else d.setAttribute("open", "");
+    } else {
+      d.classList.remove("pa-dlg-ancla"); d.style.left = ""; d.style.top = "";
+      if (d.showModal) d.showModal(); else d.setAttribute("open", "");
+    }
+    $("pa-dlg-q").placeholder = ctx ? "¿Qué querés saber de este dato? (p. ej. ¿por qué está así?, ¿de dónde sale?)" : "p. ej. ¿Cuánto nos ha costado el proyecto y cuánto ha devuelto? ¿Qué sigue en el plan?";
+    $("pa-dlg-q").focus();
+  }
+  function textoDeDato(el) {
+    if (el.classList.contains("pa-cifra")) { var b = el.querySelector("b"), sp = el.querySelector("span"); return (sp ? sp.textContent.trim() : "") + ": " + (b ? b.textContent.trim() : ""); }
+    if (el.tagName === "TR") {
+      var tabla = el.closest("table"), ths = tabla ? Array.prototype.map.call(tabla.querySelectorAll("thead th"), function (h) { return h.textContent.trim(); }) : [];
+      return Array.prototype.map.call(el.children, function (td, i) { var v = td.textContent.replace(/\s+/g, " ").trim(); return v && !/^(Declarar|Medir|Editar|Registrar impacto)/.test(v) ? (ths[i] ? ths[i] + ": " : "") + v.slice(0, 90) : ""; }).filter(Boolean).join(" · ").slice(0, 600);
+    }
+    if (el.classList.contains("pa-plan")) { var h5 = el.querySelector("h5"), sb2 = el.querySelector(".pa-sub"); return (h5 ? h5.textContent.replace(/\s+/g, " ").trim() : "") + (sb2 ? " — " + sb2.textContent.replace(/\s+/g, " ").trim().slice(0, 300) : ""); }
+    return el.textContent.replace(/\s+/g, " ").trim().slice(0, 300);
+  }
+  var CHIP_PEND = null;
+  document.querySelector("main").addEventListener("click", function (ev) {
+    if (ev.target.closest("button, a, input, select, textarea, summary, label, dialog, .irm-caneca, #pa-chip, svg")) return;
+    var el = ev.target.closest(".pa-cifra, .pa-tabla tbody tr, .pa-plan");
+    var chip = $("pa-chip");
+    if (!el) { chip.hidden = true; CHIP_PEND = null; return; }
+    CHIP_PEND = { ctx: { pestana: pestanaActiva(), dato: textoDeDato(el) }, x: ev.clientX, y: ev.clientY };
+    chip.style.left = Math.max(8, Math.min(ev.clientX - 20, window.innerWidth - 240)) + "px";
+    chip.style.top = Math.max(8, Math.min(ev.clientY + 10, window.innerHeight - 56)) + "px";
+    chip.hidden = false;
+  });
+  $("pa-chip-btn").addEventListener("click", function () { var c = CHIP_PEND; $("pa-chip").hidden = true; CHIP_PEND = null; if (c) abrirDialogo(c.ctx, c.x, c.y); });
+  document.addEventListener("keydown", function (ev) { if (ev.key === "Escape") { $("pa-chip").hidden = true; } });
+  $("pa-dlg-ctx-x").addEventListener("click", function () { CTX = null; pintarCtx(); });
+  $("pa-preguntar").addEventListener("click", function () { abrirDialogo(null); });
+  $("pa-dlg-cerrar").addEventListener("click", function () { var d = $("pa-dlg"); if (d.close) d.close(); else d.removeAttribute("open"); d.classList.remove("pa-dlg-ancla"); });
   $("pa-dlg-borrar").addEventListener("click", function () { var antes = CHAT.slice(); CHAT = []; guardarChat(); pintarChat(); aviso("<b>CONVERSACIÓN BORRADA</b> de este navegador (las preguntas siguen anotadas en la base).", false, function () { CHAT = antes; guardarChat(); pintarChat(); aviso(""); }); });
   $("pa-dlg-form").addEventListener("submit", async function (ev) {
     ev.preventDefault();
     var q = $("pa-dlg-q").value.trim(), b = $("pa-dlg-enviar"); if (!q) { $("pa-dlg-q").focus(); return; }
-    CHAT.push({ rol: "yo", texto: q }); guardarChat(); pintarChat(); $("pa-dlg-q").value = "";
+    var ctxEnv = CTX ? { pestana: CTX.pestana, dato: CTX.dato } : null;
+    CHAT.push({ rol: "yo", texto: q, meta: ctxEnv ? "Sobre: " + ctxEnv.dato : "" }); guardarChat(); pintarChat(); $("pa-dlg-q").value = "";
     ocupar(b, "Pensando…"); paso("Pacioli está leyendo el tablero y pensando la respuesta…");
     try {
       var s = await sb.auth.getSession(), tok = s.data && s.data.session && s.data.session.access_token;
       if (!tok) throw new Error("No hay sesión de Hestia.");
-      var r = await fetch(URL_SB + "/functions/v1/preguntar-pacioli", { method: "POST", headers: { "Content-Type": "application/json", "Authorization": "Bearer " + tok, "apikey": LLAVE }, body: JSON.stringify({ pregunta: q, historial: CHAT.slice(-7, -1).map(function (m) { return { rol: m.rol, texto: m.texto }; }) }) });
+      var r = await fetch(URL_SB + "/functions/v1/preguntar-pacioli", { method: "POST", headers: { "Content-Type": "application/json", "Authorization": "Bearer " + tok, "apikey": LLAVE }, body: JSON.stringify({ pregunta: q, contexto: ctxEnv, historial: CHAT.slice(-7, -1).map(function (m) { return { rol: m.rol, texto: m.texto }; }) }) });
       var j = null; try { j = await r.json(); } catch (e2) { j = null; }
       if (!r.ok || !j || j.ok === false) throw new Error((j && j.error) || ("la función respondió " + r.status));
       var meta = (j.tokens_entrada != null ? num(j.tokens_entrada, 0) + " tokens de entrada · " + num(j.tokens_salida, 0) + " de salida · " : "") + num(j.ms / 1000, 1) + " s · " + esc(j.modelo || "");
