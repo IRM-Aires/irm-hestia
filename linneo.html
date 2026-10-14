@@ -1237,7 +1237,7 @@ const PASOS = { panel_control_ime: "Leyendo el catálogo completo…", ime_busca
   ime_pasar_recetas_a_dias: "Pasando las recetas a días…", ime_proveedores: "Leyendo la lista de proveedores…", ime_crear_proveedor: "Creando el proveedor…",
   ime_editar_proveedor: "Guardando los datos del proveedor…", ime_eliminar_proveedor_reciente: "Deshaciendo el proveedor…", ime_retirar_proveedor: "Actualizando la lista de proveedores…", ime_dias_deshacer: "Devolviendo las recetas como estaban…",
   ime_recurso_en_familia: "Buscando de qué familia es alelo este recurso…",
-  ime_gen_conteos: "Contando las familias del catálogo…", ime_gen_hermanos: "Buscando la familia de lo que escribiste…" };
+  ime_gen_conteos: "Contando las familias del catálogo…", ime_fijar_iva: "Guardando el IVA del recurso…", ime_gen_hermanos: "Buscando la familia de lo que escribiste…" };
 let PASOS_ACTIVOS = 0;
 function paso(txt) { const el = $("#p-estado"); if (!el) return; if (txt) { PASOS_ACTIVOS++; $("#p-estado-txt").textContent = txt; el.hidden = false; } else { PASOS_ACTIVOS = Math.max(0, PASOS_ACTIVOS - 1); if (!PASOS_ACTIVOS) el.hidden = true; } }
 async function rpc(fn, args={}) {
@@ -1599,6 +1599,7 @@ function pintarHoja() {
       ${opEnUn(d)
         ? `<b>Valor de compra</b><span><span class="grande">${precioTxt(f)}</span><br><span class="dim">${e(f.origen_detalle)} · las recetas lo reparten por día${d.equipo ? ` · su valor del día es <b>${cop(d.equipo.costo_dia, 2)}/día</b>` : ""}</span></span>`
         : `<b>Precio que gobierna</b><span><span class="grande">${precioTxt(f)}</span><br><span class="dim">${e(f.origen_detalle)}</span></span>`}
+      <b>IVA</b><span id="h-iva">${ivaTxt(f)}</span>
       <b>Vigencia</b><span>${vig(f.estado_vigencia)} ${f.dias_precio!=null?`<span class="dim">· ${num(f.dias_precio)} días</span>`:""} ${f.alerta_trm?'<span class="p-vig" style="--c:#fab219">Se reprecia hoy con la TRM</span>':""}<br><span class="dim">${e(accionTxt(f.accion))}</span><details style="margin-top:4px"><summary class="dim" style="cursor:pointer;font-size:12px">¿Qué significa cada color?</summary>${LEYENDA}</details></span>
       <b>Capítulo · unidad</b><span><span class="p-editable" data-campo="capitulo">${e(f.capitulo)}</span> · <span class="p-editable" data-campo="unidad" ${d.apus.length?'data-fijo="1" title="No se cambia la unidad de un recurso que ya está en una receta"':""}>${e(f.unidad)}</span></span>
       <b>Marca</b>${f.capitulo === "Equipos" ? `<span>${selectorMarca(f)}</span>` : `<span class="p-editable" data-campo="marca">${e(f.marca)||'<span class="dim">—</span>'}</span>`}
@@ -1959,6 +1960,37 @@ function bloqueInsumo(d) {
   const cuenta = n && pu ? `<span class="dim">Cada uso cuesta </span><b>${pu.precio != null ? cop(pu.precio, 2) : "—"}</b><span class="dim"> (${precioTxt(f)} ÷ ${num(n)})${pu.precio == null ? " — sin precio hasta que tenga el de compra" : ""}</span>` : `<span class="dim">Vacío = se usa una vez y se cobra entero.</span>`;
   return `<div class="p-kv" style="margin-top:4px"><b>Veces que se usa</b><span><input id="usos-in" type="number" min="2" step="1" inputmode="numeric" style="width:92px" value="${n ?? ""}" placeholder="una vez" aria-label="Cuántas veces se usa ${e(f.codigo)}" onchange="guardarUsos(this)"> ${cuenta}</span>
     ${pu ? `<b>Uso</b><span><button class="p-btn sec chico" onclick="abrirHoja(${Number(pu.id)})">${e(pu.codigo)} — se cobra por uso →</button>${pu.recetas ? ` <span class="dim">en ${num(pu.recetas)} receta${pu.recetas==1?"":"s"}</span>` : ""}</span>` : ""}</div>${enUn}`;
+}
+/* TK-0198 · el precio del catálogo es SIN IVA y así entra a las recetas: IRM es responsable de IVA y el de compra se
+   descuenta (core.regla_iva()). El precio con IVA es lo que sale de caja al comprar: se muestra al lado, no se costea. */
+const IVA_FUENTE = { factura: "de sus facturas de Siigo", supuesto: "supuesto", no_aplica: "no aplica", usuario: "fijado a mano" };
+function ivaTxt(f) {
+  if (f.iva_pct == null) return '<span class="dim">—</span>';
+  const pct = Number(f.iva_pct), con = f.precio != null ? Number(f.precio) * (1 + pct / 100) : null;
+  return `<b>${num(pct)} %</b> <span class="p-chipm" title="${e(f.iva_detalle || "")}">${e(IVA_FUENTE[f.iva_fuente] || f.iva_fuente || "")}</span>${con != null ? ` · con IVA <b>${cop(con, 0)}</b> · sin IVA ${cop(f.precio, 0)}` : ""}
+    <button class="p-btn suave chico" onclick="formIva(this)">Ajustar</button>
+    <br><span class="dim">Las recetas costean <b>sin IVA</b>: IRM es responsable de IVA y el de compra se descuenta. El precio con IVA es lo que sale de caja al comprar.${f.iva_detalle ? " " + e(f.iva_detalle) : ""}</span>`;
+}
+function formIva(btn) {
+  const f = FICHA.ficha;
+  $("#h-iva").innerHTML = `<label class="p-campo">IVA en % <input id="iva-pct" type="number" min="0" max="100" step="0.01" inputmode="decimal" value="${f.iva_pct ?? 19}" style="width:96px"></label>
+    <label class="p-campo">¿De dónde sale? <input id="iva-mot" placeholder="factura FE-123 de… · producto excluido (art. 424 E.T.)…"></label>
+    <span class="p-acciones"><button class="p-btn chico" id="iva-ok">Guardar</button>${f.iva_fuente === "usuario" ? '<button class="p-btn sec chico" id="iva-auto">Volver al cálculo automático</button>' : ""}<button class="p-btn suave chico" onclick="pintarHoja()">Cancelar</button></span>`;
+  const antes = { pct: f.iva_pct, fuente: f.iva_fuente, motivo: f.iva_detalle };
+  const deshacer = async () => trasFicha(await rpc("ime_fijar_iva", antes.fuente === "usuario"
+    ? { p_id: f.recurso_id, p_pct: antes.pct, p_motivo: antes.motivo || "deshacer" } : { p_id: f.recurso_id, p_pct: null, p_motivo: null, p_quitar: true }));
+  $("#iva-ok").onclick = ev => accion(ev.currentTarget, async () => {
+    const pct = Number($("#iva-pct").value), mot = $("#iva-mot").value.trim();
+    if (!(pct >= 0 && pct <= 100)) { aviso("El IVA va de 0 a 100 %.", { tipo: "atencion" }); return; }
+    if (!mot) { aviso("Decí de dónde sale ese IVA: una factura, o por qué el producto está excluido.", { tipo: "atencion" }); $("#iva-mot").focus(); return; }
+    trasFicha(await rpc("ime_fijar_iva", { p_id: f.recurso_id, p_pct: pct, p_motivo: mot }));
+    aviso(`IVA de ${e(f.codigo)}: <b>${num(pct)} %</b>, fijado a mano.`, { deshacer });
+  });
+  if ($("#iva-auto")) $("#iva-auto").onclick = ev => accion(ev.currentTarget, async () => {
+    trasFicha(await rpc("ime_fijar_iva", { p_id: f.recurso_id, p_pct: null, p_motivo: null, p_quitar: true }));
+    aviso(`IVA de ${e(f.codigo)}: vuelve al cálculo automático.`, { deshacer });
+  });
+  $("#iva-pct").focus();
 }
 function guardarUsos(inp) {
   const f = FICHA.ficha, antes = f.usos_estimados ?? null, v = inp.value === "" ? null : Number(inp.value);
