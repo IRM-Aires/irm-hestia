@@ -1236,7 +1236,8 @@ const PASOS = { panel_control_ime: "Leyendo el catálogo completo…", ime_busca
   ime_usos_previa: "Revisando las recetas que lo usan…", ime_pasar_recetas_a_usos: "Pasando las recetas a usos…", ime_dias_previa: "Revisando las recetas que lo usan…",
   ime_pasar_recetas_a_dias: "Pasando las recetas a días…", ime_proveedores: "Leyendo la lista de proveedores…", ime_crear_proveedor: "Creando el proveedor…",
   ime_editar_proveedor: "Guardando los datos del proveedor…", ime_eliminar_proveedor_reciente: "Deshaciendo el proveedor…", ime_retirar_proveedor: "Actualizando la lista de proveedores…", ime_dias_deshacer: "Devolviendo las recetas como estaban…",
-  ime_recurso_en_familia: "Buscando de qué familia es alelo este recurso…" };
+  ime_recurso_en_familia: "Buscando de qué familia es alelo este recurso…",
+  ime_gen_conteos: "Contando las familias del catálogo…", ime_gen_hermanos: "Buscando la familia de lo que escribiste…" };
 let PASOS_ACTIVOS = 0;
 function paso(txt) { const el = $("#p-estado"); if (!el) return; if (txt) { PASOS_ACTIVOS++; $("#p-estado-txt").textContent = txt; el.hidden = false; } else { PASOS_ACTIVOS = Math.max(0, PASOS_ACTIVOS - 1); if (!PASOS_ACTIVOS) el.hidden = true; } }
 async function rpc(fn, args={}) {
@@ -1510,9 +1511,20 @@ async function buscar(desde=0) {
           : canecaRecurso(f.recurso_id, f.codigo, Number(f.usos_en_apus)||0); }) +
       `<div class="p-acciones">${desde>0?`<button class="p-btn suave chico" id="e-ant">← Anteriores</button>`:""}${desde+100<d.total?`<button class="p-btn suave chico" id="e-sig">Siguientes →</button>`:""}</div>`;
     activarFilas("#e-res");
+    marcarFamilias("#e-res");
     if ($("#e-ant")) $("#e-ant").onclick = () => buscar(desde-100); if ($("#e-sig")) $("#e-sig").onclick = () => buscar(desde+100);
   } catch (err) { if (mia !== NBUSQ) return; $("#e-res").innerHTML = `<div class="p-error">${explicar(err)}</div>`; }
   $("#e-res").classList.remove("p-cargando");
+}
+/* TK-0194 · ADN del recurso: GEN = qué cosa es sin su medida; ALELO = cuál medida; FORMA = cómo se compra (unidad).
+   La lista marca cuántos hermanos de gen tiene cada fila. Una sola consulta para todo el catálogo (~70 ms medidos),
+   pedida DESPUÉS de pintar: la lista nunca espera por esto, y si falla la lista se lee igual. */
+let GEN_N = null;
+async function marcarFamilias(sel) {
+  try { if (!GEN_N) GEN_N = await rpc("ime_gen_conteos"); } catch (_) { return; }
+  $$(`${sel} tr.p-fila`).forEach(tr => { const n = GEN_N[tr.dataset.id]; const td = tr.children[1];
+    if (!n || !td || td.querySelector(".p-gen")) return;
+    td.insertAdjacentHTML("beforeend", ` <span class="p-chipm p-gen" title="La misma pieza existe en ${n} medidas o presentaciones. Abrí la ficha para ver la familia entera y cuáles no tienen precio.">familia · ${n}</span>`); });
 }
 function activarFilas(sel) {
   $$(`${sel} tr.p-fila`).forEach(tr => {
@@ -2249,7 +2261,7 @@ function htmlInsumo(o) {
   const i = o.id, v = o.valores || {}, ex = o.extras;
   return `${o.cabeza || ""}
     <label class="p-campo ancho">${o.rotulo || "Descripción"} <small>${o.boton ? "en mayúsculas se guarda sola; " : ""}la presentación (300 ML, 1 GAL, TUBO 200 G) va acá, no en la unidad</small><input id="${i("nombre")}" value="${e(v.nombre || "")}" placeholder="${e(o.ejemplo || 'GRAPA METALICA TIPO CONDUIT 2"')}" autocomplete="off"></label>
-    ${o.boton ? `<div class="ancho" id="${i("parecidos")}"></div>` : ""}
+    ${o.boton ? `<div class="ancho" id="${i("parecidos")}"></div><div class="ancho" id="${i("familia")}"></div>` : ""}
     <label class="p-campo">Capítulo <select id="${i("cap")}">${opciones(CAPITULOS, CAPITULOS.includes(v.capitulo) ? v.capitulo : CAPITULOS[0])}</select></label>
     <label class="p-campo">Unidad <small>nomenclatura; ML = metro lineal</small><select id="${i("uni")}">${opciones(UNIDADES, unidadValida(v.unidad))}</select></label>
     <label class="p-campo">Marca <small>opcional; no va en la descripción</small><input id="${i("marca")}" value="${e(v.marca || "")}"></label>
@@ -2272,6 +2284,15 @@ function leerInsumo(i) {
 function chipParecido(f) {
   const pct = Math.round((f.afinidad||0)*100), fuerte = pct >= 90;
   return `<button class="p-chip" style="${fuerte?'border-color:#d03b3b;':''}" data-parecido="${Number(f.recurso_id)}" title="Coincide en: ${e((f.coinciden||[]).join(', '))}"><code>${e(f.codigo)}</code> ${e(f.nombre)} · ${e(f.unidad)}${f.precio!=null?` · ${cop(f.precio)}`:""} <span class="dim">· ${pct} %</span></button>`;
+}
+function htmlFamilia(d) {
+  if (!d || !d.total) return "";
+  const chip = (f, borde) => `<button class="p-chip" style="${borde ? `border-color:${borde};` : ""}" data-parecido="${Number(f.id)}"><code>${e(f.codigo)}</code> ${e(f.nombre)} · ${e(f.unidad)} · ${f.precio != null ? cop(f.precio) : '<span style="color:#d03b3b">sin precio</span>'}</button>`;
+  const dup = (d.mismo_alelo||[]).filter(f => f.es === "posible_duplicado"), forma = (d.mismo_alelo||[]).filter(f => f.es === "otra_forma");
+  return `<div class="p-paso" style="border-left-color:${dup.length ? "#d03b3b" : "#00B9CE"}"><b>Familia «${e(d.gen)}»: ya hay ${num(d.total)} en el catálogo</b>${d.sin_precio ? `, ${num(d.sin_precio)} sin precio` : ""}. Es la misma pieza en otras medidas; lo que escribiste es la medida <code>${e(d.alelo || "sin medida")}</code>.
+    ${dup.length ? `<br><b style="color:#d03b3b">Posible duplicado</b> — misma pieza, misma medida y misma unidad. Abrilo en vez de crear otro:<br>${dup.map(f => chip(f, "#d03b3b")).join(" ")}` : ""}
+    ${forma.length ? `<br><b>La misma pieza en otra forma</b> — misma medida, se compra en otra unidad. Si es otra presentación, está bien crearla:<br>${forma.map(f => chip(f, "#fab219")).join(" ")}` : ""}
+    ${(d.muestra||[]).length ? `<br><span class="dim">Otras medidas de la familia:</span> ${d.muestra.map(f => chip(f)).join(" ")}` : ""}</div>`;
 }
 function pintarParecidos(cont, d, titulo, explicacion) {
   const L = d.parecidos||[];
@@ -2300,6 +2321,13 @@ function ligarInsumo(o) {
       catch (err) { if (mia === vuelta && el("parecidos")) el("parecidos").innerHTML = `<div class="p-error">No pude buscar parecidos: ${explicar(err)}</div>`; }
     }, 350); });
   el("parecidos").addEventListener("click", ev => { const b = ev.target.closest("[data-parecido]"); if (!b) return; const id = Number(b.dataset.parecido); if (o.alElegir) o.alElegir(id, b); else abrirHoja(id); });
+  // TK-0194: la familia (mismo gen) se avisa ANTES de crear, sin bloquear. Distingue «otra forma» de «posible duplicado».
+  let tmrGen = null, vueltaGen = 0;
+  const verFamilia = () => { clearTimeout(tmrGen); const mia = ++vueltaGen, q = el("nombre").value.trim(); el("familia").innerHTML = ""; if (q.length < 4) return;
+    tmrGen = setTimeout(async () => { try { const d = await rpc("ime_gen_hermanos", { p_nombre: q, p_unidad: el("uni").value });
+      if (mia === vueltaGen && el("familia")) el("familia").innerHTML = htmlFamilia(d); } catch (_) {} }, 400); };
+  el("nombre").addEventListener("input", verFamilia); el("uni").addEventListener("change", verFamilia);
+  el("familia").addEventListener("click", ev => { const b = ev.target.closest("[data-parecido]"); if (!b) return; const id = Number(b.dataset.parecido); if (o.alElegir) o.alElegir(id, b); else abrirHoja(id); });
   btn.onclick = () => accion(btn, async () => {
     clearTimeout(tmr); vuelta++;   // lo que diga el servidor al crear manda sobre una búsqueda en vivo que llegue tarde
     const v = leerInsumo(i);
@@ -2320,6 +2348,7 @@ function ligarInsumo(o) {
       pintar({ parecidos: r.parecidos }, `<b>Todavía no se creó nada.</b> Hay ${r.parecidos.length} parecido${r.parecidos.length===1?"":"s"}; si ninguno es el tuyo, tocá el botón de abajo.`);
       crearIgual("Segundo clic: crea el insumo aunque haya parecidos."); btn.scrollIntoView({ behavior: "smooth", block: "center" }); return;
     }
+    GEN_N = null;   // el catálogo cambió: las familias se vuelven a contar en la próxima lista
     await o.alCrear(r, v);
   });
   if (el("nombre").value.trim().length >= 4) el("nombre").dispatchEvent(new Event("input"));   // prellenado: los parecidos se ven ya
