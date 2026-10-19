@@ -1499,7 +1499,7 @@ async function buscar(desde=0) {
     const d = await rpc("ime_buscar", args);
     if (mia !== NBUSQ) return;   // llegó tarde: ya hay una búsqueda más nueva en camino, que es la que se pinta
     ULT = { desde, d };
-    const filas = d.filas.map(f => [["",cod(f.codigo)],["",e(f.nombre)+(f.marca?`<span class="p-chipm">${e(f.marca)}</span>`:"")+chipTenencia(f)],["",`${e(f.capitulo)} <span class="dim">· ${e(f.unidad)}</span>`],
+    const filas = d.filas.map(f => [["",cod(f.codigo)],["",e(f.nombre)+(f.marca?`<span class="p-chipm">${e(f.marca)}${f.modelo?` · ${e(f.modelo)}`:""}</span>`:"")+chipTenencia(f)],["",`${e(f.capitulo)} <span class="dim">· ${e(f.unidad)}</span>`],
       ["num",precioTxt(f)],["",vig(f.estado_vigencia)+(f.alerta_trm?' <span class="p-vig" style="--c:#fab219" title="Comprado en dólares: se reprecia con la TRM del día">TRM</span>':"")],["num",num(f.usos_en_apus)],
       ["num",f.mejor!=null?`${cop(f.mejor)}<br><span class="dim" style="font-size:11px">${e(f.mejor_prov)}${f.n_prov>1?` · ${f.n_prov} prov.`:""}</span>`:'<span class="dim">—</span>']]);
     const vacio = FILTRO.q||FILTRO.capitulo||FILTRO.estado||FILTRO.proveedor||FILTRO.cp||FILTRO.sp||FILTRO.moneda||FILTRO.ap||FILTRO.uso ? `No hay recursos con esos filtros. <b>Probá con menos palabras</b> o quitá un filtro. Si el recurso no existe, <button class="p-btn chico" onclick="irANuevo(FILTRO.q)">crealo ahora</button>.` : "Escribí algo arriba o elegí un capítulo para empezar.";
@@ -1603,6 +1603,7 @@ function pintarHoja() {
       <b>Vigencia</b><span>${vig(f.estado_vigencia)} ${f.dias_precio!=null?`<span class="dim">· ${num(f.dias_precio)} días</span>`:""} ${f.alerta_trm?'<span class="p-vig" style="--c:#fab219">Se reprecia hoy con la TRM</span>':""}<br><span class="dim">${e(accionTxt(f.accion))}</span><details style="margin-top:4px"><summary class="dim" style="cursor:pointer;font-size:12px">¿Qué significa cada color?</summary>${LEYENDA}</details></span>
       <b>Capítulo · unidad</b><span><span class="p-editable" data-campo="capitulo">${e(f.capitulo)}</span> · <span class="p-editable" data-campo="unidad" ${d.apus.length?'data-fijo="1" title="No se cambia la unidad de un recurso que ya está en una receta"':""}>${e(f.unidad)}</span></span>
       <b>Marca</b>${f.capitulo === "Equipos" ? `<span>${selectorMarca(f)}</span>` : `<span class="p-editable" data-campo="marca">${e(f.marca)||'<span class="dim">—</span>'}</span>`}
+      ${f.capitulo === "Equipos" ? `<b>Modelo</b><span>${f.marca ? `<input id="eq-modelo" value="${e(f.modelo || "")}" placeholder="modelo del equipo ${e(f.marca)}" autocomplete="off" style="max-width:260px" aria-label="Modelo de ${e(f.codigo)}" onchange="guardarModeloEquipo(this)">` : '<span class="dim">Un genérico no lleva modelo: primero se le pone la marca.</span>'}</span>` : ""}
       ${filaPresentacion(f)}
       <b>Especificación</b><span class="p-editable" data-campo="especificacion">${e(f.especificacion)||'<span class="dim">—</span>'}</span>
       <b>Naturaleza</b><span>${e(f.naturaleza_valor)} <span class="dim">· costo = sin margen; sin IVA si IRM lo recupera, con IVA si no (regla 38)</span>${f.activo===false?' · <span class="p-vig" style="--c:#d03b3b">Eliminado</span> <button class="p-btn sec chico" onclick="restaurarRecurso(${f.recurso_id}, this).then(()=>abrirHoja(${f.recurso_id}))">Restaurar</button>':""}</span>
@@ -1661,6 +1662,15 @@ async function pedirCrearMarca(v, cont, alCrear) {
     });
   };
   pintar(`<b>${e(nombre)}</b> no está en la lista de marcas de equipos. Si es una marca nueva, creala; si la escribiste distinto, elegí la de la lista.`);
+}
+function guardarModeloEquipo(inp) {
+  const f = FICHA.ficha, antes = f.modelo || null, v = inp.value.trim().toUpperCase() || null;
+  if (v === antes) return;
+  return accion(inp, async () => {
+    trasFicha(await rpc("ime_editar_ficha", { p_id: f.recurso_id, p_cambios: { modelo: v }, p_motivo: "Modelo del equipo desde la ficha" }));
+    aviso(v ? `${e(f.codigo)}: modelo <b>${e(v)}</b>.` : `${e(f.codigo)}: sin modelo.`,
+      { deshacer: async () => trasFicha(await rpc("ime_editar_ficha", { p_id: f.recurso_id, p_cambios: { modelo: antes }, p_motivo: "deshacer: modelo del equipo" })) });
+  });
 }
 function guardarMarcaEquipo(inp) {
   const f = FICHA.ficha, antes = f.marca || null, v = inp.value.trim().toUpperCase() || null;
@@ -2297,6 +2307,7 @@ function htmlInsumo(o) {
     <label class="p-campo">Capítulo <select id="${i("cap")}">${opciones(CAPITULOS, CAPITULOS.includes(v.capitulo) ? v.capitulo : CAPITULOS[0])}</select></label>
     <label class="p-campo">Unidad <small>nomenclatura; ML = metro lineal</small><select id="${i("uni")}">${opciones(UNIDADES, unidadValida(v.unidad))}</select></label>
     <label class="p-campo">Marca <small>opcional; no va en la descripción</small><input id="${i("marca")}" value="${e(v.marca || "")}"></label>
+    <label class="p-campo" id="${i("modelo-caja")}" hidden>Modelo <small>del equipo de esa marca; un genérico no lleva</small><input id="${i("modelo")}" value="${e(v.modelo || "")}" autocomplete="off" placeholder="ARUN060LSE5"><span id="${i("modelo-aviso")}"></span></label>
     ${ex === true ? `<label class="p-campo ancho">Especificación <small>opcional: para qué sirve, qué incluye, advertencias</small><textarea id="${i("esp")}"></textarea></label>` : ""}
     ${ex ? `<label class="p-campo">Precio de referencia <small>opcional; sin IVA si IRM lo recupera, con IVA si no. Si lo dejás vacío, el insumo entra "sin precio"</small><input id="${i("precio")}" type="number" step="0.01" min="0" inputmode="decimal"></label>` : ""}
     ${ex === true ? `<label class="p-campo" id="${i("usos-caja")}" hidden>¿Cuántas veces se usa? <small>solo si el insumo se reutiliza (paño, funda): cada uso costará precio ÷ usos. Vacío = se usa una vez</small><input id="${i("usos")}" type="number" min="2" step="1" inputmode="numeric" placeholder="se usa una vez"></label>` : ""}
@@ -2311,7 +2322,8 @@ function leerInsumo(i) {
   return { nombre: val("nombre"), capitulo: val("cap"), unidad: val("uni"), marca: val("marca") || null,
     especificacion: el("esp") ? (val("esp") || null) : undefined, modo: el("modo") ? valor("#" + i("modo")) : undefined,
     precio, motivo: precio != null ? (val("motivo") || null) : null,
-    usos: el("usos") && val("cap") === "Insumos" && val("usos") !== "" ? Number(val("usos")) : null };
+    usos: el("usos") && val("cap") === "Insumos" && val("usos") !== "" ? Number(val("usos")) : null,
+    modelo: el("modelo") && !el("modelo-caja").hidden ? (val("modelo").trim().toUpperCase() || null) : null };
 }
 function chipParecido(f) {
   const pct = Math.round((f.afinidad||0)*100), fuerte = pct >= 90;
@@ -2350,6 +2362,19 @@ function ligarInsumo(o) {
   if (el("modo")) interruptor("#" + i("modo"));
   if (el("usos-caja")) { const verUsos = () => { el("usos-caja").hidden = el("cap").value !== "Insumos"; }; el("cap").addEventListener("change", verUsos); verUsos(); }
   if (el("marca")) { const verMarca = () => { if (el("cap").value === "Equipos") { cargarMarcas(); el("marca").setAttribute("list", "dl-marcas-eq"); } else el("marca").removeAttribute("list"); }; el("cap").addEventListener("change", verMarca); verMarca(); }
+  /* TK-0209: el MODELO aparece sólo para un equipo de marca (no genérico) y avisa, mientras se escribe, si esa marca
+     ya tiene ese modelo en el catálogo. Sirve también para buscar en Explorar. */
+  if (el("modelo-caja")) {
+    const verModelo = () => { el("modelo-caja").hidden = !(el("cap").value === "Equipos" && el("marca").value.trim()); };
+    el("cap").addEventListener("change", verModelo); el("marca").addEventListener("input", verModelo); verModelo();
+    let tmrMod = null, vueltaMod = 0;
+    const revisarModelo = () => { clearTimeout(tmrMod); const mia = ++vueltaMod, mo = el("modelo").value.trim().toUpperCase(), ma = el("marca").value.trim().toUpperCase(); el("modelo-aviso").innerHTML = ""; if (mo.length < 2 || !ma) return;
+      tmrMod = setTimeout(async () => { try { const d = await rpc("ime_buscar", { p_q: mo, p_capitulo: "Equipos", p_limite: 20 });
+        const mismos = (d.filas || []).filter(f => (f.marca || "").toUpperCase() === ma && (f.modelo || "").toUpperCase() === mo);
+        if (mia === vueltaMod && el("modelo-aviso")) el("modelo-aviso").innerHTML = mismos.length ? `<small style="color:#d03b3b">Ya hay ${mismos.length === 1 ? "un equipo" : mismos.length + " equipos"} ${e(ma)} ${e(mo)}: ${mismos.map(f => `<button type="button" class="p-chip" data-parecido="${Number(f.recurso_id)}"><code>${e(f.codigo)}</code> ${e(f.nombre)}</button>`).join(" ")} Si es otra presentación (el de alquiler), está bien crearlo.</small>` : ""; } catch (_) {} }, 400); };
+    el("modelo").addEventListener("input", revisarModelo); el("marca").addEventListener("change", revisarModelo);
+    el("modelo-aviso").addEventListener("click", ev => { const b = ev.target.closest("[data-parecido]"); if (b) abrirHoja(Number(b.dataset.parecido)); });
+  }
   if (!o.boton) return { limpiar() {} };
   const btn = el("btn"); let forzar = false, tmr = null, vuelta = 0;   // vuelta: sólo pinta la respuesta de la última búsqueda
   const normal = () => { forzar = false; btn.innerHTML = o.boton; el("estado").textContent = o.estado || ""; };
@@ -2384,13 +2409,14 @@ function ligarInsumo(o) {
       el("parecidos").innerHTML = '<div class="p-paso" style="border-left-color:#d03b3b"><b>No se creó.</b> Las veces que se usa van en número entero, de 2 en adelante. Si se usa una sola vez, dejá ese campo vacío.</div>';
       el("usos").focus(); return; }
     const args = { p_nombre: v.nombre, p_capitulo: v.capitulo, p_unidad: v.unidad, p_marca: v.marca, p_precio: v.precio, p_motivo_precio: v.motivo, p_forzar: forzar };
+    if (v.modelo) args.p_modelo = v.modelo;
     if (v.especificacion !== undefined) args.p_especificacion = v.especificacion;
     if (v.modo) args.p_modo = v.modo;
     let r;
     try { r = await rpc("ime_crear_recurso", args); }
     catch (err) { el("parecidos").innerHTML = `<div class="p-paso" style="border-left-color:#d03b3b"><b>No se creó.</b> ${e(explicar(err))}</div>`; throw err; }
     if (!r.creado) {   // no se habían mostrado parecidos (o no alcanzaron a llegar): el servidor los encontró
-      pintar({ parecidos: r.parecidos }, `<b>Todavía no se creó nada.</b> Hay ${r.parecidos.length} parecido${r.parecidos.length===1?"":"s"}; si ninguno es el tuyo, tocá el botón de abajo.`);
+      pintar({ parecidos: r.parecidos }, r.mismo_modelo ? `<b>Todavía no se creó nada.</b> ${e(r.mensaje)}` : `<b>Todavía no se creó nada.</b> Hay ${r.parecidos.length} parecido${r.parecidos.length===1?"":"s"}; si ninguno es el tuyo, tocá el botón de abajo.`);
       crearIgual("Segundo clic: crea el insumo aunque haya parecidos."); btn.scrollIntoView({ behavior: "smooth", block: "center" }); return;
     }
     GEN_N = null;   // el catálogo cambió: las familias se vuelven a contar en la próxima lista
