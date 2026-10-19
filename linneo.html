@@ -2307,7 +2307,7 @@ function htmlInsumo(o) {
     <label class="p-campo">Capítulo <select id="${i("cap")}">${opciones(CAPITULOS, CAPITULOS.includes(v.capitulo) ? v.capitulo : CAPITULOS[0])}</select></label>
     <label class="p-campo">Unidad <small>nomenclatura; ML = metro lineal</small><select id="${i("uni")}">${opciones(UNIDADES, unidadValida(v.unidad))}</select></label>
     <label class="p-campo">Marca <small>opcional; no va en la descripción</small><input id="${i("marca")}" value="${e(v.marca || "")}"></label>
-    <label class="p-campo" id="${i("modelo-caja")}" hidden>Modelo <small>del equipo de esa marca; un genérico no lleva</small><input id="${i("modelo")}" value="${e(v.modelo || "")}" autocomplete="off" placeholder="ARUN060LSE5"><span id="${i("modelo-aviso")}"></span></label>
+    <label class="p-campo" id="${i("modelo-caja")}" hidden>Modelo <small>si el equipo es de una marca; un genérico lo deja vacío</small><input id="${i("modelo")}" value="${e(v.modelo || "")}" autocomplete="off" placeholder="ARUN060LSE5"><span id="${i("modelo-aviso")}"></span></label>
     ${ex === true ? `<label class="p-campo ancho">Especificación <small>opcional: para qué sirve, qué incluye, advertencias</small><textarea id="${i("esp")}"></textarea></label>` : ""}
     ${ex ? `<label class="p-campo">Precio de referencia <small>opcional; sin IVA si IRM lo recupera, con IVA si no. Si lo dejás vacío, el insumo entra "sin precio"</small><input id="${i("precio")}" type="number" step="0.01" min="0" inputmode="decimal"></label>` : ""}
     ${ex === true ? `<label class="p-campo" id="${i("usos-caja")}" hidden>¿Cuántas veces se usa? <small>solo si el insumo se reutiliza (paño, funda): cada uso costará precio ÷ usos. Vacío = se usa una vez</small><input id="${i("usos")}" type="number" min="2" step="1" inputmode="numeric" placeholder="se usa una vez"></label>` : ""}
@@ -2365,7 +2365,8 @@ function ligarInsumo(o) {
   /* TK-0209: el MODELO aparece sólo para un equipo de marca (no genérico) y avisa, mientras se escribe, si esa marca
      ya tiene ese modelo en el catálogo. Sirve también para buscar en Explorar. */
   if (el("modelo-caja")) {
-    const verModelo = () => { el("modelo-caja").hidden = !(el("cap").value === "Equipos" && el("marca").value.trim()); };
+    // Aparece al elegir «Equipos» (pedido del administrador, 2026-10-19); el modelo exige marca y eso se dice al crear.
+    const verModelo = () => { el("modelo-caja").hidden = el("cap").value !== "Equipos"; };
     el("cap").addEventListener("change", verModelo); el("marca").addEventListener("input", verModelo); verModelo();
     let tmrMod = null, vueltaMod = 0;
     const revisarModelo = () => { clearTimeout(tmrMod); const mia = ++vueltaMod, mo = el("modelo").value.trim().toUpperCase(), ma = el("marca").value.trim().toUpperCase(); el("modelo-aviso").innerHTML = ""; if (mo.length < 2 || !ma) return;
@@ -2410,6 +2411,9 @@ function ligarInsumo(o) {
       el("usos").focus(); return; }
     const args = { p_nombre: v.nombre, p_capitulo: v.capitulo, p_unidad: v.unidad, p_marca: v.marca, p_precio: v.precio, p_motivo_precio: v.motivo, p_forzar: forzar };
     if (v.modelo) args.p_modelo = v.modelo;
+    if (v.modelo && !v.marca) {   // lo que falta dice cuál y lleva ahí: el modelo es de una marca
+      el("parecidos").innerHTML = '<div class="p-paso" style="border-left-color:#d03b3b"><b>No se creó.</b> El modelo es de una marca: escribí la <b>marca</b> del equipo, o dejá el modelo vacío si es un genérico.</div>';
+      setTimeout(() => el("marca")?.focus(), 50); return; }
     if (v.especificacion !== undefined) args.p_especificacion = v.especificacion;
     if (v.modo) args.p_modo = v.modo;
     let r;
