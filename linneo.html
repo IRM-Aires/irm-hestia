@@ -237,6 +237,13 @@ td.num { text-align: right; white-space: nowrap; }
 .p-vig { display: inline-flex; align-items: center; gap: 5px; font-size: 12px; font-weight: 500; color: var(--c); white-space: nowrap; }
 .p-vig::before { content: ""; width: 8px; height: 8px; border-radius: 50%; background: var(--c); }
 .p-chipm { display: inline-block; font-size: 11px; color: var(--tinta-2); border: var(--p-hair); border-radius: 999px; padding: 1px 7px; margin-left: 4px; }
+/* Puesto del precio de proveedor (2026-10-19): 1.º verde, 2.º amarillo mostaza, 3.º rojo; los demás en tinta.
+   Colores de estado de DESIGN_SYSTEM.md; sobre el amarillo el texto va en tinta para que se lea. */
+.p-puesto { display: inline-block; border-radius: 6px; padding: 1px 7px; font-weight: 600; }
+.p-puesto.p-p1 { background: #0ca30c; color: #fff; }
+.p-puesto.p-p2 { background: #fab219; color: #1a1a1a; }
+.p-puesto.p-p3 { background: #d03b3b; color: #fff; }
+.p-puesto .dim { color: inherit; opacity: .85; }
 code { font: 12px var(--mono); color: var(--tinta-2); }
 .dim { color: var(--tinta-apagada); }
 
@@ -1579,13 +1586,20 @@ function pintarHoja() {
   const d = FICHA, f = d.ficha;
   /* PILAR (2026-10-10, TK-0074): la oferta para una propuesta vale SOLO para ese proyecto. En la ficha es
      referencia de consulta, aparte de los precios de catálogo, porque no fija el precio del recurso. */
-  const filaPrecio = p => [["",`${e(p.proveedor)}<br><span class="dim" style="font-size:11px">${e(p.modo_adquisicion)}${p.codigo_proveedor?` · ref. ${e(p.codigo_proveedor)}`:""}<br>${e(entregaTxt(p))}</span>`],["num",p.moneda==="USD"?`${usd(p.precio_moneda_original)}<br><span class="dim" style="font-size:11px">≈ ${cop(p.precio,0)} a TRM ${cop(p.trm_aplicada,2)}</span>`:cop(p.precio)],["",p.tipo_precio==="lista"?"Lista":"Facturado"],["",e(p.fecha_precio)],["",e(p.vigencia_hasta)||"—"],["",`<span class="dim">${e(p.fuente_tipo)}</span> · ${e(p.fuente_detalle)}`]];
+  const filaPrecio = p => [["",`${e(p.proveedor)}<br><span class="dim" style="font-size:11px">${e(p.modo_adquisicion)}${p.codigo_proveedor?` · ref. ${e(p.codigo_proveedor)}`:""}<br>${e(entregaTxt(p))}</span>`],["num",puestoPrecio(p, p.moneda==="USD"?`${usd(p.precio_moneda_original)}<br><span class="dim" style="font-size:11px">≈ ${cop(p.precio,0)} a TRM ${cop(p.trm_aplicada,2)}</span>`:cop(p.precio))],["",p.tipo_precio==="lista"?"Lista":"Facturado"],["",e(p.fecha_precio)],["",e(p.vigencia_hasta)||"—"],["",`<span class="dim">${e(p.fuente_tipo)}</span> · ${e(p.fuente_detalle)}`]];
   const delCatalogo = d.precios.filter(p => p.propuesta_id == null), dePropuesta = d.precios.filter(p => p.propuesta_id != null);
+  /* Pedido del administrador (2026-10-19): el mejor precio en verde, el segundo en amarillo mostaza, el tercero en rojo y
+     los demás en negro. Se ordena de menor a mayor (en pesos) dentro de cada modo —compra y alquiler no se comparan—, y
+     precios iguales comparten puesto. Sólo los precios de catálogo: las ofertas para una propuesta son de otro proyecto. */
+  PUESTO_PRECIO = new Map();
+  ["compra", "alquiler"].forEach(m => { const vals = [...new Set(delCatalogo.filter(p => (p.modo_adquisicion || "compra") === m && p.precio != null).map(p => Number(p.precio)))].sort((a, b) => a - b);
+    delCatalogo.forEach(p => { if ((p.modo_adquisicion || "compra") === m && p.precio != null) PUESTO_PRECIO.set(p.id, vals.indexOf(Number(p.precio)) + 1); }); });
   const precios = tabla(["Proveedor","Precio","Tipo","Fecha","Vigente hasta","De dónde sale"], delCatalogo.map(filaPrecio),
     dePropuesta.length ? "No hay precios de catálogo: solo ofertas para una propuesta (abajo), que no fijan el precio del recurso." : "Todavía no hay precios de proveedor. Usá <b>Registrar precio</b> cuando tengas una cotización, factura o mensaje del proveedor.", undefined,
     i => caneca(`el precio de ${delCatalogo[i].proveedor}`, { attrs: `data-acc="precio" data-id="${Number(delCatalogo[i].id)}"` }));
   const referencia = dePropuesta.length ? tabla(["Proveedor","Precio","Tipo","Fecha","Vigente hasta","De dónde sale"], dePropuesta.map(filaPrecio), "", undefined,
     i => caneca(`la oferta de ${dePropuesta[i].proveedor}`, { attrs: `data-acc="precio" data-id="${Number(dePropuesta[i].id)}"` })) : "";
+  const leyendaPuestos = delCatalogo.length > 1 ? `<p class="dim" style="font-size:12px;margin:4px 0 0"><span class="p-puesto p-p1">más barato</span> <span class="p-puesto p-p2">segundo</span> <span class="p-puesto p-p3">tercero</span> · los demás sin color. El precio que gobierna el costo es el que dice arriba, en «Precio que gobierna».</p>` : "";
   /* En un recurso que se cobra por tiempo, un precio tuyo en modo compra es el VALOR del equipo, no lo
      que se cobra por día: no manda (regla 2026-10-06, caso de la bomba de vacío). Se dice así, no «manda». */
   const noManda = u => POR_TIEMPO[String(f.unidad||"").toUpperCase()] && u.modo_adquisicion !== "alquiler";
@@ -1616,7 +1630,7 @@ function pintarHoja() {
       ${d.apus.length && f.activo !== false && !d.descontinuado ? '<button class="p-btn sec" onclick="formReemplazo()" title="Cuando este insumo se descontinuó: elegís el correcto y se cambia en todas sus recetas">Reemplazar y eliminar</button>' : ""}
     </div>
     ${pu}
-    <h3>Precios de proveedor</h3>${precios}
+    <h3>Precios de proveedor</h3>${precios}${leyendaPuestos}
     ${referencia?`<h3>Ofertas para una propuesta <span class="dim" style="text-transform:none;letter-spacing:0">(solo valen para ese proyecto; acá son referencia de consulta)</span></h3>${referencia}`:""}
     ${fact?`<h3>Facturado en Siigo <span class="dim" style="text-transform:none;letter-spacing:0">(lo que IRM pagó; cuenta como costo solo si no hay precio de lista)</span></h3>${fact}`:""}
     <h3>Recetas donde se usa (${d.apus.length})</h3><p>${apus}</p>
@@ -1970,6 +1984,11 @@ function bloqueInsumo(d) {
   const cuenta = n && pu ? `<span class="dim">Cada uso cuesta </span><b>${pu.precio != null ? cop(pu.precio, 2) : "—"}</b><span class="dim"> (${precioTxt(f)} ÷ ${num(n)})${pu.precio == null ? " — sin precio hasta que tenga el de compra" : ""}</span>` : `<span class="dim">Vacío = se usa una vez y se cobra entero.</span>`;
   return `<div class="p-kv" style="margin-top:4px"><b>Veces que se usa</b><span><input id="usos-in" type="number" min="2" step="1" inputmode="numeric" style="width:92px" value="${n ?? ""}" placeholder="una vez" aria-label="Cuántas veces se usa ${e(f.codigo)}" onchange="guardarUsos(this)"> ${cuenta}</span>
     ${pu ? `<b>Uso</b><span><button class="p-btn sec chico" onclick="abrirHoja(${Number(pu.id)})">${e(pu.codigo)} — se cobra por uso →</button>${pu.recetas ? ` <span class="dim">en ${num(pu.recetas)} receta${pu.recetas==1?"":"s"}</span>` : ""}</span>` : ""}</div>${enUn}`;
+}
+let PUESTO_PRECIO = new Map();
+function puestoPrecio(p, html) {
+  const n = PUESTO_PRECIO.get(p.id);
+  return n && n <= 3 ? `<span class="p-puesto p-p${n}" title="${["", "El más barato", "El segundo más barato", "El tercero más barato"][n]} de los precios de ${e(p.modo_adquisicion || "compra")}">${html}</span>` : html;
 }
 /* TK-0198 · el precio del catálogo es SIN IVA y así entra a las recetas: IRM es responsable de IVA y el de compra se
    descuenta (core.regla_iva()). El precio con IVA es lo que sale de caja al comprar: se muestra al lado, no se costea. */
