@@ -17,6 +17,15 @@
   --tinta: #0b0b0b;
   --tinta-2: #52514e;
   --tinta-apagada: #898781;
+  /* PILAR 2026-10-20 · El texto de referencia se ve como lo que es.
+     Un ejemplo dentro de una celda («CHILLER ENFRIADO POR AIRE 60 TR») escrito en
+     el gris del navegador se lee como un dato CARGADO: quien revisa cree que el
+     campo está lleno y lo deja pasar vacío. Y ese gris es además el de un campo
+     deshabilitado, así que un ejemplo y un campo bloqueado se veían igual.
+     Por eso el texto de referencia lleva color PROPIO: un rojo marrón claro, que
+     no es ninguna tinta ni ningún color de estado. No pide atención como una
+     alerta; dice «esto todavía no es un valor». */
+  --texto-referencia: #A8705F;
   --cuadricula: #e1e0d9;
   --sans: Inter, system-ui, -apple-system, "Segoe UI", sans-serif;
   --display: Poppins, Inter, system-ui, sans-serif;
@@ -26,12 +35,22 @@
   :root:not([data-theme="light"]) {
     --superficie: #1a1a19; --plano: #0d0d0d; --tinta: #ffffff;
     --tinta-2: #c3c2b7; --cuadricula: #2c2c2a;
+    --texto-referencia: #C99183;   /* sobre fondo oscuro el mismo tono se apaga: se aclara */
   }
 }
 :root[data-theme="dark"] {
   --superficie: #1a1a19; --plano: #0d0d0d; --tinta: #ffffff;
   --tinta-2: #c3c2b7; --cuadricula: #2c2c2a;
+  --texto-referencia: #C99183;
 }
+/* PILAR 2026-10-20 · se aplica a TODA celda, sin que nadie se acuerde. El
+   ::placeholder nativo no hereda el color del campo, así que hay que decírselo;
+   y va con opacity:1 porque Firefox se lo baja por su cuenta y el tono quedaría
+   más apagado de lo que dice el token. */
+input::placeholder, textarea::placeholder { color: var(--texto-referencia); opacity: 1; }
+/* Un campo deshabilitado NO es un ejemplo: vuelve a la tinta apagada, para que
+   las dos cosas dejen de verse igual. */
+input:disabled::placeholder, textarea:disabled::placeholder { color: var(--tinta-apagada); }
 * { box-sizing: border-box; }
 body {
   margin: 0; padding: 0 clamp(16px, 5vw, 56px) 48px;
@@ -142,8 +161,8 @@ fieldset { min-width: 0; }
 <body>
 <header class="irm-cabecera irm-encabezado">
   <img src="data:image/svg+xml;base64,PD94bWwgdmVyc2lvbj0iMS4wIiBlbmNvZGluZz0idXRmLTgiPz4KPCEtLSBHZW5lcmF0b3I6IEFkb2JlIElsbHVzdHJhdG9yIDI4LjAuMCwgU1ZHIEV4cG9ydCBQbHVnLUluIC4gU1ZHIFZlcnNpb246IDYuMDAgQnVpbGQgMCkgIC0tPgo8c3ZnIHZlcnNpb249IjEuMSIgaWQ9IkNhcGFfMSIgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIiB4bWxuczp4bGluaz0iaHR0cDovL3d3dy53My5vcmcvMTk5OS94bGluayIgeD0iMHB4IiB5PSIwcHgiCgkgdmlld0JveD0iMCAwIDEyODggNTEzIiBzdHlsZT0iZW5hYmxlLWJhY2tncm91bmQ6bmV3IDAgMCAxMjg4IDUxMzsiIHhtbDpzcGFjZT0icHJlc2VydmUiPgo8c3R5bGUgdHlwZT0idGV4dC9jc3MiPgoJLnN0MHtmaWxsOiMwNUMwREI7fQoJLnN0MXtmaWxsOiNBOUQ0MzM7fQoJLnN0MntmaWxsOiMwNUJGREI7fQoJLnN0M3tmaWxsOiMwNkMwREI7fQo8L3N0eWxlPgo8cGF0aCBjbGFzcz0ic3QwIiBkPSJNMTAyMS45NCwyOTcuODRjMC0yNC4xNS0wLjAzLTQ4LjMsMC4wMS03Mi40NmMwLjAyLTkuMzgsMS42LTE4LjUzLDQuMzYtMjcuNWMyLjk4LTkuNjksMS4xNy0xNC43OC03LjM5LTIwLjMzCgljLTEyLjk0LTguNC0yNy4zOC04LjQzLTQxLjk3LTcuMWMtMy40NiwwLjMxLTYuOTEsMS4xMS0xMC4yNywyLjAxYy0yMS41NSw1LjgtMzMuNjUsMjAuNDgtMzYuNzksNDMuOTgKCWMtMS4wOSw4LjE0LTEuMDMsMTYuMjgtMS4wNSwyNC40M2MtMC4wOCw0My44MS0wLjAxLDg3LjYyLTAuMDUsMTMxLjQzYy0wLjAyLDE4Ljg4LTcuOTksMzEuMTUtMjMuNTgsMzYuNjgKCWMtMjAuMSw3LjEyLTQyLjM3LTYuMzktNDUuMTItMjcuNWMtMC42Mi00Ljc3LTAuOTItOS42Mi0wLjkzLTE0LjQzYy0wLjA3LTQzLjE0LTAuMjYtODYuMjksMC4wNC0xMjkuNDMKCWMwLjE4LTI1Ljg4LDQuNjMtNTEuMDEsMTYuNi03NC4zMWMxNi44NS0zMi43OSw0NS4zMi01MC41LDc5LjYtNjAuMTZjMzYuNTItMTAuMyw3MC40Ni0zLjkyLDEwMS45MywxNi44NQoJYzAuOTcsMC42NCwxLjk0LDEuMjksMi45MSwxLjk0YzYuNjMsNC40Myw3LjkzLDQuNDcsMTQuMjEtMC4yYzE0LjM5LTEwLjcsMzAuMjktMTguMTMsNDgtMjEuMDYKCWM3NC45MS0xMi4zOSwxMzAuMzIsMjcuOTYsMTQ3Ljg4LDkzLjk3YzMuMDIsMTEuMzYsMy4wNCwyMy4xLDMuMDgsMzQuNzNjMC4xOCw0OC40NywwLjExLDk2Ljk1LDAuMDYsMTQ1LjQyCgljLTAuMDIsMTcuOTItOS4zNiwzMS4xNi0yNC45LDM1LjU3Yy0xOS43Nyw1LjYxLTQyLjA0LTEwLjI2LTQyLjUtMzAuNzNjLTAuNDQtMTkuNjUtMC4zLTM5LjMxLTAuMzEtNTguOTYKCWMwLTI4Ljc5LDAuMTktNTcuNTksMC4wOS04Ni4zOGMtMC4wNC0xMi40My0yLjgtMjQuNDEtNy40My0zNS45NWMtNS45NC0xNC43OS0xNi42OC0yMy41Ni0zMi40NC0yNi40NQoJYy0xMS4wOS0yLjA0LTIyLjE3LTIuNjEtMzMuMjctMC42NmMtMjEuOTYsMy44NS0zMy4zMywxOC40Ni0zOC42NiwzOC44N2MtMS41Niw1Ljk2LTIuMjgsMTIuMDktMi4yOSwxOC4yOQoJYy0wLjA3LDM4Ljk4LTAuMjIsNzcuOTUtMC4yMSwxMTYuOTNjMCwxMS4zMSwwLjczLDIyLjYzLTAuNTEsMzMuOTNjLTEuOSwxNy4zOS0xNS4yNSwzMC45NS0zMS4yMiwzMS42OAoJYy0xOS4wNiwwLjg3LTMzLjI4LTEwLjIzLTM2Ljg5LTI4LjczYy0wLjg3LTQuNDQtMS4xNy04Ljg5LTEuMTYtMTMuNGMwLjAyLTIzLjY1LDAuMDEtNDcuMzEsMC4wMS03MC45NgoJQzEwMjEuODMsMjk3Ljg0LDEwMjEuODksMjk3Ljg0LDEwMjEuOTQsMjk3Ljg0eiIvPgo8cGF0aCBjbGFzcz0ic3QxIiBkPSJNOTcuNzYsNDM2LjU5Yy01LjU3LTIuNTgtMTAuMDgtNi40Ni0xNC4wMi0xMC44OWMtMjkuNzEtMzMuMzgtNTIuMS03MC44OS02MC45NC0xMTUuMQoJQzYuNTksMjI5LjQ0LDI0LjI4LDE1Ni41OCw3OS41Myw5NC4xNmMzNi42LTQxLjM1LDgyLjY1LTY3LjIsMTM2Ljg4LTc3LjZjNTMuMzQtMTAuMjMsMTA0LjYyLTIuNDUsMTUzLjc2LDIwLjI2CgljMjQuNjQsMTEuMzksNDUuNjIsMjcuOTMsNjUuMDMsNDYuNjJjMi40LDIuMzEsNC45LDQuNTEsNy4yMSw2LjkxYzEuMzMsMS4zOCwyLjI1LDMuMywwLjY3LDQuOTFjLTEuNTEsMS41NC0yLjYxLTAuNTItMy42OC0xLjIxCgljLTMzLjI0LTIxLjQ2LTY5LjM3LTM1LjQ2LTEwOC43Mi0zOS42M2MtNzEuNzQtNy41OS0xMzUuNDgsMTEuODktMTg5Ljk4LDU5LjQ1Yy0zOC41NiwzMy42NS02NC42NSw3NS4zMS03Ni41NiwxMjUuMwoJYy0xMi40Nyw1Mi4zNi02LjgsMTAzLjM2LDEyLjY0LDE1My4xNkM4Mi43MSw0MDcuNTMsODkuOTcsNDIyLjA5LDk3Ljc2LDQzNi41OXoiLz4KPHBhdGggY2xhc3M9InN0MiIgZD0iTTczNS4xNSwzMDQuOTFjMCwyMy4xNSwwLjA3LDQ2LjMxLTAuMDIsNjkuNDZjLTAuMDYsMTYuNzYtNy44NiwyOC45My0yMS43NCwzNC4zNwoJYy0yMi44Nyw4Ljk2LTQ2Ljk5LTcuMzktNDcuNDItMzIuNzdjLTAuNDYtMjcuNjQtMC4wMy01NS4zLTAuMDctODIuOTVjLTAuMDItMTIuNDgtMC4yLTI0Ljk3LTAuMzgtMzcuNDUKCWMtMC4zOS0yNi43NiwxLjIyLTUzLjI0LDEwLjc4LTc4LjYyYzEzLjEzLTM0Ljg1LDM4LjMxLTU2Ljg0LDcyLjc2LTY5LjkyYzI3LjQ5LTEwLjQ0LDU0LjgzLTEwLjc4LDgyLjczLTMKCWMxOC42Niw1LjIsMjkuODQsMjIuMzksMjYuMDgsNDAuMThjLTQuMDUsMTkuMTUtMjIuMSwzMS42LTQxLjQzLDI4LjExYy0xNS43NS0yLjg0LTMxLjMyLTMuOC00Ni45NywwLjYzCgljLTEyLjU4LDMuNTYtMjEuMjQsMTEuMjktMjYuNDQsMjMuMTVjLTUuNDMsMTIuMzgtNy44MiwyNS4zOS03Ljg2LDM4Ljg0QzczNS4xLDI1OC4yNyw3MzUuMTUsMjgxLjU5LDczNS4xNSwzMDQuOTF6Ii8+CjxwYXRoIGNsYXNzPSJzdDMiIGQ9Ik0yMzIuNzMsNDg4LjM0Yy0yNy43NS01LjI1LTUyLjQxLTE3LjU4LTc0LjcyLTM0LjU5QzEyMy41LDQyNy40Niw5OS40MiwzOTMuNTksODcsMzUxLjg4CgljLTI1LjE3LTg0LjQ4LDYuODYtMTc0LjQsNzkuNDUtMjIzLjU3YzY4LjIzLTQ2LjIyLDE1NC40LTQxLjI3LDIwMy41Mi0xMS4zM2MtMTUuMjctMS4xOS0yOS42My0wLjk4LTQzLjk2LDAuMQoJYy00NC45MiwzLjM5LTg2LjEzLDE2LjQ2LTEyMC42NCw0Ni43Yy0yNy4xLDIzLjc1LTQ0LjkxLDUzLjctNTcuMTIsODcuMTZjLTMxLjA5LDg1LjE1LTEuNDQsMTc2LjQ4LDc0LjEyLDIyOC45MwoJYzMuNTQsMi40Niw3LjE1LDQuODEsMTAuNzIsNy4yMUMyMzIuOTYsNDg3LjUsMjMyLjg1LDQ4Ny45MiwyMzIuNzMsNDg4LjM0eiIvPgo8cGF0aCBjbGFzcz0ic3QzIiBkPSJNMjA1LjAzLDQzOC45OGMxMC42MSwwLjY3LDIxLjIxLDEuNTgsMzEuODIsMS45N2MyOS4zNCwxLjA4LDU4LjE0LTEuODgsODYuMDItMTEuNzYKCWMzNS4zOS0xMi41NSw2My42Ny0zNC40MSw4NC44MS02NS4yNmMyMi41OS0zMi45NiwzNy02OS4yLDQwLjI1LTEwOS4yNWMzLjgtNDYuNzItMTEuMTEtODcuODEtMzkuMjctMTI0LjU5CgljLTEwLjE2LTEzLjI3LTIxLjY5LTI1LjI1LTM0LjAxLTM2LjVjLTAuOTMtMC44NS0xLjk3LTEuNTYtMy41OC0yLjgyYzQuNzMtMS40Miw4LjAxLTAuNjMsMTEuMiwwLjgxCgljNjYuOTYsMzAuMTIsMTA4LjYsODAuNiwxMTkuMjEsMTUzLjY3YzkuMDEsNjItOS4yOCwxMTYuNjktNTIuMzksMTYyLjI3Yy0zNi4xOSwzOC4yNi04MS4yMyw1OC4wOC0xMzMuODYsNjAuNTcKCWMtMzcuODcsMS43OS03My4zNC02LjMzLTEwNi0yNS44OGMtMS41LTAuOS0zLjQ1LTEuMzMtNC4xMi0zLjNMMjA1LjAzLDQzOC45OHoiLz4KPHBhdGggY2xhc3M9InN0MCIgZD0iTTYyMS44NSwyNTUuMTJjMCwzOS40NywwLjA0LDc4LjkzLTAuMDIsMTE4LjRjLTAuMDMsMjEuODYtMTMuNzEsMzYuNjctMzQuNDUsMzcuNTUKCWMtMTguMDUsMC43Ni0zNC4wOC0xMy41Ny0zNS4zNS0zMS42NGMtMC4xNi0yLjMyLTAuMTctNC42Ni0wLjE3LTYuOTljLTAuMDEtNTAuNjIsMC4wMy0xMDEuMjUtMC4wMy0xNTEuODcKCWMtMC4wMi0xOC40OC0wLjY5LTM2Ljk2LTAuMjctNTUuNDJjMC4yOS0xMi42Mi0wLjYzLTI1LjMyLDEuMzYtMzcuODdjMi44OC0xOC4xOSwxNS43NC0yOS42LDMyLjgxLTI5LjM2CgljMTguNCwwLjI2LDMzLjA3LDEyLjk5LDM1LjQzLDMwLjg1YzAuNDEsMy4xMiwwLjY1LDYuMywwLjY1LDkuNDVDNjIxLjg3LDE3Ny4xOSw2MjEuODUsMjE2LjE2LDYyMS44NSwyNTUuMTJ6Ii8+CjxwYXRoIGNsYXNzPSJzdDEiIGQ9Ik0zMTAuMTcsMTM4LjVjMjguMjctMi43Nyw4MC4wMiwyMS40MSw5OC45NCw3My4zOWMxOS44Niw1NC41NiwzLjc1LDEwNi4xOS00Mi45OSwxMzguMzIKCWMtNDQuOTcsMzAuOTEtOTguODksMjQuNi0xMzAuMDUsMC40OGM1NS4yNi0yLjIsOTYuNDItMjUuNTIsMTE0Ljk1LTc4LjkyQzM2OS41LDIxOC40NywzNTMuMjUsMTc0LjI4LDMxMC4xNywxMzguNXoiLz4KPHBhdGggY2xhc3M9InN0MyIgZD0iTTIwNS4xMiw0MzguOWMtMC4xNC0wLjA0LTAuMjktMC4wNi0wLjQtMC4xNGMtMC4wNS0wLjA0LTAuMDQtMC4xOC0wLjA1LTAuMjhjMC4xMiwwLjE2LDAuMjQsMC4zMywwLjM2LDAuNDkKCUMyMDUuMDMsNDM4Ljk4LDIwNS4xMiw0MzguOSwyMDUuMTIsNDM4Ljl6Ii8+Cjwvc3ZnPg==" alt="IRM Aires">
-  <div class="titulo"><h1><span title="La T de la cuenta: cada asiento al debe tiene su contrapartida al haber — la partida doble, literal." style="display:inline-block;vertical-align:-4px;margin-right:8px"><svg width="26" height="26" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 6h16"/><path d="M12 6v15"/><path d="M6.5 11h3M6.5 15h3"/><path d="M14.5 11h3M14.5 15h3" stroke="#00B9CE"/></svg></span>PACIOLI</h1><div style="font:600 13px var(--display);color:var(--tinta-2);margin-top:2px">Cuánto cuesta el ecosistema de IA mes a mes y cuánto produce en horas de persona y en pesos: suscripciones, consultoría, desarrollo, lo certificado y lo que viene · v1.17</div><div style="font-size:12.5px;color:var(--tinta-2);margin-top:2px">Luca Pacioli escribió la partida doble, donde cada cobro tiene su contrapartida: por eso el que audita las cuentas del propio proyecto lleva su nombre.</div></div>
-  <div class="fecha">2026-10-19</div>
+  <div class="titulo"><h1><span title="La T de la cuenta: cada asiento al debe tiene su contrapartida al haber — la partida doble, literal." style="display:inline-block;vertical-align:-4px;margin-right:8px"><svg width="26" height="26" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 6h16"/><path d="M12 6v15"/><path d="M6.5 11h3M6.5 15h3"/><path d="M14.5 11h3M14.5 15h3" stroke="#00B9CE"/></svg></span>PACIOLI</h1><div style="font:600 13px var(--display);color:var(--tinta-2);margin-top:2px">Cuánto cuesta el ecosistema de IA mes a mes y cuánto produce en horas de persona y en pesos: suscripciones, consultoría, desarrollo, lo certificado y lo que viene · v1.18</div><div style="font-size:12.5px;color:var(--tinta-2);margin-top:2px">Luca Pacioli escribió la partida doble, donde cada cobro tiene su contrapartida: por eso el que audita las cuentas del propio proyecto lleva su nombre.</div></div>
+  <div class="fecha">2026-10-20</div>
 </header>
 
 <main>
@@ -509,6 +528,19 @@ details.irm-explica > .irm-explica-cuerpo { margin: 6px 0 0; padding-left: 12px;
     <div id="ad-lectura"></div>
     <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(340px,1fr));gap:14px"><div id="ad-g-metodo"></div><div id="ad-g-dias"></div></div>
     <div class="pa-tabla" id="ad-tabla"></div>
+    <h3 style="font:700 14px var(--display);margin:14px 0 2px">¿Quién la está usando? — dedicación por persona y herramienta</h3>
+    <details class="irm-explica" data-explica="pacioli.4"><summary>Cómo funciona</summary><div class="irm-explica-cuerpo"><p class="pa-sub ayuda">Mide cuánto tiempo le dedica cada persona a cada herramienta, para ver cómo la va incorporando. Dos fuentes: lo que las herramientas dejan escrito con quién y a qué hora (un borrador guardado, un precio registrado, un APU editado, un ticket) y el <b>latido</b>: la herramienta avisa al abrirse y cada 5 minutos mientras está a la vista y la persona la está tocando. El tiempo activo se arma como las horas de Claude Code: se suman los huecos entre eventos seguidos cuando duran menos de 15 minutos; una pausa más larga no cuenta. <b>Es un piso, no un techo</b>: en las herramientas que todavía no tienen latido, leer sin tocar no deja rastro. Las sesiones de Claude y los procesos automáticos no cuentan como personas; lo que una sesión registra «a pedido de» alguien tampoco es tiempo de esa persona en la herramienta.</p></div></details>
+    <div class="pa-filtros"><div class="pa-campo"><label for="us-mes">Mes</label><select id="us-mes"></select></div><div class="pa-campo"><label for="us-herr">Herramienta</label><select id="us-herr"><option value="">Todas</option></select></div></div>
+    <div class="pa-cifras" id="us-cifras" data-irm-mover="pacioli.uso"></div>
+    <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(340px,1fr));gap:14px"><div id="us-g-personas"></div><div id="us-g-semanas"></div></div>
+    <div class="pa-tabla" id="us-tabla"></div>
+    <div id="us-rastro"></div>
+    <h4 style="font:700 13px var(--display);margin:14px 0 2px;color:var(--irm-cian);text-transform:uppercase;letter-spacing:.04em">Equipo comercial: cómo hace cada uno sus propuestas</h4>
+    <details class="irm-explica" data-explica="pacioli.5"><summary>Cómo funciona</summary><div class="irm-explica-cuerpo"><p class="pa-sub ayuda">Por cada comercial de C-001-01, cuántas propuestas hizo con Rómulo y Remo y cuántas montó en Excel, en el mes elegido y desde julio. Es la señal más directa de adopción: una persona que sigue en Excel teniendo la herramienta no la está incorporando. Una propuesta cuenta como hecha con la herramienta cuando tiene un borrador en Rómulo con su consecutivo.</p></div></details>
+    <div class="pa-tabla" id="us-comerciales"></div>
+    <h4 style="font:700 13px var(--display);margin:14px 0 2px;color:var(--irm-cian);text-transform:uppercase;letter-spacing:.04em">Con acceso, sin uso</h4>
+    <div class="pa-tabla" id="us-acceso"></div>
+    <div id="us-notas" class="pa-sub" style="margin:6px 0 0"></div>
     <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(340px,1fr));gap:14px">
       <div><h3 style="font:700 14px var(--display);margin:8px 0 4px">Ahorro neto, nueva capacidad y costo, por mes</h3><div id="tb-g-mes"></div></div>
       <div><h3 style="font:700 14px var(--display);margin:8px 0 4px">Ventas aprobadas por mes, con y sin la venta mayor</h3><div id="tb-g-ventas"></div></div>
@@ -527,11 +559,11 @@ details.irm-explica > .irm-explica-cuerpo { margin: 6px 0 0; padding-left: 12px;
 </section>
 
 <section class="pa-panel" id="p-recursos" role="tabpanel" aria-labelledby="t-recursos" hidden>
-  <details class="irm-explica" data-explica="pacioli.4"><summary>Cómo funciona</summary><div class="irm-explica-cuerpo"><p class="pa-sub ayuda">Los recursos del proyecto, en cuatro rubros: <b>herramientas</b> (suscripciones: Anthropic/Claude, Supabase, Vercel, GitHub, Notion y lo asociado), que tienen un <b>presupuesto mensual de 1 SMLV con todas sus prestaciones</b>; <b>consultoría</b> (VDA Studio); <b>desarrollo</b> (las horas del desarrollador por su valor hora de nómina); y <b>equipo</b> (el Mac, por depreciación a 5 años con valor de salvamento más un rubro de actualización tecnológica). El desarrollador y VDA se miden como costo de funcionamiento, pero no consumen el presupuesto de herramientas. Contra todo eso, lo que el proyecto genera: ahorro neto, nueva capacidad y dinero recuperado con sustento.</p></div></details>
+  <details class="irm-explica" data-explica="pacioli.6"><summary>Cómo funciona</summary><div class="irm-explica-cuerpo"><p class="pa-sub ayuda">Los recursos del proyecto, en cuatro rubros: <b>herramientas</b> (suscripciones: Anthropic/Claude, Supabase, Vercel, GitHub, Notion y lo asociado), que tienen un <b>presupuesto mensual de 1 SMLV con todas sus prestaciones</b>; <b>consultoría</b> (VDA Studio); <b>desarrollo</b> (las horas del desarrollador por su valor hora de nómina); y <b>equipo</b> (el Mac, por depreciación a 5 años con valor de salvamento más un rubro de actualización tecnológica). El desarrollador y VDA se miden como costo de funcionamiento, pero no consumen el presupuesto de herramientas. Contra todo eso, lo que el proyecto genera: ahorro neto, nueva capacidad y dinero recuperado con sustento.</p></div></details>
   <div class="pa-cifras" id="rc-cifras" data-irm-mover="pacioli.recursos"></div>
   <div id="rc-avisos"></div>
   <h3 style="font:700 14px var(--display);margin:10px 0 2px">Costo por etapa: implementación, adopción, sostenimiento y mantenimiento</h3>
-  <details class="irm-explica" data-explica="pacioli.5"><summary>Cómo funciona</summary><div class="irm-explica-cuerpo"><p class="pa-sub ayuda"><b>Implementación</b> es construir las herramientas: la consultoría de VDA (FinOps) y las horas de desarrollo medidas en Claude Code por su valor hora de nómina. <b>Adopción</b> es lo que la gente sigue poniendo para usarlas: las horas de la persona con la herramienta (información, revisión, ajuste) por su valor hora; es estimación mientras esos tiempos no estén declarados. <b>Sostenimiento</b> son las suscripciones y consumos del mes (Claude, Claude Console, Supabase, Vercel, GitHub, Notion): lo que se paga para que sigan andando. <b>Mantenimiento</b> es arreglar lo que falla: las horas de los tickets de tipo «falla» en Larrey por el valor hora de desarrollo (estimación: Larrey guarda estimaciones, no horas medidas). Las cuatro juntas son el costo real de tener la IA en la empresa, y es contra eso que se mide lo que devuelve.</p></div></details>
+  <details class="irm-explica" data-explica="pacioli.7"><summary>Cómo funciona</summary><div class="irm-explica-cuerpo"><p class="pa-sub ayuda"><b>Implementación</b> es construir las herramientas: la consultoría de VDA (FinOps) y las horas de desarrollo medidas en Claude Code por su valor hora de nómina. <b>Adopción</b> es lo que la gente sigue poniendo para usarlas: las horas de la persona con la herramienta (información, revisión, ajuste) por su valor hora; es estimación mientras esos tiempos no estén declarados. <b>Sostenimiento</b> son las suscripciones y consumos del mes (Claude, Claude Console, Supabase, Vercel, GitHub, Notion): lo que se paga para que sigan andando. <b>Mantenimiento</b> es arreglar lo que falla: las horas de los tickets de tipo «falla» en Larrey por el valor hora de desarrollo (estimación: Larrey guarda estimaciones, no horas medidas). Las cuatro juntas son el costo real de tener la IA en la empresa, y es contra eso que se mide lo que devuelve.</p></div></details>
   <div class="pa-cifras" id="rc-etapas" data-irm-mover="pacioli.etapas"></div>
   <h3 style="font:700 14px var(--display);margin:8px 0 4px">Presupuesto de herramientas contra lo gastado, mes a mes</h3>
   <div id="rc-g-pres"></div>
@@ -592,7 +624,7 @@ details.irm-explica > .irm-explica-cuerpo { margin: 6px 0 0; padding-left: 12px;
     <div class="pa-campo"><label for="c-estado">Estado del dato</label><select id="c-estado"><option value="">Certificado + verificado + detectado</option><option value="certificado">Solo certificado</option><option value="verificado">Solo verificado</option><option value="detectado">Solo detectado</option></select></div>
   </div>
   <div class="pa-tabla" id="pa-costos"></div>
-  <details class="irm-explica" data-explica="pacioli.6"><summary>Cómo funciona</summary><div class="irm-explica-cuerpo"><p class="pa-sub ayuda">Base sin IVA, en pesos. Los cobros en dólares se pasan a pesos con la TRM del día del cobro (la tasa oficial que publica el Banco de la República). El IVA y las retenciones van aparte, en Facturas.</p></div></details>
+  <details class="irm-explica" data-explica="pacioli.8"><summary>Cómo funciona</summary><div class="irm-explica-cuerpo"><p class="pa-sub ayuda">Base sin IVA, en pesos. Los cobros en dólares se pasan a pesos con la TRM del día del cobro (la tasa oficial que publica el Banco de la República). El IVA y las retenciones van aparte, en Facturas.</p></div></details>
 </section>
 
 <section class="pa-panel" id="p-facturas" role="tabpanel" aria-labelledby="t-facturas" hidden>
@@ -624,7 +656,7 @@ details.irm-explica > .irm-explica-cuerpo { margin: 6px 0 0; padding-left: 12px;
   <details class="pa-ficha"><summary>Día a día (lo que mide el contador)</summary><div class="pa-tabla" id="dv-dias"></div></details>
   <div id="pa-desarrolladores"></div>
   <div class="pa-tabla" id="pa-tiempo"></div>
-  <details class="irm-explica" data-explica="pacioli.7"><summary>Cómo funciona</summary><div class="irm-explica-cuerpo"><p class="pa-sub ayuda">Tres fuentes de esfuerzo, y no son lo mismo: <b>git</b> cuenta los días con cambios en el repositorio (evidencia de que se trabajó, no horas); <b>Larrey</b> suma las horas estimadas al evaluar cada ticket (estimación); <b>manual</b> son horas declaradas por una persona. El costo del mes = horas × valor hora. Si no hay horas manuales ni de Larrey, se usan los días de git por el parámetro «horas por día».</p></div></details>
+  <details class="irm-explica" data-explica="pacioli.9"><summary>Cómo funciona</summary><div class="irm-explica-cuerpo"><p class="pa-sub ayuda">Tres fuentes de esfuerzo, y no son lo mismo: <b>git</b> cuenta los días con cambios en el repositorio (evidencia de que se trabajó, no horas); <b>Larrey</b> suma las horas estimadas al evaluar cada ticket (estimación); <b>manual</b> son horas declaradas por una persona. El costo del mes = horas × valor hora. Si no hay horas manuales ni de Larrey, se usan los días de git por el parámetro «horas por día».</p></div></details>
   <div class="pa-banner">Registrar horas de un mes (manual)</div>
   <div class="pa-form">
     <div class="pa-campo"><label for="h-mes">Mes</label><input id="h-mes" type="month"></div>
@@ -712,7 +744,7 @@ details.irm-explica > .irm-explica-cuerpo { margin: 6px 0 0; padding-left: 12px;
     <div class="pa-campo"><label for="inf-contra">Comparar contra</label><select id="inf-contra"></select></div>
     <div class="pa-campo"><label>&nbsp;</label><div class="pa-acciones" id="inf-sacar"></div></div>
   </div>
-  <details class="irm-explica" data-explica="pacioli.8"><summary>Cómo funciona</summary><div class="irm-explica-cuerpo"><p class="pa-sub ayuda">Una sola hoja para gerencia. Elegís el mes del informe y contra cuál se compara (cualquier mes, o el mes en curso al día de hoy): cada indicador con el otro mes al lado, la variación, la meta y una lectura —<b>mejora</b>, <b>estancado</b>, <b>retrocede</b> o <b>meta superada</b>—. Todo sale de la base viva; lo que es estimación lo dice.</p></div></details>
+  <details class="irm-explica" data-explica="pacioli.10"><summary>Cómo funciona</summary><div class="irm-explica-cuerpo"><p class="pa-sub ayuda">Una sola hoja para gerencia. Elegís el mes del informe y contra cuál se compara (cualquier mes, o el mes en curso al día de hoy): cada indicador con el otro mes al lado, la variación, la meta y una lectura —<b>mejora</b>, <b>estancado</b>, <b>retrocede</b> o <b>meta superada</b>—. Todo sale de la base viva; lo que es estimación lo dice.</p></div></details>
   <div class="pa-inf" id="inf-hoja"></div>
 </section>
 
@@ -1079,7 +1111,7 @@ function canecaOcupada(b) {
     lineaMes("pa-g-dias", meses, meses.map(function (m) { var x = med("prop_dias_mediana", m, seg); return x ? x.valor : null; }), b1 ? Number(b1.valor) : null, fmtD, "#00B9CE", inicio, "Días de respuesta por mes (mediana)", "cuántos días pasaron, en el mes, entre que un cliente pidió una propuesta y se le envió; se usa la mediana (el valor del medio) para que un caso raro no mueva el mes.", "más bajo es mejor. La línea punteada es la línea base de antes de las herramientas: una barra de color por debajo de la línea es un mes en que se respondió más rápido que antes.");
     lineaMes("pa-g-cierre", meses, meses.map(function (m) { var x = med("prop_cierre_pct", m, seg); return x ? x.valor : null; }), b2 ? Number(b2.valor) : null, fmtP, "#1baf7a", inicio, "Tasa de cierre por mes", "de las propuestas que ya se resolvieron (ganadas o perdidas), qué porcentaje se ganó, por mes de solicitud.", "más alto es mejor. Se compara contra la línea base de antes de las herramientas. Los últimos meses tienen propuestas aún sin resolver, así que su tasa puede subir o bajar.");
     var filasAB = [["prop_n", "Propuestas", function (v) { return num(v, 0); }], ["prop_items_mediana", "Ítems cotizados por propuesta (mediana)", function (v) { return num(v, 0); }], ["prop_dias_por_item", "Días de respuesta por ítem (mediana)", function (v) { return num(v, 2); }], ["prop_dias_mediana", "Días de respuesta (mediana)", fmtD], ["prop_dias_prom", "Días de respuesta (promedio)", fmtD], ["prop_tarde_pct", "Enviadas tarde", fmtP], ["prop_cierre_pct", "Tasa de cierre", fmtP]];
-    $("pa-ab").innerHTML = '<table><thead><tr><th>Métrica</th><th class="num">Con Rómulo y Remo</th><th class="num">Sin la herramienta</th><th class="num">Línea base Servicios</th></tr></thead><tbody>' + filasAB.map(function (f) { var c = med(f[0], "desde_inicio", "con_romulo"), s = med(f[0], "desde_inicio", "sin_romulo"), b = med(f[0], "base", "Servicios"); return "<tr><td>" + f[1] + '</td><td class="num">' + (c && c.valor != null ? f[2](c.valor) : "—") + '</td><td class="num">' + (s && s.valor != null ? f[2](s.valor) : "—") + '</td><td class="num">' + (b && b.valor != null ? f[2](b.valor) : "—") + "</td></tr>"; }).join("") + "</tbody></table>";
+    $("pa-ab").innerHTML = '<table><thead><tr><th>Métrica</th><th class="num">Con Rómulo y Remo (Servicios)</th><th class="num">En Excel (Servicios)</th><th class="num">Línea base Servicios</th></tr></thead><tbody>' + filasAB.map(function (f) { var c = med(f[0], "desde_inicio", "con_romulo:Servicios"), s = med(f[0], "desde_inicio", "sin_romulo:Servicios"), b = med(f[0], "base", "Servicios"); return "<tr><td>" + f[1] + '</td><td class="num">' + (c && c.valor != null ? f[2](c.valor) : "—") + '</td><td class="num">' + (s && s.valor != null ? f[2](s.valor) : "—") + '</td><td class="num">' + (b && b.valor != null ? f[2](b.valor) : "—") + "</td></tr>"; }).join("") + "</tbody></table>";
     // precisión: margen cotizado vs real, y brechas abiertas (ejecutado sin facturar)
     var PR = D.precision || [], cerr = PR.filter(function (o) { return Number(o.pct_avance) >= 95 && Number(o.pct_facturacion) >= 95 && !o.parcial && o.brecha_pp != null; });
     var ab = PR.filter(function (o) { return Number(o.brecha_avance_facturacion_pts) > 10; }).map(function (o) { return { obra: o.obra, pts: Number(o.brecha_avance_facturacion_pts), cop: Number(o.vr_obra) * Number(o.brecha_avance_facturacion_pts) / 100 }; }).sort(function (a, b) { return b.cop - a.cop; });
@@ -1386,8 +1418,9 @@ function canecaOcupada(b) {
   });
   ["kp-uen", "kp-quien"].forEach(function (id) { var e2 = $(id); if (e2) e2.addEventListener("change", function () { guardarLS("pacioli." + id, e2.value); pintarKpis(); }); });
   if ($("ad-uen")) $("ad-uen").addEventListener("change", function () { guardarLS("pacioli.ad-uen", $("ad-uen").value); pintarAdopcion(); });
-  $("inf-mes").addEventListener("change", function () { guardarLS("pacioli.inf.mes", $("inf-mes").value); pintarInforme(); });
-  $("inf-contra").addEventListener("change", function () { guardarLS("pacioli.inf.contra", $("inf-contra").value); pintarInforme(); });
+  $("inf-mes").addEventListener("change", function () { guardarLS("pacioli.inf.mes", $("inf-mes").value); pintarInforme(); try { pintarUso(); } catch (e) {} });
+  $("inf-contra").addEventListener("change", function () { guardarLS("pacioli.inf.contra", $("inf-contra").value); pintarInforme(); try { pintarUso(); } catch (e) {} });
+  ["us-mes", "us-herr"].forEach(function (id) { var e2 = $(id); if (e2) e2.addEventListener("change", function () { guardarLS("pacioli." + id, e2.value); pintarUso(); }); });
   // ── cuadro de diálogo: preguntarle a Pacioli (Edge Function preguntar-pacioli, con la sesión de Hestia)
   var CHAT = [];
   try { CHAT = JSON.parse(leerLS("pacioli.chat") || "[]"); } catch (e) { CHAT = []; }
@@ -1617,6 +1650,17 @@ function canecaOcupada(b) {
       await recargarUsuarios();
     } catch (e) { aviso("<b>NO SE PUDO.</b> " + esc(e.message), true); b.removeAttribute("aria-busy"); }
   });
+  $("p-tablero").addEventListener("click", async function (ev) {
+    var b = ev.target.closest("button[data-us-rastro]"); if (!b) return;
+    var persona = b.dataset.usRastro, mes = $("us-mes").value; ocupar(b, "Leyendo…");
+    try {
+      var r = await accion("pacioli_uso_rastro", { p_persona: persona, p_mes: mes, p_limite: 300 }, "Leyendo el rastro de " + persona + "…");
+      var ev2 = r.eventos || [];
+      $("us-rastro").innerHTML = '<div class="pa-plan-conf" role="region" aria-label="Rastro"><b>Rastro de ' + esc(persona) + " en " + esc(nombreMes(mes)) + ":</b> " + num(r.total, 0) + " eventos registrados" + (ev2.length < Number(r.total) ? " (se muestran los últimos " + ev2.length + ")" : "") + '. Son hechos que dejaron las herramientas: fecha y hora, herramienta y acción. <button type="button" class="pa-btn sec mini" id="us-rastro-cerrar">Cerrar</button><div class="pa-tabla" style="margin-top:8px;max-height:360px;overflow:auto"><table><thead><tr><th>Cuándo</th><th>Herramienta</th><th>Acción</th><th>Fuente</th></tr></thead><tbody>' + ev2.map(function (e3) { var d3 = new Date(e3.instante); return "<tr><td>" + esc(d3.toLocaleString("es-CO", { day: "2-digit", month: "short", hour: "2-digit", minute: "2-digit" })) + "</td><td>" + esc(nombreHerr(e3.herramienta)) + "</td><td>" + esc(e3.accion || "") + '</td><td class="pa-sub">' + esc(e3.fuente) + "</td></tr>"; }).join("") + "</tbody></table></div></div>";
+      $("us-rastro").scrollIntoView({ behavior: "smooth", block: "start" });
+    } catch (e) { aviso("<b>NO SE PUDO LEER EL RASTRO.</b> " + esc(e.message), true); } finally { liberar(b); }
+  });
+  $("p-tablero").addEventListener("click", function (ev) { if (ev.target.closest("#us-rastro-cerrar")) $("us-rastro").innerHTML = ""; });
   // ── Moneda del equipo: en dólares la base convierte con la TRM del día de compra; la página anuncia y pregunta (pilar Méchain)
   function acMoneda() {
     var usd = $("ac-moneda").value === "USD";
@@ -1806,6 +1850,57 @@ function canecaOcupada(b) {
       tarjeta("et-tot", cop(suma), "costo total de tener la IA, desde julio (las cuatro etapas)", "detec med")
     ].join("");
   }
+  // ── Dedicación por persona y herramienta (administrador, 2026-10-20)
+  var NOMBRE_HERR = { hestia: "Hestia", larrey: "Larrey", romulo: "Rómulo y Remo", pitia: "Pitia", linneo: "Linneo", dedalo: "Dédalo", frontino: "Frontino", condorcet: "Condorcet", tiron: "Tirón", pacioli: "Pacioli", clausewitz: "Clausewitz", estrabon: "Estrabón", minos: "Minos" };
+  function nombreHerr(k) { return NOMBRE_HERR[k] || ((D.herramientas || []).filter(function (h) { return h.clave === k; })[0] || {}).nombre || k; }
+  function pintarUso() {
+    var U = D.uso; if (!$("us-tabla")) return;
+    if (!U || !U.ok) { var solo = U && U.motivo === "solo_admin"; $("us-cifras").innerHTML = ""; $("us-g-personas").innerHTML = ""; $("us-g-semanas").innerHTML = ""; $("us-comerciales").innerHTML = ""; $("us-acceso").innerHTML = ""; $("us-tabla").innerHTML = '<div class="pa-aviso"><span>' + (solo ? "La dedicación por persona es dato de personas: la ve solo el administrador de Pacioli. Cada consulta queda registrada." : "No se pudo leer la dedicación por persona.") + "</span></div>"; return; }
+    var PM = U.por_mes || [], meses = {}; PM.forEach(function (r) { meses[r.mes] = 1; }); var ms = Object.keys(meses).sort(), hoy = new Date().toISOString().slice(0, 7); if (!ms.length) ms = [hoy];
+    var selM = $("us-mes"), selH = $("us-herr");
+    if (!selM.options.length) { selM.innerHTML = ms.slice().reverse().map(function (m) { return '<option value="' + m + '">' + esc(rotuloMes(m)) + "</option>"; }).join(""); var pref = ms.indexOf(mesAnterior(hoy)) >= 0 && ms.indexOf(hoy) < 0 ? mesAnterior(hoy) : ms[ms.length - 1]; selM.value = leerLS("pacioli.us-mes") && ms.indexOf(leerLS("pacioli.us-mes")) >= 0 ? leerLS("pacioli.us-mes") : pref; }
+    if (selH.options.length <= 1) { var hs = {}; PM.forEach(function (r) { hs[r.herramienta] = 1; }); selH.innerHTML = '<option value="">Todas</option>' + Object.keys(hs).sort().map(function (k) { return '<option value="' + esc(k) + '">' + esc(nombreHerr(k)) + "</option>"; }).join(""); }
+    var mes = selM.value, ant = mesAnterior(mes), herr = selH.value;
+    var filt = function (m) { return PM.filter(function (r) { return r.mes === m && (!herr || r.herramienta === herr); }); };
+    var act = filt(mes), prev = filt(ant);
+    var porP = {}; act.forEach(function (r) { var o = porP[r.persona] = porP[r.persona] || { min: 0, acc: 0, dias: {}, herr: {}, lat: 0 }; o.min += Number(r.minutos); o.acc += Number(r.acciones); o.herr[r.herramienta] = (o.herr[r.herramienta] || 0) + Number(r.minutos); o.lat += Number(r.latidos || 0); });
+    var porPprev = {}; prev.forEach(function (r) { porPprev[r.persona] = (porPprev[r.persona] || 0) + Number(r.minutos); });
+    var personas = Object.keys(porP).sort(function (a, b) { return porP[b].min - porP[a].min; });
+    var totMin = personas.reduce(function (s2, p2) { return s2 + porP[p2].min; }, 0), totAcc = personas.reduce(function (s2, p2) { return s2 + porP[p2].acc; }, 0), nHerr = {}; act.forEach(function (r) { nHerr[r.herramienta] = 1; });
+    var conLatido = (U.latidos && U.latidos.artefactos) || [];
+    $("us-cifras").innerHTML = [
+      tarjeta("us-pers", num(personas.length, 0), "personas con actividad registrada en " + nombreMes(mes) + (herr ? " en " + nombreHerr(herr) : ""), "cert med"),
+      tarjeta("us-horas", num(totMin / 60, 1) + " h", "horas activas sumadas (piso: huecos < " + num(U.umbral_min || 15, 0) + " min entre acciones)", "detec med"),
+      tarjeta("us-acc", num(totAcc, 0), "acciones registradas (borradores, precios, APUs, tickets, latidos)", "cert med"),
+      tarjeta("us-herr", num(Object.keys(nHerr).length, 0), "herramientas con uso en el mes", "cert med"),
+      tarjeta("us-lat", conLatido.length ? conLatido.map(nombreHerr).join(", ") : "ninguna", "herramientas con latido instalado (miden el tiempo a la vista, no solo las acciones)", conLatido.length ? "cert med" : "detec est")
+    ].join("");
+    G.hbarras({ el: "us-g-personas", titulo: "Horas activas por persona en " + nombreMes(mes) + (herr ? " · " + nombreHerr(herr) : ""), fmt: function (v) { return num(v, 1) + " h"; },
+      filas: personas.slice(0, 15).map(function (p2) { var o = porP[p2]; return { etiqueta: p2, valores: [o.min / 60], extra: Object.keys(o.herr).sort(function (a, b) { return o.herr[b] - o.herr[a]; }).slice(0, 3).map(nombreHerr).join(", ") }; }), series: [{ nombre: "horas activas", color: G.PAL.cian }],
+      vacio: "Sin actividad registrada en ese mes.", muestra: "cuántas horas de actividad registrada tuvo cada persona en el mes, y en qué herramientas pasó más tiempo.", lectura: "la barra larga es quien más está usando las herramientas. Una persona sin barra no es que no las use: es que no dejó rastro medible; con el latido instalado en todas, eso deja de pasar.", fuente: "control_ia.uso_persona_dia (bitácoras de cada herramienta + acceso.uso)" });
+    var PS = U.por_semana || [], sem = {}; PS.forEach(function (r) { if (r.semana >= "2026-W27") sem[r.semana] = 1; }); var semanas = Object.keys(sem).sort().slice(-12);
+    var top = personas.slice(0, 5); if (!top.length) { var tp = {}; PS.forEach(function (r) { tp[r.persona] = (tp[r.persona] || 0) + Number(r.minutos); }); top = Object.keys(tp).sort(function (a, b) { return tp[b] - tp[a]; }).slice(0, 5); }
+    var PALS = [G.PAL.cian, G.PAL.naranja, G.PAL.aqua, G.PAL.violeta, G.PAL.magenta];
+    G.barras({ el: "us-g-semanas", titulo: "Horas activas por semana, las 5 personas con más uso", categorias: semanas, rotulo: function (c) { return c.slice(5); }, fmt: function (v) { return num(v, 1) + " h"; }, apilado: true,
+      series: top.map(function (p2, i) { return { nombre: p2, color: PALS[i % PALS.length], valores: semanas.map(function (w) { return PS.filter(function (r) { return r.persona === p2 && r.semana === w; }).reduce(function (s2, r) { return s2 + Number(r.minutos) / 60; }, 0); }) }; }),
+      vacio: "Sin semanas con actividad todavía.", muestra: "semana a semana (W = número de semana del año), cuántas horas activas sumó cada una de las cinco personas con más uso.", lectura: "la adopción se ve en que aparezcan más colores (más personas) y que las barras no dependan de una sola. Una semana vacía de alguien que sí trabajó es una herramienta sin latido: no un día sin uso.", fuente: "control_ia.uso_persona_dia" });
+    $("us-tabla").innerHTML = '<table><thead><tr><th>Persona</th><th>Herramientas (minutos)</th><th class="num">Horas ' + esc(nombreMes(mes).split(" ")[0]) + '</th><th class="num">Mes anterior</th><th class="num">Acciones</th><th class="num">Latidos</th><th>Tendencia</th><th></th></tr></thead><tbody>' + personas.map(function (p2) {
+      var o = porP[p2], pv = porPprev[p2] || 0, T = tendKpi("mayor_mejor", o.min, pv);
+      return "<tr><td><b>" + esc(p2) + '</b></td><td class="pa-sub">' + Object.keys(o.herr).sort(function (a, b) { return o.herr[b] - o.herr[a]; }).map(function (k) { return esc(nombreHerr(k)) + " " + num(o.herr[k], 0); }).join(" · ") + '</td><td class="num"><b>' + num(o.min / 60, 1) + '</b></td><td class="num">' + num(pv / 60, 1) + '</td><td class="num">' + num(o.acc, 0) + '</td><td class="num">' + num(o.lat, 0) + "</td><td>" + T.chip + (T.txt ? ' <span class="pa-sub">' + esc(T.txt) + "</span>" : "") + '</td><td><button type="button" class="pa-btn sec mini" data-us-rastro="' + esc(p2) + '">Ver rastro</button></td></tr>';
+    }).join("") + (personas.length ? "" : '<tr><td colspan="8" class="pa-sub">Sin actividad registrada en ' + esc(nombreMes(mes)) + ".</td></tr>") + "</tbody></table>";
+    // comerciales: con Rómulo y Remo contra Excel, por mes y desde julio
+    var coms = {}; (D.mediciones || []).forEach(function (m) { var k = /^usuario:(.+?):(con_romulo|sin_romulo)$/.exec(m.segmento); if (k && m.metrica === "prop_n") coms[k[1]] = 1; });
+    var vC = function (c, per, con) { var x = med("prop_n", per, "usuario:" + c + ":" + (con ? "con_romulo" : "sin_romulo")); return x && x.valor != null ? Number(x.valor) : 0; };
+    var filasC = Object.keys(coms).map(function (c) { return { c: c, mc: vC(c, mes, true), ms: vC(c, mes, false), tc: vC(c, "desde_inicio", true), ts: vC(c, "desde_inicio", false) }; }).sort(function (a, b) { return (b.tc + b.ts) - (a.tc + a.ts); });
+    $("us-comerciales").innerHTML = filasC.length ? '<table><thead><tr><th>Comercial</th><th class="num">' + esc(nombreMes(mes).split(" ")[0]) + ' · con R&amp;R</th><th class="num">' + esc(nombreMes(mes).split(" ")[0]) + ' · Excel</th><th class="num">Desde julio · con R&amp;R</th><th class="num">Desde julio · Excel</th><th class="num">Adopción</th><th>Lectura</th></tr></thead><tbody>' + filasC.map(function (f) { var tot = f.tc + f.ts, ad = tot ? 100 * f.tc / tot : null; return "<tr><td><b>" + esc(f.c) + '</b></td><td class="num">' + num(f.mc, 0) + '</td><td class="num">' + num(f.ms, 0) + '</td><td class="num"><b>' + num(f.tc, 0) + '</b></td><td class="num">' + num(f.ts, 0) + '</td><td class="num">' + (ad == null ? "—" : num(ad, 0) + " %") + "</td><td>" + (tot === 0 ? chip("sin propuestas", "atencion") : f.tc === 0 ? chip("todo en Excel", "serio") : ad < 20 ? chip("casi todo en Excel", "serio") : ad >= 50 ? chip("adoptó", "bien") : chip("mezcla", "atencion")) + "</td></tr>"; }).join("") + "</tbody></table>" : '<p class="pa-sub">Sin mediciones por comercial: tocá «Actualizar datos a la fecha».</p>';
+    // con acceso, sin uso
+    var CA = U.con_acceso || [], usados = {}; act.forEach(function (r) { usados[r.persona] = 1; });
+    var aliasCorreo = function (correo) { var u2 = (D.usuarios_claude && D.usuarios_claude.usuarios || []).filter(function (x) { return x.correo === correo; })[0]; return u2 && u2.nombre ? u2.nombre : correo; };
+    $("us-acceso").innerHTML = CA.length ? '<table><thead><tr><th>Persona con acceso en Hestia</th><th>Herramientas autorizadas</th><th>Última entrada a Hestia</th><th>Actividad en ' + esc(nombreMes(mes).split(" ")[0]) + "</th></tr></thead><tbody>" + CA.map(function (c) { var pers = Object.keys(porP).filter(function (p2) { return p2 === c.correo || p2.indexOf(c.correo.split("@")[0] + "@") === 0 || (c.nombre && p2 === c.nombre); })[0]; var minP = pers ? porP[pers].min : 0; return "<tr><td><b>" + esc(c.nombre || c.correo) + '</b><br><span class="pa-sub">' + esc(c.correo) + '</span></td><td class="pa-sub">' + ((c.herramientas || []).map(nombreHerr).join(", ") || "—") + "</td><td>" + (c.ultima_entrada ? esc(fecha(c.ultima_entrada)) + ' <span class="pa-sub">(' + esc(hace(c.ultima_entrada)) + ")</span>" : chip("nunca entró", "serio")) + "</td><td>" + (minP > 0 ? num(minP / 60, 1) + " h activas" : chip("sin actividad registrada", "atencion")) + "</td></tr>"; }).join("") + "</tbody></table>" : '<p class="pa-sub">Sin personas con acceso registradas en Hestia.</p>';
+    var si = U.sin_identificar || [];
+    $("us-notas").innerHTML = (U.calculado_en ? "Medido " + esc(hace(U.calculado_en)) + " (se recalcula con «Actualizar datos a la fecha»). " : "") + (si.length ? "Actores que no se pudieron atribuir a una persona (se dejan afuera): " + si.slice(0, 6).map(function (x) { return esc(String(x.actor).slice(0, 40)) + " (" + num(x.n, 0) + ")"; }).join(" · ") + "." : "");
+    var h = $("inf-hoja"); if (h) { var c2 = h.querySelector("#inf-uso"); if (!c2) { h.insertAdjacentHTML("beforeend", '<div id="inf-uso"></div>'); c2 = h.querySelector("#inf-uso"); } if (c2) c2.innerHTML = '<h3 style="font:700 14px var(--display);margin:16px 0 4px">Dedicación por persona y herramienta — ' + esc(nombreMes(mes)) + '</h3><p class="pa-sub" style="margin:0 0 6px">Horas activas registradas (piso: huecos menores de 15 min entre acciones y latidos). Sesiones de Claude y procesos automáticos excluidos.</p>' + $("us-tabla").innerHTML; }
+  }
   function pintarTablero() {
     if (!D) return;
     var E = D.entregables, m = function (k, seg) { var x = med(k, "desde_inicio", seg || "todas"); return x && x.valor != null ? Number(x.valor) : null; };
@@ -1892,7 +1987,7 @@ function canecaOcupada(b) {
     fr.innerHTML = '<div><span class="pa-sub">Balance del proyecto de IA desde julio</span><br><b class="pa-bal">' + (bal == null ? "—" : (bal >= 0 ? "+ " : "− ") + cop(Math.abs(bal))) + '</b><br><span class="pa-sub">' + cop(m("beneficio_generado_cop")) + " generado − " + cop(costo) + " invertido · confianza <b>" + conf + "</b>" + (porque.length ? ": " + esc(porque.join(", ")) : "") + "</span></div>" + (top.length ? "<ol>" + top.slice(0, 3).map(function (x) { return "<li>" + esc(x.t.titulo.length > 90 ? x.t.titulo.slice(0, 88) + "…" : x.t.titulo) + "</li>"; }).join("") + "</ol>" : "");
     if (typeof botonImprimir === "function" && !$("tb-sacar").innerHTML) $("tb-sacar").innerHTML = botonImprimir({ id: "tb-imprimir", etiqueta: "Imprimir el tablero", titulo: "Imprimir el tablero con su sello", destino: "tablero" }) + botonCopiarHoja({ id: "tb-copiar", etiqueta: "Copiar", titulo: "Copiar el tablero al portapapeles", destino: "tablero" });
   }
-  function pintarTodo() { try { pintarMedidor(); } catch (e) { console.error(e); } try { pintarKpis(); } catch (e) { console.error(e); } try { pintarAdopcion(); } catch (e) { console.error(e); } try { pintarEtapas(); } catch (e) { console.error(e); } pintarValor(); pintarEntregables(); pintarInforme(); pintarRecursos(); pintarUsuariosClaude(); pintarTiempoDev(); pintarTablero(); pintarCifras(); pintarGrafico(); pintarHallazgos(); pintarCostos(); pintarFacturas(); pintarDesarrollo(); pintarPlan(); pintarProyeccion(); if (typeof window.IRMMover === "function") window.IRMMover(); formatearPesos(); }
+  function pintarTodo() { try { pintarMedidor(); } catch (e) { console.error(e); } try { pintarKpis(); } catch (e) { console.error(e); } try { pintarAdopcion(); } catch (e) { console.error(e); } try { pintarEtapas(); } catch (e) { console.error(e); } pintarValor(); pintarEntregables(); pintarInforme(); try { pintarUso(); } catch (e) { console.error(e); } pintarRecursos(); pintarUsuariosClaude(); pintarTiempoDev(); pintarTablero(); pintarCifras(); pintarGrafico(); pintarHallazgos(); pintarCostos(); pintarFacturas(); pintarDesarrollo(); pintarPlan(); pintarProyeccion(); if (typeof window.IRMMover === "function") window.IRMMover(); formatearPesos(); }
 
   // ── acciones ────────────────────────────────────────────────────────────────
   ["c-corte", "c-estado"].forEach(function (i) { $(i).addEventListener("change", pintarCostos); });
@@ -2015,6 +2110,8 @@ function canecaOcupada(b) {
       try { var rc = await rpc("pacioli_recursos", {}, "Leyendo presupuesto, costos y equipo…"); D.recursos = rc && rc.ok ? rc : null; } catch (e) { D.recursos = null; }
       try { var uc = await rpc("pacioli_usuarios_claude", {}, "Leyendo los usuarios de Claude…"); D.usuarios_claude = uc && uc.ok ? uc : null; } catch (e) { D.usuarios_claude = null; }
       try { var td = await rpc("pacioli_tiempo_dias", {}, "Leyendo las horas medidas en Claude Code…"); D.tiempo_dias = td && td.ok ? td : null; } catch (e) { D.tiempo_dias = null; }
+      try { var us = await rpc("pacioli_uso_personas", {}, "Leyendo la dedicación por persona…"); D.uso = us && us.ok ? us : null; } catch (e) { D.uso = null; }
+      try { if (window.IRMLatido && !window.__latidoPacioli) window.__latidoPacioli = window.IRMLatido.conectar(sb, "pacioli"); } catch (e) {}
       (function () { var pres = {}, gas = {}; (D.mediciones || []).forEach(function (m) { if (m.segmento !== "todas") return; if (m.metrica === "presupuesto_herramientas_cop") pres[m.periodo] = Number(m.valor); if (m.metrica === "gasto_herramientas_cop") gas[m.periodo] = Number(m.valor || 0); }); Object.keys(pres).forEach(function (k) { D.mediciones.push({ metrica: "presupuesto_disponible_cop", periodo: k, segmento: "todas", valor: pres[k] - (gas[k] || 0), n: null, evidencia: null }); }); })();
       try { mesesInforme().forEach(function (k) { var e3 = etapasMes(k); ["implementacion", "adopcion", "sostenimiento", "mantenimiento"].forEach(function (n3) { D.mediciones.push({ metrica: "etapa_" + n3 + "_cop", periodo: k, segmento: "todas", valor: e3[n3], n: null, evidencia: null }); }); }); } catch (e) { console.error(e); }
       var us = {}; (D.mediciones || []).forEach(function (m) { if (m.segmento && m.segmento.indexOf("usuario:") === 0) us[m.segmento.slice(8)] = 1; });
@@ -2349,6 +2446,32 @@ function instalarImprimir({ resolver = null, avisar = null } = {}) {
   }, true);
 }
 
+
+(function () {
+  if (window.IRMLatido) return;
+  var CADA_MS = 5 * 60 * 1000, VIVO_MS = 5 * 60 * 1000;
+  window.IRMLatido = {
+    conectar: function (sb, artefacto, opciones) {
+      var o = opciones || {}, ultimoToque = Date.now(), timer = null, arte = String(artefacto || "").toLowerCase();
+      if (!sb || !arte) return;
+      function mandar(tipo, detalle) {
+        try { var q = sb.schema("core").rpc("uso_latido", { p_artefacto: arte, p_tipo: tipo, p_detalle: detalle || null, p_huella: o.huella || null }); if (q && q.then) q.then(function () {}, function () {}); } catch (e) {}
+      }
+      function toque() { ultimoToque = Date.now(); }
+      ["pointerdown", "keydown", "scroll", "touchstart", "input"].forEach(function (ev) { document.addEventListener(ev, toque, { passive: true, capture: true }); });
+      function latir() {
+        if (document.visibilityState !== "visible") return;
+        if (Date.now() - ultimoToque > VIVO_MS) return;
+        mandar("latido", null);
+      }
+      mandar("abrir", (navigator.userAgent || "").slice(0, 120));
+      timer = setInterval(latir, CADA_MS);
+      document.addEventListener("visibilitychange", function () { if (document.visibilityState === "visible") { toque(); latir(); } });
+      return { accion: function (detalle) { toque(); mandar("accion", detalle); }, parar: function () { if (timer) clearInterval(timer); } };
+    }
+  };
+})();
+
 </script>
 
 </main>
@@ -2356,7 +2479,7 @@ function instalarImprimir({ resolver = null, avisar = null } = {}) {
 <footer class="irm-pie">
   <div class="irm-contacto"><span><b>C.</b> 318 3591189</span><span><b>D.</b> Cra. 36 #10B-39 el poblado, Medellín, Ant.</span><span>www.irmaires.com</span></div>
   <span>Confidencial — uso interno IRM Aires</span>
-  <span class="irm-paginacion">2026-10-19</span>
+  <span class="irm-paginacion">2026-10-20</span>
 </footer>
 <style>
 /* Botón «Reportar» — componente canónico IRM v6 (IMAGEN CORPORATIVA/memoria_procedimental/componente_reporte.py) */
@@ -2705,7 +2828,7 @@ function instalarImprimir({ resolver = null, avisar = null } = {}) {
     _proveedor: null };
 })(window);
 </script>
-<script>(function(){var go=function(){IRMReporte.iniciar({"artefacto": "pacioli", "nombre": "Pacioli", "version": "v1.17", "posicion": "derecha"});};if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',go);else go();})();</script>
+<script>(function(){var go=function(){IRMReporte.iniciar({"artefacto": "pacioli", "nombre": "Pacioli", "version": "v1.18", "posicion": "derecha"});};if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',go);else go();})();</script>
 <style>
 /* Botón «Volver a Hestia» — componente canónico IRM v2 (IMAGEN CORPORATIVA/memoria_procedimental/componente_volver.py) */
 /* La franja de abajo es de los dos botones del ecosistema («Volver» a la izquierda, «Reportar» a la
