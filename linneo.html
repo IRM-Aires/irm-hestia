@@ -3109,3 +3109,396 @@ window.IRMVolver = window.IRMVolver || (function () {
 if (document.readyState === "loading") document.addEventListener("DOMContentLoaded", function () { IRMVolver.iniciar(); });
 else IRMVolver.iniciar();
 </script>
+
+<style>
+/* Napier — calculadora, componente canónico IRM v1 (IMAGEN CORPORATIVA/memoria_procedimental/componente_calculadora.py) */
+.irm-napier-btn { position: fixed; bottom: 16px; right: 132px; z-index: 2147483000; display: inline-flex; align-items: center; gap: 6px;
+  min-height: 40px; padding: 8px 14px; border-radius: 999px; border: 1px solid #00B9CE; cursor: pointer;
+  background: var(--superficie, #fcfcfb); color: var(--tinta, #0b0b0b); font: 600 13px var(--display, Poppins, system-ui, sans-serif);
+  box-shadow: 0 4px 16px rgba(0,0,0,.14); transition: background .15s, color .15s; -webkit-tap-highlight-color: transparent; }
+.irm-napier-btn:hover { background: color-mix(in srgb, #00B9CE 12%, var(--superficie, #fcfcfb)); }
+.irm-napier-btn:active, .irm-napier-btn[aria-expanded="true"] { background: #00B9CE; color: #fff; }
+.irm-napier-btn:focus-visible, .irm-napier button:focus-visible, .irm-napier-mini:focus-visible { outline: 2px solid #00B9CE; outline-offset: 2px; }
+.irm-napier-ico { width: 18px; height: 18px; flex: none; }
+.irm-napier-btn[aria-expanded="true"] .irm-napier-ico path[stroke] { stroke: #fff; }
+.irm-napier-mini { position: fixed; z-index: 2147483001; width: 28px; height: 28px; padding: 3px; border-radius: 7px; border: 1px solid #00B9CE;
+  background: var(--superficie, #fcfcfb); color: var(--tinta, #0b0b0b); cursor: pointer; display: none; box-shadow: 0 2px 8px rgba(0,0,0,.12); }
+.irm-napier-mini.ver { display: inline-flex; align-items: center; justify-content: center; }
+.irm-napier-mini:active { background: #00B9CE; color: #fff; }
+.irm-napier-mini .irm-napier-ico { width: 18px; height: 18px; }
+.irm-napier { position: fixed; right: 16px; bottom: calc(var(--irm-franja-abajo, 76px) + 8px); z-index: 2147483002; width: min(330px, calc(100vw - 32px));
+  max-height: calc(100vh - var(--irm-franja-abajo, 76px) - 24px); overflow: auto; box-sizing: border-box; padding: 12px;
+  border: 1px solid var(--cuadricula, #d9dee2); border-top: 3px solid #00B9CE; border-radius: 12px;
+  background: var(--superficie, #fcfcfb); color: var(--tinta, #0b0b0b); box-shadow: 0 12px 36px rgba(0,0,0,.22);
+  font: 400 14px var(--sans, Inter, system-ui, sans-serif); }
+.irm-napier[hidden] { display: none; }
+.irm-napier-cab { display: flex; align-items: flex-start; gap: 8px; margin: 0 0 6px; }
+.irm-napier-cab h2 { font: 700 15px var(--display, Poppins, system-ui, sans-serif); margin: 0; display: flex; align-items: center; gap: 6px; }
+.irm-napier-cab p { margin: 2px 0 0; font-size: 11.5px; color: var(--tinta-2, #5b6770); line-height: 1.35; }
+.irm-napier-cerrar { margin-left: auto; min-width: 40px; min-height: 40px; border: none; background: none; color: inherit; font-size: 22px; line-height: 1; cursor: pointer; border-radius: 8px; }
+.irm-napier-cerrar:active { background: color-mix(in srgb, #00B9CE 18%, transparent); }
+.irm-napier-destino { font-size: 12.5px; color: var(--tinta-2, #5b6770); margin: 0 0 6px; overflow-wrap: anywhere; }
+.irm-napier-destino b { color: var(--tinta, #0b0b0b); }
+.irm-napier-expr { width: 100%; box-sizing: border-box; font: 500 16px var(--sans, Inter, system-ui, sans-serif); padding: 9px 10px; min-height: 42px;
+  border: 1px solid var(--cuadricula, #d9dee2); border-radius: 8px; background: var(--fondo, #fff); color: inherit; text-align: right; }
+.irm-napier-res { min-height: 24px; margin: 6px 2px 8px; text-align: right; font: 700 18px var(--display, Poppins, system-ui, sans-serif);
+  font-variant-numeric: tabular-nums; overflow-wrap: anywhere; }
+.irm-napier-res.err { font: 500 12.5px var(--sans, Inter, system-ui, sans-serif); color: #d03b3b; text-align: left; }
+.irm-napier-teclas { display: grid; grid-template-columns: repeat(5, minmax(0, 1fr)); gap: 6px; }
+.irm-napier-teclas button { min-height: 42px; border-radius: 8px; border: 1px solid var(--cuadricula, #d9dee2); background: var(--fondo, #fff);
+  color: inherit; font: 600 16px var(--sans, Inter, system-ui, sans-serif); cursor: pointer; -webkit-tap-highlight-color: transparent; }
+.irm-napier-teclas button.op { color: #0d7f9c; }
+.irm-napier-teclas button.igual { background: #00B9CE; border-color: #00B9CE; color: #fff; }
+.irm-napier-teclas button:active { background: color-mix(in srgb, #00B9CE 22%, var(--fondo, #fff)); }
+.irm-napier-teclas button.igual:active { background: #0d7f9c; }
+.irm-napier-acc { display: flex; gap: 6px; margin: 8px 0 0; flex-wrap: wrap; }
+.irm-napier-acc button { flex: 1 1 auto; min-height: 40px; padding: 8px 10px; border-radius: 8px; border: 1px solid #00B9CE; cursor: pointer;
+  font: 600 13px var(--display, Poppins, system-ui, sans-serif); background: none; color: inherit; }
+.irm-napier-acc button.prim { background: #00B9CE; color: #fff; }
+.irm-napier-acc button:active { background: #0d7f9c; color: #fff; }
+.irm-napier-acc button[disabled] { opacity: .5; cursor: not-allowed; }
+.irm-napier-cinta { list-style: none; margin: 10px 0 0; padding: 8px 0 0; border-top: 1px solid var(--cuadricula, #d9dee2);
+  display: grid; grid-template-columns: minmax(0, 1fr) auto; gap: 2px 8px; font-size: 12.5px; }
+.irm-napier-cinta li { display: grid; grid-template-columns: subgrid; grid-column: 1 / -1; }
+@supports not (grid-template-columns: subgrid) { .irm-napier-cinta li { grid-template-columns: minmax(0, 1fr) auto; } }
+.irm-napier-cinta button { all: unset; cursor: pointer; display: contents; }
+.irm-napier-cinta .e { color: var(--tinta-2, #5b6770); overflow-wrap: anywhere; }
+.irm-napier-cinta .r { font-weight: 700; text-align: right; font-variant-numeric: tabular-nums; }
+.irm-napier-cinta li:hover .r { color: #0d7f9c; }
+.irm-napier-cinta-tit { font: 600 11px var(--display, Poppins, system-ui, sans-serif); text-transform: uppercase; letter-spacing: .04em;
+  color: var(--tinta-2, #5b6770); margin: 10px 0 0; }
+.irm-napier-aviso { position: fixed; left: 50%; transform: translateX(-50%); bottom: calc(var(--irm-franja-abajo, 76px) + 8px); z-index: 2147483003;
+  display: flex; align-items: center; gap: 10px; max-width: calc(100vw - 32px); box-sizing: border-box; padding: 8px 10px 8px 14px; border-radius: 10px;
+  background: #1f2a30; color: #fff; font: 500 13px var(--sans, Inter, system-ui, sans-serif); box-shadow: 0 8px 24px rgba(0,0,0,.25); }
+.irm-napier-aviso button { min-height: 36px; padding: 6px 12px; border-radius: 8px; border: 1px solid #00B9CE; background: none; color: #fff; font: 600 13px var(--display, Poppins, system-ui, sans-serif); cursor: pointer; }
+.irm-napier-aviso button:active { background: #00B9CE; }
+@media (prefers-color-scheme: dark) {
+  .irm-napier-btn, .irm-napier-mini, .irm-napier { background: var(--superficie, #1a1a19); color: var(--tinta, #fff); }
+  .irm-napier-expr, .irm-napier-teclas button { background: var(--fondo, #111); }
+  .irm-napier-teclas button.op { color: #4ec3e3; } }
+@media (max-width: 560px) {
+  .irm-napier-btn { width: 44px; height: 44px; min-height: 44px; padding: 0; justify-content: center; right: 64px; bottom: calc(12px + env(safe-area-inset-bottom, 0px)); }
+  .irm-napier-btn .irm-napier-txt { position: absolute; width: 1px; height: 1px; overflow: hidden; clip: rect(0 0 0 0); white-space: nowrap; }
+  .irm-napier { right: 16px; left: 16px; width: auto; } }
+@media (prefers-reduced-motion: reduce) { .irm-napier-btn, .irm-napier-mini { transition: none; } }
+@media print { .irm-napier-btn, .irm-napier-mini, .irm-napier, .irm-napier-aviso { display: none !important; } }
+</style>
+<script>
+/* Napier — calculadora, componente canónico IRM v1 (componente_calculadora.py) */
+
+/* Napier — lector de cuentas, sin eval: solo números, + − × ÷, paréntesis y %. */
+var IRMNapierLector = (function () {
+  /* Misma regla que Méchain (componente_conversion.py, leerNumero): coma y punto como en Colombia, y lo dudoso se pregunta. */
+  function leerNumero(p) {
+    var t = String(p == null ? "" : p).trim().replace(/\s/g, "");
+    if (!/^[0-9][0-9.,]*$/.test(t)) return { valor: null, motivo: "«" + p + "» no es un número." };
+    var np = (t.match(/\./g) || []).length, nc = (t.match(/,/g) || []).length;
+    if (np > 0 && nc > 0) {
+      var dec = t.lastIndexOf(".") > t.lastIndexOf(",") ? "." : ",";
+      var miles = dec === "." ? "," : ".";
+      var ent = t.slice(0, t.lastIndexOf(dec));
+      if (ent.indexOf(dec) >= 0 || !new RegExp("^[0-9]{1,3}(\\" + miles + "[0-9]{3})*$").test(ent))
+        return { valor: null, motivo: "«" + p + "» no es un número bien escrito." };
+      t = t.split(miles).join("").replace(",", ".");
+    } else if (np + nc === 1) {
+      if (/^[1-9][0-9]{0,2}[.,][0-9]{3}$/.test(t)) {
+        var entero = t.replace(/[.,]/g, ""), decimal = t.replace(/[.,]/, ",").replace(/0+$/, "").replace(/,$/, "");
+        return { valor: null, ambiguo: true, motivo: "«" + p + "» es dudoso: ¿" + entero + " o " + decimal +
+          "? Escribí " + entero + " si son miles, o " + decimal + " si es decimal." };
+      }
+      t = t.replace(",", ".");
+    } else if (np > 1 || nc > 1) {
+      var re = np > 1 ? /^[0-9]{1,3}(\.[0-9]{3})+$/ : /^[0-9]{1,3}(,[0-9]{3})+$/;
+      if (!re.test(t)) return { valor: null, motivo: "«" + p + "» no es un número bien escrito." };
+      t = t.replace(/[.,]/g, "");
+    }
+    var v = Number(t);
+    return isNaN(v) ? { valor: null, motivo: "«" + p + "» no es un número." } : { valor: v };
+  }
+
+  function partir(s) {
+    var out = [], i = 0, m;
+    s = String(s == null ? "" : s).replace(/^\s*=/, "");
+    while (i < s.length) {
+      var c = s[i];
+      if (/\s/.test(c) || c === "$") { i++; continue; }
+      if ((m = /^[0-9][0-9.,]*/.exec(s.slice(i)))) { out.push({ t: "n", v: m[0] }); i += m[0].length; continue; }
+      if ("+-−".indexOf(c) >= 0) { out.push({ t: c === "−" ? "-" : c }); i++; continue; }
+      if ("*x×X·".indexOf(c) >= 0) { out.push({ t: "*" }); i++; continue; }
+      if ("/÷:".indexOf(c) >= 0) { out.push({ t: "/" }); i++; continue; }
+      if ("()%".indexOf(c) >= 0) { out.push({ t: c }); i++; continue; }
+      throw { motivo: "No entiendo «" + c + "»: solo números, + − × ÷, paréntesis y %." };
+    }
+    return out;
+  }
+
+  function evaluar(texto) {
+    var tk, pos = 0;
+    try { tk = partir(texto); } catch (e) { return { ok: false, error: e.motivo }; }
+    if (!tk.length) return { ok: false, vacio: true, error: "Escribí una cuenta." };
+    function ver() { return tk[pos]; }
+    function tomar(t) { if (tk[pos] && tk[pos].t === t) { pos++; return true; } return false; }
+    function primario() {
+      var x = ver();
+      if (!x) throw { motivo: "A la cuenta le falta un número al final." };
+      if (x.t === "n") { pos++; var n = leerNumero(x.v); if (n.valor === null) throw { motivo: n.motivo, ambiguo: !!n.ambiguo }; return n.valor; }
+      if (x.t === "(") { pos++; var v = suma(); if (!tomar(")")) throw { motivo: "Falta cerrar un paréntesis «)»." }; return v; }
+      throw { motivo: "Sobra «" + (x.t === "n" ? x.v : x.t) + "» donde va un número." };
+    }
+    function unario() {
+      if (tomar("-")) { var r = unario(); return { v: -r.v, pct: r.pct }; }
+      if (tomar("+")) return unario();
+      var v = primario(), pct = false;
+      if (tomar("%")) { v = v / 100; pct = true; }
+      return { v: v, pct: pct };
+    }
+    function producto() {
+      var a = unario(), solo = true;
+      while (ver() && (ver().t === "*" || ver().t === "/")) {
+        var op = tk[pos++].t, b = unario(); solo = false;
+        if (op === "*") a = { v: a.v * b.v };
+        else { if (b.v === 0) throw { motivo: "No se puede dividir por cero." }; a = { v: a.v / b.v }; }
+      }
+      return { v: a.v, pct: solo && a.pct };
+    }
+    function suma() {
+      var a = producto().v;
+      while (ver() && (ver().t === "+" || ver().t === "-")) {
+        var op = tk[pos++].t, b = producto();
+        var d = b.pct ? a * b.v : b.v;          // «a + b %»: el b % de a, como una calculadora de mano
+        a = op === "+" ? a + d : a - d;
+      }
+      return a;
+    }
+    try {
+      var v = suma();
+      if (pos < tk.length) throw { motivo: tk[pos].t === ")" ? "Sobra un paréntesis «)»." : "Hay algo de más después de «" + (tk[pos - 1] ? (tk[pos - 1].v || tk[pos - 1].t) : "") + "»." };
+      if (!isFinite(v)) throw { motivo: "El resultado no es un número." };
+      return { ok: true, valor: Number(v.toPrecision(15)) };
+    } catch (e) { return { ok: false, error: e.motivo || String(e), ambiguo: !!e.ambiguo }; }
+  }
+
+  function aEs(v) {
+    var neg = v < 0, a = Math.abs(v);
+    var s = (Math.round(a * 1e6) / 1e6).toFixed(6).replace(/0+$/, "").replace(/\.$/, "");
+    var p = s.split("."), ent = p[0].replace(/\B(?=(\d{3})+(?!\d))/g, ".");
+    return (neg ? "−" : "") + ent + (p[1] ? "," + p[1] : "");
+  }
+  return { evaluar: evaluar, leerNumero: leerNumero, aEs: aEs };
+})();
+if (typeof module !== "undefined") module.exports = IRMNapierLector;
+
+window.IRMNapier = window.IRMNapier || (function () {
+  var L = IRMNapierLector, ICONO = '<svg class="irm-napier-ico" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false"><rect x="4" y="3" width="4.5" height="18" rx="1"/><rect x="9.75" y="3" width="4.5" height="18" rx="1"/><rect x="15.5" y="3" width="4.5" height="18" rx="1"/><path d="M4 9h16M4 15h16"/><path d="M9.75 15l4.5-6" stroke="#00B9CE"/></svg>';
+  var SEL = 'input[type="number"],input[inputmode="decimal"],input[inputmode="numeric"],[data-irm-numero]';
+  var btn, mini, panel, expr, res, destinoTxt, poner, cinta, ultimo = null, ultimoRes = null, confirmada = null, abiertoDesde = null, ocultar = null;
+  var CLAVE = "irm.napier.cinta";
+  function leerCinta() { try { return JSON.parse(localStorage.getItem(CLAVE) || "[]").slice(0, 8); } catch (e) { return []; } }
+  function guardarCinta(c) { try { localStorage.setItem(CLAVE, JSON.stringify(c.slice(0, 8))); } catch (e) {} }
+
+  function esCasilla(el) {
+    return !!(el && el.matches && el.matches(SEL) && !el.disabled && !el.readOnly && el.getAttribute("data-irm-calc") !== "no" &&
+              !el.closest(".irm-napier"));
+  }
+  function nombreDe(el) {
+    if (!el) return "";
+    var t = el.getAttribute("aria-label") || "";
+    if (!t && el.id) { try { var l = document.querySelector('label[for="' + el.id + '"]'); if (l) t = l.textContent; } catch (e) {} }
+    if (!t) { var lp = el.closest("label"); if (lp) t = lp.textContent; }
+    t = t || el.getAttribute("placeholder") || el.getAttribute("name") || el.title || "la casilla";
+    return String(t).replace(/\s+/g, " ").trim().slice(0, 60);
+  }
+  function valorDe(el) {
+    var v = String(el.value || "").trim(); if (!v) return "";
+    if (el.type === "number") { var n = Number(v); return isNaN(n) ? "" : L.aEs(n).replace("−", "-"); }
+    return v;
+  }
+  function escribir(el, v) {
+    var antes = el.value, n = Number(v.toPrecision(12));
+    if (el.type === "number") el.value = String(n);
+    // Se respeta el formato que ya traía la casilla: «3.5» (punto decimal, sin miles) se escribe igual; todo lo
+    // demás —vacía, «1.250.000», «3,5»— va en formato colombiano (punto de miles, coma decimal).
+    else el.value = /^-?[0-9]+\.[0-9]+$/.test(String(antes).trim()) && !/^-?[0-9]{1,3}\.[0-9]{3}$/.test(String(antes).trim())
+      ? String(n) : L.aEs(n).replace("−", "-");
+    el.dispatchEvent(new Event("input", { bubbles: true }));
+    el.dispatchEvent(new Event("change", { bubbles: true }));
+    return antes;
+  }
+  function aviso(texto, deshacer) {
+    var v = document.querySelector(".irm-napier-aviso"); if (v) v.remove();
+    v = document.createElement("div"); v.className = "irm-napier-aviso"; v.setAttribute("role", "status"); v.setAttribute("aria-live", "polite");
+    var s = document.createElement("span"); s.textContent = texto; v.appendChild(s);
+    if (deshacer) { var b = document.createElement("button"); b.type = "button"; b.textContent = "Deshacer";
+      b.addEventListener("click", function () { deshacer(); v.remove(); }); v.appendChild(b); }
+    document.body.appendChild(v); setTimeout(function () { if (v.parentNode) v.remove(); }, 9000);
+  }
+
+  function pintarDestino() {
+    if (ultimo && document.contains(ultimo)) {
+      destinoTxt.innerHTML = ""; destinoTxt.appendChild(document.createTextNode("El resultado va a: "));
+      var b = document.createElement("b"); b.textContent = "«" + nombreDe(ultimo) + "»"; destinoTxt.appendChild(b);
+    } else { ultimo = null; destinoTxt.textContent = "Tocá una casilla numérica de la herramienta para llevarle el resultado."; }
+    poner.disabled = !(ultimo && ultimoRes !== null);
+  }
+  function calcular(guardar) {
+    var r = L.evaluar(expr.value);
+    if (r.ok) {
+      ultimoRes = r.valor; res.className = "irm-napier-res"; res.textContent = "= " + L.aEs(r.valor);
+      if (guardar) { var c = leerCinta(); if (!c.length || c[0].e !== expr.value) { c.unshift({ e: expr.value, r: r.valor }); guardarCinta(c); pintarCinta(); } }
+    } else {
+      ultimoRes = null;
+      res.className = r.vacio ? "irm-napier-res" : "irm-napier-res err"; res.textContent = r.vacio ? "" : r.error;
+    }
+    pintarDestino(); return r.ok;
+  }
+  function pintarCinta() {
+    var c = leerCinta(); cinta.innerHTML = "";
+    cinta.previousElementSibling.hidden = !c.length;
+    c.forEach(function (x) {
+      var li = document.createElement("li"), b = document.createElement("button"), e = document.createElement("span"), r = document.createElement("span");
+      b.type = "button"; b.title = "Usar este resultado"; e.className = "e"; e.textContent = x.e; r.className = "r"; r.textContent = L.aEs(x.r);
+      b.appendChild(e); b.appendChild(r); li.appendChild(b); cinta.appendChild(li);
+      b.addEventListener("click", function () { expr.value = L.aEs(x.r).replace("−", "-"); calcular(false); expr.focus(); });
+    });
+  }
+  /* Cómo volver a encontrar la casilla. Hallazgo del administrador (2026-10-20, Rómulo v236): el Deshacer no
+     funcionaba porque Rómulo REDIBUJA la fila al cambiar la cantidad, y la casilla a la que Napier le escribió ya no
+     estaba en la pantalla — el valor se devolvía a una casilla huérfana, sin error y sin efecto. Ahora se guarda su
+     identidad (el id, o sus atributos de datos y su lugar entre las iguales) y el Deshacer la vuelve a buscar. */
+  function ubicador(el) {
+    if (el.id) return { id: el.id };
+    var partes = [el.tagName.toLowerCase()];
+    Array.prototype.forEach.call(el.attributes, function (a) {
+      if (/^(data-|name$|aria-label$)/.test(a.name) && a.value.length < 80) {
+        try { partes.push('[' + a.name + '="' + (window.CSS && CSS.escape ? CSS.escape(a.value) : a.value) + '"]'); } catch (e) {}
+      }
+    });
+    var sel = partes.join("");
+    try { return { sel: sel, idx: Array.prototype.indexOf.call(document.querySelectorAll(sel), el) }; } catch (e) { return { sel: null }; }
+  }
+  function reubicar(u, el) {
+    if (el && document.contains(el)) return el;
+    if (u.id) return document.getElementById(u.id);
+    if (!u.sel) return null;
+    try { var l = document.querySelectorAll(u.sel); return (u.idx >= 0 && l[u.idx]) || (l.length === 1 ? l[0] : null); } catch (e) { return null; }
+  }
+  function ponerEnCasilla() {
+    if (!(ultimo && document.contains(ultimo)) || ultimoRes === null) return;
+    var el = ultimo, u = ubicador(el), nom = nombreDe(el), antes = escribir(el, ultimoRes), puesto = L.aEs(ultimoRes);   // el nombre ANTES de escribir: si la herramienta redibuja, la casilla vieja ya no tiene rótulo
+    cerrar(false); var ahora = reubicar(u, el);
+    if (ahora) { try { ahora.focus({ preventScroll: true }); } catch (e) { ahora.focus(); } }
+    aviso("Se puso " + puesto + " en «" + nom + "».", function () {
+      var x = reubicar(u, el);
+      // Si la casilla ya no existe (se borró la fila), se dice: un Deshacer que no hace nada callado es peor que ninguno.
+      if (!x) { aviso("No se pudo devolver: «" + nom + "» ya no está en la pantalla. El valor anterior era " + (antes === "" ? "vacío" : antes) + "."); return; }
+      x.value = antes; x.dispatchEvent(new Event("input", { bubbles: true })); x.dispatchEvent(new Event("change", { bubbles: true }));
+      var y = reubicar(u, x);
+      aviso(y && String(y.value) === String(antes) ? "Se devolvió el valor anterior de «" + nom + "»." :
+            "Se intentó devolver «" + nom + "», pero la herramienta lo cambió: revisalo (el anterior era " + antes + ").");
+    });
+  }
+  function abrir(desde) {
+    if (desde && esCasilla(desde)) { ultimo = desde; expr.value = valorDe(desde); }
+    abiertoDesde = desde || null; confirmada = null; panel.hidden = false; btn.setAttribute("aria-expanded", "true"); ocultarMini();
+    calcular(false); pintarCinta(); expr.focus(); var n = expr.value.length; try { expr.setSelectionRange(n, n); } catch (e) {}
+  }
+  function cerrar(devolverFoco) {
+    panel.hidden = true; btn.setAttribute("aria-expanded", "false");
+    if (devolverFoco !== false) { var f = abiertoDesde && document.contains(abiertoDesde) ? abiertoDesde : btn; try { f.focus(); } catch (e) {} }
+  }
+
+  function ubicarBoton() {
+    var r = document.querySelector(".irm-reporte-btn");
+    if (!r || window.innerWidth <= 560) { btn.style.right = ""; return; }
+    var rc = r.getBoundingClientRect(); if (!rc.width) return;
+    btn.style.right = Math.max(16, Math.round(window.innerWidth - rc.left + 8)) + "px";
+  }
+  function mostrarMini(el) {
+    clearTimeout(ocultar); var rc = el.getBoundingClientRect();
+    if (!rc.width || rc.bottom < 0 || rc.top > window.innerHeight) return;
+    mini.style.top = Math.round(rc.top + (rc.height - 28) / 2) + "px";
+    mini.style.left = Math.round(Math.min(window.innerWidth - 32, rc.right + 4)) + "px";
+    mini.classList.add("ver"); mini.__casilla = el;
+  }
+  function ocultarMini() { mini.classList.remove("ver"); }
+
+  function iniciar() {
+    if (document.querySelector(".irm-napier-btn")) return;
+    btn = document.createElement("button"); btn.type = "button"; btn.className = "irm-napier-btn";
+    btn.setAttribute("aria-haspopup", "dialog"); btn.setAttribute("aria-expanded", "false");
+    btn.title = "Napier · calculadora: hacé la cuenta aquí y llevá el resultado a la casilla";
+    btn.innerHTML = ICONO + '<span class="irm-napier-txt">Calcular</span>';
+    mini = document.createElement("button"); mini.type = "button"; mini.className = "irm-napier-mini"; mini.tabIndex = -1;
+    mini.setAttribute("aria-label", "Abrir Napier, la calculadora, con el valor de esta casilla"); mini.innerHTML = ICONO;
+    panel = document.createElement("section"); panel.className = "irm-napier"; panel.hidden = true;
+    panel.setAttribute("role", "dialog"); panel.setAttribute("aria-label", "Napier, calculadora");
+    panel.innerHTML =
+      '<div class="irm-napier-cab"><div><h2>' + ICONO + 'Napier</h2>' +
+      '<p>Napier inventó unas varillas para multiplicar sin equivocarse: por eso la calculadora lleva su nombre.</p></div>' +
+      '<button type="button" class="irm-napier-cerrar" aria-label="Cerrar la calculadora">×</button></div>' +
+      '<p class="irm-napier-destino"></p>' +
+      '<input class="irm-napier-expr" type="text" inputmode="decimal" autocomplete="off" spellcheck="false" aria-label="Cuenta" placeholder="Ej.: 1.250.000 + 19 %">' +
+      '<div class="irm-napier-res" role="status" aria-live="polite"></div>' +
+      '<div class="irm-napier-teclas"></div>' +
+      '<div class="irm-napier-acc"><button type="button" class="prim irm-napier-poner">Poner en la casilla</button>' +
+      '<button type="button" class="irm-napier-copiar">Copiar</button></div>' +
+      '<p class="irm-napier-cinta-tit" hidden>Últimas cuentas · tocá una para usarla</p><ul class="irm-napier-cinta"></ul>';
+    expr = panel.querySelector(".irm-napier-expr"); res = panel.querySelector(".irm-napier-res");
+    destinoTxt = panel.querySelector(".irm-napier-destino"); poner = panel.querySelector(".irm-napier-poner"); cinta = panel.querySelector(".irm-napier-cinta");
+    var teclas = panel.querySelector(".irm-napier-teclas");
+    [["7"],["8"],["9"],["÷","/","op"],["C","C","op"],["4"],["5"],["6"],["×","*","op"],["⌫","B","op"],
+     ["1"],["2"],["3"],["−","-","op"],["(","(","op"],["0"],[",",","],["%","%","op"],["+","+","op"],[")",")","op"]].forEach(function (k) {
+      var b = document.createElement("button"); b.type = "button"; b.textContent = k[0]; if (k[2]) b.className = k[2];
+      b.setAttribute("aria-label", { "÷": "dividir", "×": "multiplicar", "−": "restar", "+": "sumar", "C": "borrar todo", "⌫": "borrar el último", "%": "por ciento", ",": "coma decimal" }[k[0]] || k[0]);
+      b.addEventListener("click", function () {
+        var v = k[1] || k[0];
+        if (v === "C") expr.value = ""; else if (v === "B") expr.value = expr.value.slice(0, -1); else expr.value += v;
+        calcular(false); expr.focus();
+      });
+      teclas.appendChild(b);
+    });
+    var igual = document.createElement("button"); igual.type = "button"; igual.className = "igual"; igual.textContent = "=";
+    igual.setAttribute("aria-label", "calcular"); igual.style.gridColumn = "1 / -1";
+    igual.addEventListener("click", function () { confirmada = calcular(true) ? expr.value : null; expr.focus(); }); teclas.appendChild(igual);
+
+    btn.addEventListener("click", function () { if (panel.hidden) abrir(ultimo); else cerrar(); });
+    mini.addEventListener("mousedown", function (e) { e.preventDefault(); });
+    mini.addEventListener("click", function () { abrir(mini.__casilla); });
+    panel.querySelector(".irm-napier-cerrar").addEventListener("click", function () { cerrar(); });
+    poner.addEventListener("click", ponerEnCasilla);
+    panel.querySelector(".irm-napier-copiar").addEventListener("click", function (e) {
+      if (ultimoRes === null) return; var t = L.aEs(ultimoRes).replace("−", "-"), b = e.currentTarget;
+      try { navigator.clipboard.writeText(t).then(function () { b.textContent = "Copiado"; setTimeout(function () { b.textContent = "Copiar"; }, 1500); }); } catch (x) {}
+    });
+    expr.addEventListener("input", function () { calcular(false); });
+    expr.addEventListener("keydown", function (e) {
+      if (e.key === "Escape") { e.preventDefault(); cerrar(); return; }
+      if (e.key === "Enter") {
+        e.preventDefault();
+        // Enter calcula; Enter otra vez, sin cambiar la cuenta, la pone en la casilla.
+        if (confirmada === expr.value && ultimoRes !== null && ultimo && !poner.disabled) { ponerEnCasilla(); return; }
+        confirmada = calcular(true) ? expr.value : null;
+      }
+    });
+    panel.addEventListener("keydown", function (e) { if (e.key === "Escape") { e.preventDefault(); cerrar(); } });
+
+    document.addEventListener("focusin", function (e) {
+      if (esCasilla(e.target)) { ultimo = e.target; mostrarMini(e.target); if (!panel.hidden) pintarDestino(); }
+    });
+    document.addEventListener("focusout", function (e) { if (esCasilla(e.target)) { clearTimeout(ocultar); ocultar = setTimeout(ocultarMini, 250); } });
+    document.addEventListener("keydown", function (e) {
+      if (e.key === "=" && !e.ctrlKey && !e.metaKey && !e.altKey && esCasilla(e.target)) { e.preventDefault(); abrir(e.target); }
+    });
+    window.addEventListener("scroll", ocultarMini, true);
+    window.addEventListener("resize", function () { ocultarMini(); ubicarBoton(); });
+
+    document.body.appendChild(btn); document.body.appendChild(mini); document.body.appendChild(panel);
+    ubicarBoton(); setTimeout(ubicarBoton, 600); setTimeout(ubicarBoton, 2500);
+  }
+  // Una herramienta cuyas casillas numéricas son de texto (Dédalo: «bd-cant», «ed-rend-…») las declara aquí.
+  function agregar(sel) { if (sel) SEL += "," + sel; }
+  return { iniciar: iniciar, agregar: agregar, evaluar: L.evaluar, abrir: function (el) { if (!btn) iniciar(); abrir(el); }, version: "1" };
+})();
+if (document.readyState === "loading") document.addEventListener("DOMContentLoaded", function () { IRMNapier.iniciar(); });
+else IRMNapier.iniciar();
+</script>
