@@ -656,7 +656,7 @@ th.irm-caneca-col, td.irm-caneca-col { width: 38px; text-align: center; padding-
       <label class="p-campo">Modo <span class="p-inter" id="p-modo"><button class="on" data-v="compra">Compra</button><button data-v="alquiler">Alquiler</button></span><small>alquiler = unidad DÍA / SEMANA / MES / HORA</small></label>
       <label class="p-campo">¿De dónde sale? <span class="p-inter" id="p-ftipo"><button class="on" data-v="cotizacion">Cotización</button><button data-v="factura">Factura</button><button data-v="lista_precios">Lista</button><button data-v="correo">Correo</button><button data-v="whatsapp">WhatsApp</button><button data-v="web">Web</button></span></label>
       <label class="p-campo ancho">Detalle de la evidencia <small>obligatorio: número y fecha de la cotización, factura o mensaje</small><input id="p-fdet" placeholder="Cotización 99130 del 24-09-2026 · WhatsApp de SYP del 25-09"></label>
-      <label class="p-campo">Código del proveedor <small>opcional</small><input id="p-cod"></label>
+      <label class="p-campo">Referencia del producto en el proveedor <small>opcional · el número con que ese proveedor vende este producto en su catálogo o cotización, por ejemplo 252199</small><input id="p-cod" autocomplete="off"><span class="p-ayuda-prov" id="p-cod-ayuda" role="status" aria-live="polite"></span></label>
       <label class="p-campo">Notas <small>opcional</small><input id="p-notas"></label>
       <div class="ancho p-acciones"><button class="p-btn" data-principal id="p-btn">Registrar precio <kbd>⌘⏎</kbd></button><span class="dim" id="p-tipo-nota">Una factura se guarda como precio <b>facturado</b> (solo referencia); lo demás como precio de <b>lista</b>, que es el que gobierna.</span></div>
     </div>
@@ -2305,7 +2305,8 @@ function elegirRecurso(f) {
   // Incoterm: equipos mayores y sistemas, cuando el proveedor lo especifica (regla del usuario, 2026-10-10).
   if ($("#p-entrega")) $("#p-entrega").open = f.capitulo === "Equipos" || !!$("#p-inc").value;
   if (VOLVER_A && Number(f.recurso_id) !== VOLVER_A.id) { VOLVER_A = null; pintarVolver(); }   // eligió otro recurso: el «volver» ya no aplica
-  $("#p-rid").value = f.recurso_id; $("#p-elegido").textContent = `${f.codigo} · ${f.unidad||""} · precio actual ${f.precio!=null?cop(f.precio):"sin precio"}`;
+  if ($("#p-cod").dataset.auto) { $("#p-cod").value = ""; delete $("#p-cod").dataset.auto; } $("#p-cod-ayuda").innerHTML = "";
+  $("#p-rid").value = f.recurso_id; precargarRef(); $("#p-elegido").textContent = `${f.codigo} · ${f.unidad||""} · precio actual ${f.precio!=null?cop(f.precio):"sin precio"}`;
   $("#p-form2").hidden = false; $("#p-paso").innerHTML = `Paso 2 de 2 — Completá proveedor, precio y de dónde sale, y presioná <kbd>⌘⏎</kbd>.`;
   // Lo que ya se sabe del recurso no se vuelve a preguntar: unidad de alquiler → Alquiler; comprado en dólares → USD.
   poner("#p-modo", esAlquiler(f.unidad) ? "alquiler" : "compra"); poner("#p-mon", f.moneda_origen === "USD" ? "USD" : "COP");
@@ -2318,6 +2319,49 @@ async function cargarProvs(forzar) { if (PROVS && !forzar) return PROVS; try { P
 const existeProv = n => (PROVS || []).some(x => x.nombre.trim().toLowerCase() === n.trim().toLowerCase());
 $("#p-prov").addEventListener("focus", () => cargarProvs().then(ayudaProv));
 $("#p-prov").addEventListener("input", ayudaProv);
+$("#p-prov").addEventListener("change", precargarRef);
+$("#p-prov").addEventListener("blur", precargarRef);
+$("#p-cod").addEventListener("input", () => { delete $("#p-cod").dataset.auto; $("#p-cod-ayuda").innerHTML = ""; });
+/* TK-0292: el maestro de proveedores no tiene código; esta casilla es la referencia del PRODUCTO en el catálogo del
+   proveedor. Se precarga con la que ESE proveedor ya usó para ESTE recurso. Tres estados, nunca dos:
+   mapa undefined = no se ha revisado · null = no se pudo revisar · Map (vacío = no hay ninguna). */
+let REFS_PROV = { rid: null, mapa: undefined };
+async function cargarRefsProv(rid) {
+  if (REFS_PROV.rid === rid && REFS_PROV.mapa) return REFS_PROV.mapa;
+  if (REFS_PROV.rid === rid && REFS_PROV.prom) return REFS_PROV.prom;   // «change» y «blur» llegan juntos: una sola consulta
+  REFS_PROV = { rid, mapa: undefined };
+  return (REFS_PROV.prom = leerRefsProv(rid));
+}
+async function leerRefsProv(rid) {
+  paso("Buscando la referencia que ya usó este proveedor…");
+  try {
+    const { data, error } = await sb.schema("core").rpc("ime_recurso", { p_id: rid });
+    if (error) throw new Error(error.message || JSON.stringify(error));
+    const m = new Map();
+    (data.precios || []).filter(x => (x.codigo_proveedor || "").trim() && (x.proveedor || "").trim())
+      .sort((a, b) => String(b.fecha_precio || "").localeCompare(String(a.fecha_precio || "")))
+      .forEach(x => { const k = x.proveedor.trim().toLowerCase(); if (!m.has(k)) m.set(k, x); });
+    if (REFS_PROV.rid === rid) REFS_PROV.mapa = m;
+    return m;
+  } catch (_) { if (REFS_PROV.rid === rid) REFS_PROV.mapa = null; return null; }
+  finally { paso(null); }
+}
+async function precargarRef() {
+  const rid = Number($("#p-rid").value), prov = $("#p-prov").value.trim(), cod = $("#p-cod"), a = $("#p-cod-ayuda");
+  if (!rid || !prov) { if (cod.dataset.auto) { cod.value = ""; delete cod.dataset.auto; } a.innerHTML = ""; return; }
+  if (cod.value.trim() && !cod.dataset.auto) return;   // lo que escribió la persona no se pisa
+  const m = await cargarRefsProv(rid);
+  if ($("#p-prov").value.trim() !== prov || Number($("#p-rid").value) !== rid) return;   // cambió mientras se buscaba
+  if (m === null) {
+    a.innerHTML = `No se pudo revisar si <b>${e(prov)}</b> ya tiene una referencia para este recurso. Escribila si la tenés, o <button type="button" class="p-btn sec chico" id="p-cod-reintentar">Volver a revisar</button>`;
+    $("#p-cod-reintentar").onclick = () => { REFS_PROV = { rid: null, mapa: undefined }; precargarRef(); };
+    return;
+  }
+  const x = m.get(prov.toLowerCase());
+  if (!x) { if (cod.dataset.auto) { cod.value = ""; delete cod.dataset.auto; } a.innerHTML = `<b>${e(prov)}</b> todavía no tiene una referencia guardada para este recurso.`; return; }
+  cod.value = x.codigo_proveedor.trim(); cod.dataset.auto = "1";
+  a.innerHTML = `Precargada: es la que usó <b>${e(x.proveedor)}</b> en su precio del ${e(x.fecha_precio || "registro anterior")}. Cambiala si este producto tiene otra.`;
+}
 function ayudaProv() {
   const v = $("#p-prov").value.trim(), a = $("#p-prov-ayuda");
   if (!v) { a.innerHTML = "Si no se sabe quién lo vende, dejalo vacío: queda como <b>no identificado</b>."; return; }
@@ -2389,7 +2433,7 @@ $("#p-btn").onclick = async () => {
     const pid = (FICHA.bitacora[0]?.detalle||{}).precio_id, f = FICHA.ficha;
     ["p-precio","p-fdet","p-cod","p-notas","p-inc","p-lugar","p-dias","p-desde","p-prop"].forEach(i=>$("#"+i).value=""); verLugar();   // la próxima oferta elige su propio término
     aviso(`Precio registrado para <b>${e(f.codigo)}</b>${args.p_proveedor.trim() ? "" : " (proveedor no identificado)"}. Ahora gobierna ${precioTxt(f)}.`, { deshacer: pid ? () => deshacerRegistro(pid) : null });
-    $("#p-prov-ayuda").innerHTML = "";
+    $("#p-prov-ayuda").innerHTML = ""; $("#p-cod-ayuda").innerHTML = ""; delete $("#p-cod").dataset.auto; REFS_PROV = { rid: null, mapa: undefined };
   });
 };
 /* Deshacer un registro usa el mismo camino que la caneca (ime_quitar_precio): queda en la bitácora y
