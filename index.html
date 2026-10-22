@@ -18,6 +18,15 @@
   --tinta: #0b0b0b;
   --tinta-2: #52514e;
   --tinta-apagada: #898781;
+  /* PILAR 2026-10-20 · El texto de referencia se ve como lo que es.
+     Un ejemplo dentro de una celda («CHILLER ENFRIADO POR AIRE 60 TR») escrito en
+     el gris del navegador se lee como un dato CARGADO: quien revisa cree que el
+     campo está lleno y lo deja pasar vacío. Y ese gris es además el de un campo
+     deshabilitado, así que un ejemplo y un campo bloqueado se veían igual.
+     Por eso el texto de referencia lleva color PROPIO: un rojo marrón claro, que
+     no es ninguna tinta ni ningún color de estado. No pide atención como una
+     alerta; dice «esto todavía no es un valor». */
+  --texto-referencia: #A8705F;
   --cuadricula: #e1e0d9;
   --sans: Inter, system-ui, -apple-system, "Segoe UI", sans-serif;
   --display: Poppins, Inter, system-ui, sans-serif;
@@ -27,12 +36,22 @@
   :root:not([data-theme="light"]) {
     --superficie: #1a1a19; --plano: #0d0d0d; --tinta: #ffffff;
     --tinta-2: #c3c2b7; --cuadricula: #2c2c2a;
+    --texto-referencia: #C99183;   /* sobre fondo oscuro el mismo tono se apaga: se aclara */
   }
 }
 :root[data-theme="dark"] {
   --superficie: #1a1a19; --plano: #0d0d0d; --tinta: #ffffff;
   --tinta-2: #c3c2b7; --cuadricula: #2c2c2a;
+  --texto-referencia: #C99183;
 }
+/* PILAR 2026-10-20 · se aplica a TODA celda, sin que nadie se acuerde. El
+   ::placeholder nativo no hereda el color del campo, así que hay que decírselo;
+   y va con opacity:1 porque Firefox se lo baja por su cuenta y el tono quedaría
+   más apagado de lo que dice el token. */
+input::placeholder, textarea::placeholder { color: var(--texto-referencia); opacity: 1; }
+/* Un campo deshabilitado NO es un ejemplo: vuelve a la tinta apagada, para que
+   las dos cosas dejen de verse igual. */
+input:disabled::placeholder, textarea:disabled::placeholder { color: var(--tinta-apagada); }
 * { box-sizing: border-box; }
 body {
   margin: 0; padding: 0 clamp(16px, 5vw, 56px) 48px;
@@ -144,7 +163,7 @@ fieldset { min-width: 0; }
 <header class="irm-cabecera irm-encabezado">
   <img src="data:image/svg+xml;base64,PD94bWwgdmVyc2lvbj0iMS4wIiBlbmNvZGluZz0idXRmLTgiPz4KPCEtLSBHZW5lcmF0b3I6IEFkb2JlIElsbHVzdHJhdG9yIDI4LjAuMCwgU1ZHIEV4cG9ydCBQbHVnLUluIC4gU1ZHIFZlcnNpb246IDYuMDAgQnVpbGQgMCkgIC0tPgo8c3ZnIHZlcnNpb249IjEuMSIgaWQ9IkNhcGFfMSIgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIiB4bWxuczp4bGluaz0iaHR0cDovL3d3dy53My5vcmcvMTk5OS94bGluayIgeD0iMHB4IiB5PSIwcHgiCgkgdmlld0JveD0iMCAwIDEyODggNTEzIiBzdHlsZT0iZW5hYmxlLWJhY2tncm91bmQ6bmV3IDAgMCAxMjg4IDUxMzsiIHhtbDpzcGFjZT0icHJlc2VydmUiPgo8c3R5bGUgdHlwZT0idGV4dC9jc3MiPgoJLnN0MHtmaWxsOiMwNUMwREI7fQoJLnN0MXtmaWxsOiNBOUQ0MzM7fQoJLnN0MntmaWxsOiMwNUJGREI7fQoJLnN0M3tmaWxsOiMwNkMwREI7fQo8L3N0eWxlPgo8cGF0aCBjbGFzcz0ic3QwIiBkPSJNMTAyMS45NCwyOTcuODRjMC0yNC4xNS0wLjAzLTQ4LjMsMC4wMS03Mi40NmMwLjAyLTkuMzgsMS42LTE4LjUzLDQuMzYtMjcuNWMyLjk4LTkuNjksMS4xNy0xNC43OC03LjM5LTIwLjMzCgljLTEyLjk0LTguNC0yNy4zOC04LjQzLTQxLjk3LTcuMWMtMy40NiwwLjMxLTYuOTEsMS4xMS0xMC4yNywyLjAxYy0yMS41NSw1LjgtMzMuNjUsMjAuNDgtMzYuNzksNDMuOTgKCWMtMS4wOSw4LjE0LTEuMDMsMTYuMjgtMS4wNSwyNC40M2MtMC4wOCw0My44MS0wLjAxLDg3LjYyLTAuMDUsMTMxLjQzYy0wLjAyLDE4Ljg4LTcuOTksMzEuMTUtMjMuNTgsMzYuNjgKCWMtMjAuMSw3LjEyLTQyLjM3LTYuMzktNDUuMTItMjcuNWMtMC42Mi00Ljc3LTAuOTItOS42Mi0wLjkzLTE0LjQzYy0wLjA3LTQzLjE0LTAuMjYtODYuMjksMC4wNC0xMjkuNDMKCWMwLjE4LTI1Ljg4LDQuNjMtNTEuMDEsMTYuNi03NC4zMWMxNi44NS0zMi43OSw0NS4zMi01MC41LDc5LjYtNjAuMTZjMzYuNTItMTAuMyw3MC40Ni0zLjkyLDEwMS45MywxNi44NQoJYzAuOTcsMC42NCwxLjk0LDEuMjksMi45MSwxLjk0YzYuNjMsNC40Myw3LjkzLDQuNDcsMTQuMjEtMC4yYzE0LjM5LTEwLjcsMzAuMjktMTguMTMsNDgtMjEuMDYKCWM3NC45MS0xMi4zOSwxMzAuMzIsMjcuOTYsMTQ3Ljg4LDkzLjk3YzMuMDIsMTEuMzYsMy4wNCwyMy4xLDMuMDgsMzQuNzNjMC4xOCw0OC40NywwLjExLDk2Ljk1LDAuMDYsMTQ1LjQyCgljLTAuMDIsMTcuOTItOS4zNiwzMS4xNi0yNC45LDM1LjU3Yy0xOS43Nyw1LjYxLTQyLjA0LTEwLjI2LTQyLjUtMzAuNzNjLTAuNDQtMTkuNjUtMC4zLTM5LjMxLTAuMzEtNTguOTYKCWMwLTI4Ljc5LDAuMTktNTcuNTksMC4wOS04Ni4zOGMtMC4wNC0xMi40My0yLjgtMjQuNDEtNy40My0zNS45NWMtNS45NC0xNC43OS0xNi42OC0yMy41Ni0zMi40NC0yNi40NQoJYy0xMS4wOS0yLjA0LTIyLjE3LTIuNjEtMzMuMjctMC42NmMtMjEuOTYsMy44NS0zMy4zMywxOC40Ni0zOC42NiwzOC44N2MtMS41Niw1Ljk2LTIuMjgsMTIuMDktMi4yOSwxOC4yOQoJYy0wLjA3LDM4Ljk4LTAuMjIsNzcuOTUtMC4yMSwxMTYuOTNjMCwxMS4zMSwwLjczLDIyLjYzLTAuNTEsMzMuOTNjLTEuOSwxNy4zOS0xNS4yNSwzMC45NS0zMS4yMiwzMS42OAoJYy0xOS4wNiwwLjg3LTMzLjI4LTEwLjIzLTM2Ljg5LTI4LjczYy0wLjg3LTQuNDQtMS4xNy04Ljg5LTEuMTYtMTMuNGMwLjAyLTIzLjY1LDAuMDEtNDcuMzEsMC4wMS03MC45NgoJQzEwMjEuODMsMjk3Ljg0LDEwMjEuODksMjk3Ljg0LDEwMjEuOTQsMjk3Ljg0eiIvPgo8cGF0aCBjbGFzcz0ic3QxIiBkPSJNOTcuNzYsNDM2LjU5Yy01LjU3LTIuNTgtMTAuMDgtNi40Ni0xNC4wMi0xMC44OWMtMjkuNzEtMzMuMzgtNTIuMS03MC44OS02MC45NC0xMTUuMQoJQzYuNTksMjI5LjQ0LDI0LjI4LDE1Ni41OCw3OS41Myw5NC4xNmMzNi42LTQxLjM1LDgyLjY1LTY3LjIsMTM2Ljg4LTc3LjZjNTMuMzQtMTAuMjMsMTA0LjYyLTIuNDUsMTUzLjc2LDIwLjI2CgljMjQuNjQsMTEuMzksNDUuNjIsMjcuOTMsNjUuMDMsNDYuNjJjMi40LDIuMzEsNC45LDQuNTEsNy4yMSw2LjkxYzEuMzMsMS4zOCwyLjI1LDMuMywwLjY3LDQuOTFjLTEuNTEsMS41NC0yLjYxLTAuNTItMy42OC0xLjIxCgljLTMzLjI0LTIxLjQ2LTY5LjM3LTM1LjQ2LTEwOC43Mi0zOS42M2MtNzEuNzQtNy41OS0xMzUuNDgsMTEuODktMTg5Ljk4LDU5LjQ1Yy0zOC41NiwzMy42NS02NC42NSw3NS4zMS03Ni41NiwxMjUuMwoJYy0xMi40Nyw1Mi4zNi02LjgsMTAzLjM2LDEyLjY0LDE1My4xNkM4Mi43MSw0MDcuNTMsODkuOTcsNDIyLjA5LDk3Ljc2LDQzNi41OXoiLz4KPHBhdGggY2xhc3M9InN0MiIgZD0iTTczNS4xNSwzMDQuOTFjMCwyMy4xNSwwLjA3LDQ2LjMxLTAuMDIsNjkuNDZjLTAuMDYsMTYuNzYtNy44NiwyOC45My0yMS43NCwzNC4zNwoJYy0yMi44Nyw4Ljk2LTQ2Ljk5LTcuMzktNDcuNDItMzIuNzdjLTAuNDYtMjcuNjQtMC4wMy01NS4zLTAuMDctODIuOTVjLTAuMDItMTIuNDgtMC4yLTI0Ljk3LTAuMzgtMzcuNDUKCWMtMC4zOS0yNi43NiwxLjIyLTUzLjI0LDEwLjc4LTc4LjYyYzEzLjEzLTM0Ljg1LDM4LjMxLTU2Ljg0LDcyLjc2LTY5LjkyYzI3LjQ5LTEwLjQ0LDU0LjgzLTEwLjc4LDgyLjczLTMKCWMxOC42Niw1LjIsMjkuODQsMjIuMzksMjYuMDgsNDAuMThjLTQuMDUsMTkuMTUtMjIuMSwzMS42LTQxLjQzLDI4LjExYy0xNS43NS0yLjg0LTMxLjMyLTMuOC00Ni45NywwLjYzCgljLTEyLjU4LDMuNTYtMjEuMjQsMTEuMjktMjYuNDQsMjMuMTVjLTUuNDMsMTIuMzgtNy44MiwyNS4zOS03Ljg2LDM4Ljg0QzczNS4xLDI1OC4yNyw3MzUuMTUsMjgxLjU5LDczNS4xNSwzMDQuOTF6Ii8+CjxwYXRoIGNsYXNzPSJzdDMiIGQ9Ik0yMzIuNzMsNDg4LjM0Yy0yNy43NS01LjI1LTUyLjQxLTE3LjU4LTc0LjcyLTM0LjU5QzEyMy41LDQyNy40Niw5OS40MiwzOTMuNTksODcsMzUxLjg4CgljLTI1LjE3LTg0LjQ4LDYuODYtMTc0LjQsNzkuNDUtMjIzLjU3YzY4LjIzLTQ2LjIyLDE1NC40LTQxLjI3LDIwMy41Mi0xMS4zM2MtMTUuMjctMS4xOS0yOS42My0wLjk4LTQzLjk2LDAuMQoJYy00NC45MiwzLjM5LTg2LjEzLDE2LjQ2LTEyMC42NCw0Ni43Yy0yNy4xLDIzLjc1LTQ0LjkxLDUzLjctNTcuMTIsODcuMTZjLTMxLjA5LDg1LjE1LTEuNDQsMTc2LjQ4LDc0LjEyLDIyOC45MwoJYzMuNTQsMi40Niw3LjE1LDQuODEsMTAuNzIsNy4yMUMyMzIuOTYsNDg3LjUsMjMyLjg1LDQ4Ny45MiwyMzIuNzMsNDg4LjM0eiIvPgo8cGF0aCBjbGFzcz0ic3QzIiBkPSJNMjA1LjAzLDQzOC45OGMxMC42MSwwLjY3LDIxLjIxLDEuNTgsMzEuODIsMS45N2MyOS4zNCwxLjA4LDU4LjE0LTEuODgsODYuMDItMTEuNzYKCWMzNS4zOS0xMi41NSw2My42Ny0zNC40MSw4NC44MS02NS4yNmMyMi41OS0zMi45NiwzNy02OS4yLDQwLjI1LTEwOS4yNWMzLjgtNDYuNzItMTEuMTEtODcuODEtMzkuMjctMTI0LjU5CgljLTEwLjE2LTEzLjI3LTIxLjY5LTI1LjI1LTM0LjAxLTM2LjVjLTAuOTMtMC44NS0xLjk3LTEuNTYtMy41OC0yLjgyYzQuNzMtMS40Miw4LjAxLTAuNjMsMTEuMiwwLjgxCgljNjYuOTYsMzAuMTIsMTA4LjYsODAuNiwxMTkuMjEsMTUzLjY3YzkuMDEsNjItOS4yOCwxMTYuNjktNTIuMzksMTYyLjI3Yy0zNi4xOSwzOC4yNi04MS4yMyw1OC4wOC0xMzMuODYsNjAuNTcKCWMtMzcuODcsMS43OS03My4zNC02LjMzLTEwNi0yNS44OGMtMS41LTAuOS0zLjQ1LTEuMzMtNC4xMi0zLjNMMjA1LjAzLDQzOC45OHoiLz4KPHBhdGggY2xhc3M9InN0MCIgZD0iTTYyMS44NSwyNTUuMTJjMCwzOS40NywwLjA0LDc4LjkzLTAuMDIsMTE4LjRjLTAuMDMsMjEuODYtMTMuNzEsMzYuNjctMzQuNDUsMzcuNTUKCWMtMTguMDUsMC43Ni0zNC4wOC0xMy41Ny0zNS4zNS0zMS42NGMtMC4xNi0yLjMyLTAuMTctNC42Ni0wLjE3LTYuOTljLTAuMDEtNTAuNjIsMC4wMy0xMDEuMjUtMC4wMy0xNTEuODcKCWMtMC4wMi0xOC40OC0wLjY5LTM2Ljk2LTAuMjctNTUuNDJjMC4yOS0xMi42Mi0wLjYzLTI1LjMyLDEuMzYtMzcuODdjMi44OC0xOC4xOSwxNS43NC0yOS42LDMyLjgxLTI5LjM2CgljMTguNCwwLjI2LDMzLjA3LDEyLjk5LDM1LjQzLDMwLjg1YzAuNDEsMy4xMiwwLjY1LDYuMywwLjY1LDkuNDVDNjIxLjg3LDE3Ny4xOSw2MjEuODUsMjE2LjE2LDYyMS44NSwyNTUuMTJ6Ii8+CjxwYXRoIGNsYXNzPSJzdDEiIGQ9Ik0zMTAuMTcsMTM4LjVjMjguMjctMi43Nyw4MC4wMiwyMS40MSw5OC45NCw3My4zOWMxOS44Niw1NC41NiwzLjc1LDEwNi4xOS00Mi45OSwxMzguMzIKCWMtNDQuOTcsMzAuOTEtOTguODksMjQuNi0xMzAuMDUsMC40OGM1NS4yNi0yLjIsOTYuNDItMjUuNTIsMTE0Ljk1LTc4LjkyQzM2OS41LDIxOC40NywzNTMuMjUsMTc0LjI4LDMxMC4xNywxMzguNXoiLz4KPHBhdGggY2xhc3M9InN0MyIgZD0iTTIwNS4xMiw0MzguOWMtMC4xNC0wLjA0LTAuMjktMC4wNi0wLjQtMC4xNGMtMC4wNS0wLjA0LTAuMDQtMC4xOC0wLjA1LTAuMjhjMC4xMiwwLjE2LDAuMjQsMC4zMywwLjM2LDAuNDkKCUMyMDUuMDMsNDM4Ljk4LDIwNS4xMiw0MzguOSwyMDUuMTIsNDM4Ljl6Ii8+Cjwvc3ZnPg==" alt="IRM Aires">
   <div class="titulo"><h1><span title="El fuego del hogar sobre su base: el centro de la casa, adonde todos llegan primero." style="display:inline-block;vertical-align:-4px;margin-right:8px"><svg width="26" height="26" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 3c2.5 3 4.5 5 4.5 8.5a4.5 4.5 0 0 1-9 0c0-2.2 1.2-3.8 2.5-5 0 2 1 3.2 2 3.2" stroke="#00B9CE"/><path d="M4 20h16"/><path d="M6 20v-3h12v3"/></svg></span>HESTIA</h1><div class="hs-sub">Tus herramientas de IRM, en un solo lugar · v3.3</div><div class="hs-leyenda">Hestia era la diosa del hogar, el fuego del centro de la casa adonde todos llegan primero: por eso la puerta de entrada a tus herramientas lleva su nombre.</div></div>
-  <div class="fecha">2026-10-19</div>
+  <div class="fecha">2026-10-22</div>
 </header>
 
 <main>
@@ -246,6 +265,11 @@ details.ficha ol { padding-left: 20px; }
 .hs-grilla { display: grid; grid-template-columns: repeat(auto-fill, minmax(250px, 1fr)); gap: 12px; margin: 0 0 8px; }
 .hs-tarjeta { display: flex; flex-direction: column; gap: 6px; border: 1px solid var(--cuadricula); border-radius: 12px; background: var(--superficie); padding: 16px; }
 .hs-tarjeta:focus-visible { outline: 2px solid var(--irm-cian); outline-offset: 2px; }
+/* Ya está abierta en otra pestaña: un punto al lado del botón. Hundirlo no abre
+   otra —ésa es la regla— y conviene saberlo antes de hundirlo. No es un bloqueo
+   (eso tiene su propio lenguaje): el botón sigue vivo, sólo que avisa. */
+.hs-btn.ya-abierta::after { content: ""; width: 7px; height: 7px; border-radius: 50%;
+  background: var(--irm-cian); display: inline-block; margin-left: 7px; vertical-align: 1px; }
 .hs-cab { display: flex; align-items: center; gap: 10px; }
 .hs-sello { width: 34px; height: 34px; flex: 0 0 auto; color: var(--tinta); }
 .hs-sello svg { width: 34px; height: 34px; }
@@ -570,11 +594,22 @@ function instalarCopiar({ avisar = null } = {}) {
     var titulo = h.nombre_propio || h.nombre;
     var abrir;
     if (h.como_abre === "claudeai" && h.url) {
-      // TK-0011: en la misma pestaña, como las de la web; se vuelve con la flecha ← del navegador.
-      abrir = '<a class="hs-btn fuerte" href="' + esc(h.url) + '" rel="noopener">Abrir ' + esc(titulo) + '</a>' +
+      // TK-0320 (2026-10-22) · Cada herramienta tiene SU pestaña, «irm-<clave>»,
+      // y Hestia se queda en la suya. Antes abría en la misma pestaña y Hestia
+      // desaparecía; peor: si esa herramienta ya estaba abierta en otra pestaña,
+      // quedaba abierta dos veces. La regla del administrador es una sola:
+      // «si está abierta, andá a esa; si no está abierta, ahí sí invocala».
+      // El `rel="noopener"` es obligatorio para claude.ai —sin él responde
+      // ERR_BLOCKED_BY_RESPONSE—, y por eso acá el nombre de la pestaña NO
+      // alcanza para reusarla: el freno de verdad es ABIERTAS, de abajo.
+      abrir = '<a class="hs-btn fuerte" href="' + esc(h.url) + '" target="' + esc(pestanaDe(h.clave)) +
+              '" rel="noopener" data-abre="' + esc(h.clave) + '">Abrir ' + esc(titulo) + '</a>' +
               '<p class="hs-nota">Si claude.ai dice que no tenés acceso, falta que el administrador te la comparta en claude.ai.</p>';
     } else if (h.como_abre === "web" && h.url) {
-      abrir = '<a class="hs-btn fuerte" href="' + esc(h.url) + '">Abrir ' + esc(titulo) + '</a>';
+      // Las de la web no necesitan `noopener`, así que acá el nombre SÍ funciona:
+      // el navegador encuentra la pestaña que ya existe, la navega y la enfoca.
+      abrir = '<a class="hs-btn fuerte" href="' + esc(h.url) + '" target="' + esc(pestanaDe(h.clave)) +
+              '" data-abre="' + esc(h.clave) + '">Abrir ' + esc(titulo) + '</a>';
     } else if (h.como_abre === "servidor") {
       abrir = '<p class="hs-donde">' + esc(h.donde || "Se abre desde la Mac de IRM.") + '</p>';
     } else {
@@ -586,15 +621,80 @@ function instalarCopiar({ avisar = null } = {}) {
       '<p class="hs-funcion">' + esc(h.funcion || "") + '</p>' + ticketsAbiertos(h) + abrir + '</article>';
   }
 
+  /* ── Qué herramientas están abiertas AHORA (TK-0320) ─────────────────────
+     Hestia es la casa: desde acá se abre todo, así que es donde más se nota
+     abrir dos veces lo mismo. Late como una herramienta más —se llama
+     «hestia»— y en la misma vuelta se entera de cuáles otras están abiertas.
+     `null` es «todavía no sé», y con `null` se abre: no saber no es que no. */
+  var ABIERTAS = null, QUIEN_SOY = "", LATIDO_HS = null;
+  function pestanaDe(clave) { return "irm-" + String(clave || "herramienta"); }
+  async function latir() {
+    if (!QUIEN_SOY) return;
+    try {
+      var r = await sb.schema("core").rpc("nav_latido",
+        { p_quien: QUIEN_SOY, p_clave: "hestia", p_rotulo: "Hestia", p_url: location.href });
+      var d = r && r.data;
+      if (!d || d.error || !d.abiertas) return;   /* un error no es «ninguna abierta» */
+      var m = {}; (d.abiertas || []).forEach(function (x) { m[x.clave] = x; });
+      ABIERTAS = m; marcarAbiertas();
+    } catch (e) {}
+  }
+  function marcarAbiertas() {
+    try {
+      Array.prototype.forEach.call(document.querySelectorAll("[data-abre]"), function (a) {
+        var ab = ABIERTAS && ABIERTAS[a.getAttribute("data-abre")];
+        a.classList.toggle("ya-abierta", !!ab);
+        if (ab) a.title = "Ya la tenés abierta en otra pestaña — cambiá a ella";
+      });
+    } catch (e) {}
+  }
+  document.addEventListener("click", function (ev) {
+    var a = ev.target.closest && ev.target.closest("[data-abre]");
+    if (!a) return;
+    var clave = a.getAttribute("data-abre");
+    if (ABIERTAS && ABIERTAS[clave]) {
+      ev.preventDefault();
+      var n = (a.textContent || "").replace(/^Abrir\s+/, "");
+      avisarHs(n + " ya está abierta en otra pestaña — cambiá a ella (no abro otra)");
+    }
+  });
+  function avisarHs(txt) {
+    try {
+      var d = document.getElementById("hs-ya-abierta");
+      if (!d) { d = document.createElement("div"); d.id = "hs-ya-abierta"; d.className = "hs-aviso";
+                d.setAttribute("role", "status"); d.setAttribute("aria-live", "polite");
+                var g = document.getElementById("hs-grilla");
+                if (g && g.parentNode) g.parentNode.insertBefore(d, g); else document.body.appendChild(d); }
+      d.textContent = txt; d.hidden = false;
+      clearTimeout(d._t); d._t = setTimeout(function () { d.hidden = true; }, 6000);
+    } catch (e) {}
+  }
+
   var ULTIMO = null;
   function pintar(d) {
     ULTIMO = d;
     $("hs-entrar").hidden = true; $("hs-inicio").hidden = false;
     $("hs-quien").innerHTML = "Entraste como <b>" + esc(d.correo) + "</b>" + (d.administrador ? " · administrador" : "");
+    QUIEN_SOY = d.correo || "";
+    latir();                                   /* y de acá en más, cada 12 s */
+    if (!LATIDO_HS) {
+      LATIDO_HS = setInterval(latir, 12000);
+      /* Al volver a mirar Hestia, el estado se refresca antes de que nadie
+         hunda nada: el navegador frena los temporizadores de la pestaña que no
+         se está viendo, así que sin esto la marca quedaría vieja justo cuando
+         la persona vuelve a decidir qué abrir. */
+      document.addEventListener("visibilitychange", function () {
+        if (document.visibilityState === "visible") latir();
+      });
+      window.addEventListener("pagehide", function () {
+        try { if (QUIEN_SOY) sb.schema("core").rpc("nav_cerre", { p_quien: QUIEN_SOY, p_clave: "hestia" }); } catch (e) {}
+      });
+    }
     $("hs-minos").hidden = !d.admin_total;   // Minos es solo del administrador total (datos@), regla del usuario 2026-10-05
     $("hs-mensaje").innerHTML = d.mensaje ? '<div class="hs-aviso">' + esc(d.mensaje) + '</div>' : "";
     var hs = d.herramientas || [];
     $("hs-grilla").innerHTML = hs.map(tarjeta).join("");
+    marcarAbiertas();                          /* lo que ya está abierto, marcado de entrada */
     var pend = d.pendientes || [];
     $("hs-pendientes").innerHTML = pend.length ? '<h2 style="font-size:16px;margin:18px 0 4px">Pedidos en espera</h2>' +
       '<p class="hs-nota">El administrador los revisa en Éaco. Si pediste uno por error, la caneca lo retira.</p><ul class="hs-lista">' +
@@ -777,7 +877,7 @@ function instalarCopiar({ avisar = null } = {}) {
 <footer class="irm-pie">
   <div class="irm-contacto"><span><b>C.</b> 318 3591189</span><span><b>D.</b> Cra. 36 #10B-39 el poblado, Medellín, Ant.</span><span>www.irmaires.com</span></div>
   <span>Confidencial — uso interno IRM Aires</span>
-  <span class="irm-paginacion">2026-10-19</span>
+  <span class="irm-paginacion">2026-10-22</span>
 </footer>
 <script>
 /* Tarjetas que se mueven — componente canónico IRM v2. Marca: data-irm-mover="<clave>" en la grilla
@@ -925,6 +1025,18 @@ function instalarCopiar({ avisar = null } = {}) {
   global.IRMMover = { activar: activar, version: "2" };
 })(window);
 </script>
+<style>
+/* Piso de la franja de abajo — componente canónico IRM (TK-0321, componente_reporte.py) */
+.irm-franja-fondo { position: fixed; left: 0; right: 0; bottom: 0; pointer-events: none;
+  height: calc(var(--irm-franja-abajo, 68px) + 14px + env(safe-area-inset-bottom, 0px));
+  background: linear-gradient(to top,
+    var(--irm-franja-color, var(--plano, var(--suelo, #f9f9f7))) 62%, transparent);
+  z-index: 2147482998; }
+/* El final de la página deja de quedar tapado para siempre por los botones. */
+body { padding-bottom: calc(var(--irm-franja-abajo, 68px) + 14px); }
+@media print { .irm-franja-fondo { display: none; } }
+</style>
+<div class="irm-franja-fondo" aria-hidden="true"></div>
 <style>
 /* Botón «Reportar» — componente canónico IRM v6 (IMAGEN CORPORATIVA/memoria_procedimental/componente_reporte.py) */
 .irm-reporte-raiz { --irmr-tinta: var(--tinta, #0b0b0b); --irmr-tinta-2: var(--tinta-2, #52514e);
