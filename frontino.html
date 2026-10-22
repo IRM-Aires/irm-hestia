@@ -17,6 +17,15 @@
   --tinta: #0b0b0b;
   --tinta-2: #52514e;
   --tinta-apagada: #898781;
+  /* PILAR 2026-10-20 · El texto de referencia se ve como lo que es.
+     Un ejemplo dentro de una celda («CHILLER ENFRIADO POR AIRE 60 TR») escrito en
+     el gris del navegador se lee como un dato CARGADO: quien revisa cree que el
+     campo está lleno y lo deja pasar vacío. Y ese gris es además el de un campo
+     deshabilitado, así que un ejemplo y un campo bloqueado se veían igual.
+     Por eso el texto de referencia lleva color PROPIO: un rojo marrón claro, que
+     no es ninguna tinta ni ningún color de estado. No pide atención como una
+     alerta; dice «esto todavía no es un valor». */
+  --texto-referencia: #A8705F;
   --cuadricula: #e1e0d9;
   --sans: Inter, system-ui, -apple-system, "Segoe UI", sans-serif;
   --display: Poppins, Inter, system-ui, sans-serif;
@@ -26,12 +35,22 @@
   :root:not([data-theme="light"]) {
     --superficie: #1a1a19; --plano: #0d0d0d; --tinta: #ffffff;
     --tinta-2: #c3c2b7; --cuadricula: #2c2c2a;
+    --texto-referencia: #C99183;   /* sobre fondo oscuro el mismo tono se apaga: se aclara */
   }
 }
 :root[data-theme="dark"] {
   --superficie: #1a1a19; --plano: #0d0d0d; --tinta: #ffffff;
   --tinta-2: #c3c2b7; --cuadricula: #2c2c2a;
+  --texto-referencia: #C99183;
 }
+/* PILAR 2026-10-20 · se aplica a TODA celda, sin que nadie se acuerde. El
+   ::placeholder nativo no hereda el color del campo, así que hay que decírselo;
+   y va con opacity:1 porque Firefox se lo baja por su cuenta y el tono quedaría
+   más apagado de lo que dice el token. */
+input::placeholder, textarea::placeholder { color: var(--texto-referencia); opacity: 1; }
+/* Un campo deshabilitado NO es un ejemplo: vuelve a la tinta apagada, para que
+   las dos cosas dejen de verse igual. */
+input:disabled::placeholder, textarea:disabled::placeholder { color: var(--tinta-apagada); }
 * { box-sizing: border-box; }
 body {
   margin: 0; padding: 0 clamp(16px, 5vw, 56px) 48px;
@@ -143,7 +162,7 @@ fieldset { min-width: 0; }
 <header class="irm-cabecera irm-encabezado">
   <img src="data:image/svg+xml;base64,PD94bWwgdmVyc2lvbj0iMS4wIiBlbmNvZGluZz0idXRmLTgiPz4KPCEtLSBHZW5lcmF0b3I6IEFkb2JlIElsbHVzdHJhdG9yIDI4LjAuMCwgU1ZHIEV4cG9ydCBQbHVnLUluIC4gU1ZHIFZlcnNpb246IDYuMDAgQnVpbGQgMCkgIC0tPgo8c3ZnIHZlcnNpb249IjEuMSIgaWQ9IkNhcGFfMSIgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIiB4bWxuczp4bGluaz0iaHR0cDovL3d3dy53My5vcmcvMTk5OS94bGluayIgeD0iMHB4IiB5PSIwcHgiCgkgdmlld0JveD0iMCAwIDEyODggNTEzIiBzdHlsZT0iZW5hYmxlLWJhY2tncm91bmQ6bmV3IDAgMCAxMjg4IDUxMzsiIHhtbDpzcGFjZT0icHJlc2VydmUiPgo8c3R5bGUgdHlwZT0idGV4dC9jc3MiPgoJLnN0MHtmaWxsOiMwNUMwREI7fQoJLnN0MXtmaWxsOiNBOUQ0MzM7fQoJLnN0MntmaWxsOiMwNUJGREI7fQoJLnN0M3tmaWxsOiMwNkMwREI7fQo8L3N0eWxlPgo8cGF0aCBjbGFzcz0ic3QwIiBkPSJNMTAyMS45NCwyOTcuODRjMC0yNC4xNS0wLjAzLTQ4LjMsMC4wMS03Mi40NmMwLjAyLTkuMzgsMS42LTE4LjUzLDQuMzYtMjcuNWMyLjk4LTkuNjksMS4xNy0xNC43OC03LjM5LTIwLjMzCgljLTEyLjk0LTguNC0yNy4zOC04LjQzLTQxLjk3LTcuMWMtMy40NiwwLjMxLTYuOTEsMS4xMS0xMC4yNywyLjAxYy0yMS41NSw1LjgtMzMuNjUsMjAuNDgtMzYuNzksNDMuOTgKCWMtMS4wOSw4LjE0LTEuMDMsMTYuMjgtMS4wNSwyNC40M2MtMC4wOCw0My44MS0wLjAxLDg3LjYyLTAuMDUsMTMxLjQzYy0wLjAyLDE4Ljg4LTcuOTksMzEuMTUtMjMuNTgsMzYuNjgKCWMtMjAuMSw3LjEyLTQyLjM3LTYuMzktNDUuMTItMjcuNWMtMC42Mi00Ljc3LTAuOTItOS42Mi0wLjkzLTE0LjQzYy0wLjA3LTQzLjE0LTAuMjYtODYuMjksMC4wNC0xMjkuNDMKCWMwLjE4LTI1Ljg4LDQuNjMtNTEuMDEsMTYuNi03NC4zMWMxNi44NS0zMi43OSw0NS4zMi01MC41LDc5LjYtNjAuMTZjMzYuNTItMTAuMyw3MC40Ni0zLjkyLDEwMS45MywxNi44NQoJYzAuOTcsMC42NCwxLjk0LDEuMjksMi45MSwxLjk0YzYuNjMsNC40Myw3LjkzLDQuNDcsMTQuMjEtMC4yYzE0LjM5LTEwLjcsMzAuMjktMTguMTMsNDgtMjEuMDYKCWM3NC45MS0xMi4zOSwxMzAuMzIsMjcuOTYsMTQ3Ljg4LDkzLjk3YzMuMDIsMTEuMzYsMy4wNCwyMy4xLDMuMDgsMzQuNzNjMC4xOCw0OC40NywwLjExLDk2Ljk1LDAuMDYsMTQ1LjQyCgljLTAuMDIsMTcuOTItOS4zNiwzMS4xNi0yNC45LDM1LjU3Yy0xOS43Nyw1LjYxLTQyLjA0LTEwLjI2LTQyLjUtMzAuNzNjLTAuNDQtMTkuNjUtMC4zLTM5LjMxLTAuMzEtNTguOTYKCWMwLTI4Ljc5LDAuMTktNTcuNTksMC4wOS04Ni4zOGMtMC4wNC0xMi40My0yLjgtMjQuNDEtNy40My0zNS45NWMtNS45NC0xNC43OS0xNi42OC0yMy41Ni0zMi40NC0yNi40NQoJYy0xMS4wOS0yLjA0LTIyLjE3LTIuNjEtMzMuMjctMC42NmMtMjEuOTYsMy44NS0zMy4zMywxOC40Ni0zOC42NiwzOC44N2MtMS41Niw1Ljk2LTIuMjgsMTIuMDktMi4yOSwxOC4yOQoJYy0wLjA3LDM4Ljk4LTAuMjIsNzcuOTUtMC4yMSwxMTYuOTNjMCwxMS4zMSwwLjczLDIyLjYzLTAuNTEsMzMuOTNjLTEuOSwxNy4zOS0xNS4yNSwzMC45NS0zMS4yMiwzMS42OAoJYy0xOS4wNiwwLjg3LTMzLjI4LTEwLjIzLTM2Ljg5LTI4LjczYy0wLjg3LTQuNDQtMS4xNy04Ljg5LTEuMTYtMTMuNGMwLjAyLTIzLjY1LDAuMDEtNDcuMzEsMC4wMS03MC45NgoJQzEwMjEuODMsMjk3Ljg0LDEwMjEuODksMjk3Ljg0LDEwMjEuOTQsMjk3Ljg0eiIvPgo8cGF0aCBjbGFzcz0ic3QxIiBkPSJNOTcuNzYsNDM2LjU5Yy01LjU3LTIuNTgtMTAuMDgtNi40Ni0xNC4wMi0xMC44OWMtMjkuNzEtMzMuMzgtNTIuMS03MC44OS02MC45NC0xMTUuMQoJQzYuNTksMjI5LjQ0LDI0LjI4LDE1Ni41OCw3OS41Myw5NC4xNmMzNi42LTQxLjM1LDgyLjY1LTY3LjIsMTM2Ljg4LTc3LjZjNTMuMzQtMTAuMjMsMTA0LjYyLTIuNDUsMTUzLjc2LDIwLjI2CgljMjQuNjQsMTEuMzksNDUuNjIsMjcuOTMsNjUuMDMsNDYuNjJjMi40LDIuMzEsNC45LDQuNTEsNy4yMSw2LjkxYzEuMzMsMS4zOCwyLjI1LDMuMywwLjY3LDQuOTFjLTEuNTEsMS41NC0yLjYxLTAuNTItMy42OC0xLjIxCgljLTMzLjI0LTIxLjQ2LTY5LjM3LTM1LjQ2LTEwOC43Mi0zOS42M2MtNzEuNzQtNy41OS0xMzUuNDgsMTEuODktMTg5Ljk4LDU5LjQ1Yy0zOC41NiwzMy42NS02NC42NSw3NS4zMS03Ni41NiwxMjUuMwoJYy0xMi40Nyw1Mi4zNi02LjgsMTAzLjM2LDEyLjY0LDE1My4xNkM4Mi43MSw0MDcuNTMsODkuOTcsNDIyLjA5LDk3Ljc2LDQzNi41OXoiLz4KPHBhdGggY2xhc3M9InN0MiIgZD0iTTczNS4xNSwzMDQuOTFjMCwyMy4xNSwwLjA3LDQ2LjMxLTAuMDIsNjkuNDZjLTAuMDYsMTYuNzYtNy44NiwyOC45My0yMS43NCwzNC4zNwoJYy0yMi44Nyw4Ljk2LTQ2Ljk5LTcuMzktNDcuNDItMzIuNzdjLTAuNDYtMjcuNjQtMC4wMy01NS4zLTAuMDctODIuOTVjLTAuMDItMTIuNDgtMC4yLTI0Ljk3LTAuMzgtMzcuNDUKCWMtMC4zOS0yNi43NiwxLjIyLTUzLjI0LDEwLjc4LTc4LjYyYzEzLjEzLTM0Ljg1LDM4LjMxLTU2Ljg0LDcyLjc2LTY5LjkyYzI3LjQ5LTEwLjQ0LDU0LjgzLTEwLjc4LDgyLjczLTMKCWMxOC42Niw1LjIsMjkuODQsMjIuMzksMjYuMDgsNDAuMThjLTQuMDUsMTkuMTUtMjIuMSwzMS42LTQxLjQzLDI4LjExYy0xNS43NS0yLjg0LTMxLjMyLTMuOC00Ni45NywwLjYzCgljLTEyLjU4LDMuNTYtMjEuMjQsMTEuMjktMjYuNDQsMjMuMTVjLTUuNDMsMTIuMzgtNy44MiwyNS4zOS03Ljg2LDM4Ljg0QzczNS4xLDI1OC4yNyw3MzUuMTUsMjgxLjU5LDczNS4xNSwzMDQuOTF6Ii8+CjxwYXRoIGNsYXNzPSJzdDMiIGQ9Ik0yMzIuNzMsNDg4LjM0Yy0yNy43NS01LjI1LTUyLjQxLTE3LjU4LTc0LjcyLTM0LjU5QzEyMy41LDQyNy40Niw5OS40MiwzOTMuNTksODcsMzUxLjg4CgljLTI1LjE3LTg0LjQ4LDYuODYtMTc0LjQsNzkuNDUtMjIzLjU3YzY4LjIzLTQ2LjIyLDE1NC40LTQxLjI3LDIwMy41Mi0xMS4zM2MtMTUuMjctMS4xOS0yOS42My0wLjk4LTQzLjk2LDAuMQoJYy00NC45MiwzLjM5LTg2LjEzLDE2LjQ2LTEyMC42NCw0Ni43Yy0yNy4xLDIzLjc1LTQ0LjkxLDUzLjctNTcuMTIsODcuMTZjLTMxLjA5LDg1LjE1LTEuNDQsMTc2LjQ4LDc0LjEyLDIyOC45MwoJYzMuNTQsMi40Niw3LjE1LDQuODEsMTAuNzIsNy4yMUMyMzIuOTYsNDg3LjUsMjMyLjg1LDQ4Ny45MiwyMzIuNzMsNDg4LjM0eiIvPgo8cGF0aCBjbGFzcz0ic3QzIiBkPSJNMjA1LjAzLDQzOC45OGMxMC42MSwwLjY3LDIxLjIxLDEuNTgsMzEuODIsMS45N2MyOS4zNCwxLjA4LDU4LjE0LTEuODgsODYuMDItMTEuNzYKCWMzNS4zOS0xMi41NSw2My42Ny0zNC40MSw4NC44MS02NS4yNmMyMi41OS0zMi45NiwzNy02OS4yLDQwLjI1LTEwOS4yNWMzLjgtNDYuNzItMTEuMTEtODcuODEtMzkuMjctMTI0LjU5CgljLTEwLjE2LTEzLjI3LTIxLjY5LTI1LjI1LTM0LjAxLTM2LjVjLTAuOTMtMC44NS0xLjk3LTEuNTYtMy41OC0yLjgyYzQuNzMtMS40Miw4LjAxLTAuNjMsMTEuMiwwLjgxCgljNjYuOTYsMzAuMTIsMTA4LjYsODAuNiwxMTkuMjEsMTUzLjY3YzkuMDEsNjItOS4yOCwxMTYuNjktNTIuMzksMTYyLjI3Yy0zNi4xOSwzOC4yNi04MS4yMyw1OC4wOC0xMzMuODYsNjAuNTcKCWMtMzcuODcsMS43OS03My4zNC02LjMzLTEwNi0yNS44OGMtMS41LTAuOS0zLjQ1LTEuMzMtNC4xMi0zLjNMMjA1LjAzLDQzOC45OHoiLz4KPHBhdGggY2xhc3M9InN0MCIgZD0iTTYyMS44NSwyNTUuMTJjMCwzOS40NywwLjA0LDc4LjkzLTAuMDIsMTE4LjRjLTAuMDMsMjEuODYtMTMuNzEsMzYuNjctMzQuNDUsMzcuNTUKCWMtMTguMDUsMC43Ni0zNC4wOC0xMy41Ny0zNS4zNS0zMS42NGMtMC4xNi0yLjMyLTAuMTctNC42Ni0wLjE3LTYuOTljLTAuMDEtNTAuNjIsMC4wMy0xMDEuMjUtMC4wMy0xNTEuODcKCWMtMC4wMi0xOC40OC0wLjY5LTM2Ljk2LTAuMjctNTUuNDJjMC4yOS0xMi42Mi0wLjYzLTI1LjMyLDEuMzYtMzcuODdjMi44OC0xOC4xOSwxNS43NC0yOS42LDMyLjgxLTI5LjM2CgljMTguNCwwLjI2LDMzLjA3LDEyLjk5LDM1LjQzLDMwLjg1YzAuNDEsMy4xMiwwLjY1LDYuMywwLjY1LDkuNDVDNjIxLjg3LDE3Ny4xOSw2MjEuODUsMjE2LjE2LDYyMS44NSwyNTUuMTJ6Ii8+CjxwYXRoIGNsYXNzPSJzdDEiIGQ9Ik0zMTAuMTcsMTM4LjVjMjguMjctMi43Nyw4MC4wMiwyMS40MSw5OC45NCw3My4zOWMxOS44Niw1NC41NiwzLjc1LDEwNi4xOS00Mi45OSwxMzguMzIKCWMtNDQuOTcsMzAuOTEtOTguODksMjQuNi0xMzAuMDUsMC40OGM1NS4yNi0yLjIsOTYuNDItMjUuNTIsMTE0Ljk1LTc4LjkyQzM2OS41LDIxOC40NywzNTMuMjUsMTc0LjI4LDMxMC4xNywxMzguNXoiLz4KPHBhdGggY2xhc3M9InN0MyIgZD0iTTIwNS4xMiw0MzguOWMtMC4xNC0wLjA0LTAuMjktMC4wNi0wLjQtMC4xNGMtMC4wNS0wLjA0LTAuMDQtMC4xOC0wLjA1LTAuMjhjMC4xMiwwLjE2LDAuMjQsMC4zMywwLjM2LDAuNDkKCUMyMDUuMDMsNDM4Ljk4LDIwNS4xMiw0MzguOSwyMDUuMTIsNDM4Ljl6Ii8+Cjwvc3ZnPg==" alt="IRM Aires">
   <div class="titulo"><h1><span title="La boca de la tubería con su cota: mide cuánto entrega de verdad, no cuánto dice el registro." style="display:inline-block;vertical-align:-4px;margin-right:8px"><svg width="26" height="26" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 8h11v8H3z"/><path d="M14 12h7"/><path d="M3 19v3M14 19v3M3 20.5h11" stroke="#00B9CE"/></svg></span>FRONTINO</h1><div style="font:600 13px var(--display);color:var(--tinta-2);margin-top:2px">La lista oficial de rendimientos: lo que hay que revisar, lo que se mide en obra y lo que se propone cambiar · v1.2</div><div style="font-size:12.5px;color:var(--tinta-2);margin-top:2px">Frontino midió, boca por boca, cuánta agua entregaba de verdad cada tubería de Roma, y vio que no coincidía con los registros: por eso el que guarda los rendimientos reales lleva su nombre.</div></div>
-  <div class="fecha">2026-10-13</div>
+  <div class="fecha">2026-10-22</div>
 </header>
 
 <main>
@@ -842,7 +861,7 @@ function canecaOcupada(b) {
 <footer class="irm-pie">
   <div class="irm-contacto"><span><b>C.</b> 318 3591189</span><span><b>D.</b> Cra. 36 #10B-39 el poblado, Medellín, Ant.</span><span>www.irmaires.com</span></div>
   <span>Confidencial — uso interno IRM Aires</span>
-  <span class="irm-paginacion">2026-10-13</span>
+  <span class="irm-paginacion">2026-10-22</span>
 </footer>
 <style>
 /* Botón «Reportar» — componente canónico IRM v6 (IMAGEN CORPORATIVA/memoria_procedimental/componente_reporte.py) */
@@ -1457,6 +1476,54 @@ window.__IRM_MECHAIN_FACTORES__ = {"alias":{"\"":{"codigo":"IN","nota":"La comil
   function liberar(b) { b.disabled = false; b.removeAttribute("aria-busy"); if (b.dataset.etq) b.textContent = b.dataset.etq; }
   var cuenta = 0; function clave(el) { if (!el.__mechClave) el.__mechClave = "m" + (++cuenta); return el.__mechClave; }
 
+  /* La casilla y su caja se vuelven a buscar (TK-0289). Rómulo redibuja la fila al aceptar una
+     conversión: la caja del aviso se iba con la fila y el Deshacer se escribía donde nadie lo veía.
+     Se guarda la IDENTIDAD del elemento —id, o rótulo/nombre/data-k/clases y su lugar entre los
+     iguales— y se busca de nuevo cada vez que hay que usarlo. Nunca data-antes ni el valor: cambian
+     justo con la conversión. Mismo arreglo que Napier v1. */
+  function cssEsc(s) { return window.CSS && CSS.escape ? CSS.escape(s) : String(s).replace(/["\\]/g, "\\$&"); }
+  function ubicador(el) {
+    if (!el) return null;
+    if (el.id) return [{ id: el.id }];
+    var tag = el.tagName.toLowerCase(), cands = [];
+    ["aria-label", "name", "data-k", "data-campo", "data-irm-convertible", "data-irm-convierte"].forEach(function (a) {
+      var v = el.getAttribute(a); if (v && v.length < 120) cands.push(tag + "[" + a + '="' + cssEsc(v) + '"]'); });
+    var cls = Array.prototype.slice.call(el.classList).filter(function (k) { return !/^irm-/.test(k); });
+    if (cls.length) cands.push(tag + "." + cls.map(cssEsc).join("."));
+    return cands.map(function (s) {
+      try { return { sel: s, idx: Array.prototype.indexOf.call(document.querySelectorAll(s), el) }; } catch (e) { return null; }
+    }).filter(function (u) { return u && u.idx >= 0; });
+  }
+  function reubicar(u, el) {
+    if (el && el.isConnected) return el;
+    for (var i = 0; u && i < u.length; i++) {
+      if (u[i].id) { var x = document.getElementById(u[i].id); if (x) return x; continue; }
+      try { var l = document.querySelectorAll(u[i].sel); if (l[u[i].idx]) return l[u[i].idx]; } catch (e) {}
+    }
+    return null;
+  }
+  function cajaViva(c, u, ancla) {
+    if (c && c.isConnected) return c;
+    var a2 = reubicar(u, ancla);
+    return a2 && a2.parentNode ? caja(a2, clave(a2)) : null;
+  }
+  /* El aviso «CONVERTIDO» con su Deshacer se SOSTIENE mientras sirve: si la herramienta repinta la
+     fila o el formulario DESPUÉS de que se escribió (un render diferido, otro cambio en la misma
+     tabla), se vuelve a poner en la caja nueva. Sin esto el Deshacer dura lo que tarda el próximo
+     repintado. Se suelta al deshacer o a los 2 minutos. */
+  function sostener(c, u, ancla, pintar) {
+    var viva = cajaViva(c, u, ancla); if (!viva) return null;
+    pintar(viva);
+    var mo = new MutationObserver(function () {
+      if (viva.isConnected) return;
+      var n = cajaViva(null, u, ancla); if (!n) return;
+      viva = n; pintar(viva);
+    });
+    mo.observe(document.body, { childList: true, subtree: true });
+    var fin = setTimeout(function () { mo.disconnect(); }, 120000);
+    return { soltar: function () { mo.disconnect(); clearTimeout(fin); }, actual: function () { return viva; } };
+  }
+
   /* El rastro: si la página está conectada, cada conversión aceptada queda en core.unidad_conversion_hecha. */
   function registrar(herr, reg, v, de, a, que) {
     if (!CON.registrar) return Promise.resolve(null);
@@ -1491,19 +1558,36 @@ window.__IRM_MECHAIN_FACTORES__ = {"alias":{"\"":{"codigo":"IN","nota":"La comil
     c.querySelector("[data-mech-no]").addEventListener("click", function () {
       c.innerHTML = '<p class="irm-mech-sub">Listo: el ' + esc(txtV) + " queda en " + esc(r.a) + ", sin convertir.</p>";
       if (o.alNegar) o.alNegar(); });
+    var uAncla = ubicador(ancla), uInp = inp ? ubicador(inp) : null;
     c.querySelector("[data-mech-si]").addEventListener("click", function () {
       var b = this; ocupar(b, "Pasando…"); if (inp) escribir(inp, w);
       if (o.alAceptar) o.alAceptar(w, r);
       registrar(o.herramienta || herramienta(ancla), o.registro || null, v, r.de, r.a, que).then(function (id) {
-        c.innerHTML = "<p><b>CONVERTIDO</b> — " + esc(txtV) + por + esc(r.de) + " = " + esc(txtR) + por + esc(r.a) + ".</p>" +
-          '<div class="irm-mech-fila"><button type="button" class="irm-mech-btn" data-mech-deshacer>Deshacer</button>' +
-          '<span class="irm-mech-sub">' + (id ? "Quedó anotado con el valor original." : "") + "</span></div>";
-        c.querySelector("[data-mech-deshacer]").addEventListener("click", function () {
-          var d = this; ocupar(d, "Volviendo…");
-          if (inp) escribir(inp, v);
-          if (o.alDeshacer) o.alDeshacer();
-          revertir(id).then(function () { c.innerHTML = '<p class="irm-mech-sub">Deshecho: volvió a ' + esc(txtV) + por + esc(r.de) + ".</p>"; });
+        /* La herramienta pudo redibujar la fila en alAceptar, o lo hace después: se sostiene. */
+        var hilo = sostener(c, uAncla, ancla, function (cc) {
+          cc.classList.remove("irm-mech-alerta"); cc.setAttribute("data-mech-estado", "convertido");
+          cc.innerHTML = "<p><b>CONVERTIDO</b> — " + esc(txtV) + por + esc(r.de) + " = " + esc(txtR) + por + esc(r.a) + ".</p>" +
+            '<div class="irm-mech-fila"><button type="button" class="irm-mech-btn" data-mech-deshacer>Deshacer</button>' +
+            '<span class="irm-mech-sub">' + (id ? "Quedó anotado con el valor original." : "") + "</span></div>";
+          cc.querySelector("[data-mech-deshacer]").addEventListener("click", deshacer);
         });
+        function deshacer() {
+          hilo.soltar(); ocupar(this, "Volviendo…");
+          var iv = inp ? reubicar(uInp, inp) : null;
+          if (iv) escribir(iv, v);
+          if (o.alDeshacer) o.alDeshacer(v, r);
+          revertir(id).then(function () {
+            /* Se comprueba, no se supone: la casilla tiene que mostrar el número de antes. */
+            var cf = cajaViva(hilo.actual(), uAncla, ancla), iv2 = inp ? reubicar(uInp, inp) : null, n = iv2 ? numeroDe(iv2) : null;
+            var volvio = !inp || (n !== null && Math.abs(n - v) < 1e-9);
+            if (!cf) return;
+            cf.removeAttribute("data-mech-estado");
+            cf.classList.toggle("irm-mech-alerta", !volvio);
+            cf.innerHTML = volvio ? '<p class="irm-mech-sub">Deshecho: volvió a ' + esc(txtV) + por + esc(r.de) + ".</p>"
+              : "<p><b>No se pudo devolver el valor:</b> la casilla ya no está en la pantalla.</p>" +
+                '<p class="irm-mech-sub">Escribí ' + esc(txtV) + por + esc(r.de) + " a mano.</p>";
+          });
+        }
       }).finally(function () { if (b.isConnected) liberar(b); });
     });
     return { ok: true, caja: c, valor: w, conversion: r };
@@ -1517,9 +1601,11 @@ window.__IRM_MECHAIN_FACTORES__ = {"alias":{"\"":{"codigo":"IN","nota":"La comil
     if (!inp || !antes || !ahora || antes === ahora || ahora === "__nueva") return;
     var v = numeroDe(inp);
     if (v === null) { var c0 = sel.parentNode && sel.parentNode.querySelector('.irm-mech[data-mech="' + clave(sel) + '"]'); if (c0) c0.remove(); return; }
+    var uSel = ubicador(sel);
     preguntar(sel, { valor: v, de: antes, a: ahora, que: sel.getAttribute("data-irm-convierte-que") || "cantidad", inp: inp,
       herramienta: herramienta(sel), registro: sel.getAttribute("data-irm-convierte-registro"),
-      alDeshacer: function () { sel.__mechCallado = true; sel.value = antes; sel.dispatchEvent(new Event("change", { bubbles: true })); } });
+      alDeshacer: function () { var s = reubicar(uSel, sel); if (!s) return;
+        s.__mechCallado = true; s.value = antes; s.dispatchEvent(new Event("change", { bubbles: true })); } });
   }
 
   /* 2 · Un número con su unidad fija que llega en otra: «¿Lo tenés en otra unidad?». */
@@ -1559,21 +1645,37 @@ window.__IRM_MECHAIN_FACTORES__ = {"alias":{"\"":{"codigo":"IN","nota":"La comil
         vista.innerHTML = "<b>" + esc(frase) + "</b> " +
           '<button type="button" class="irm-mech-btn irm-mech-si" data-mech-usar>Usar ' + esc(M.numEs(w)) + "</button>";
         vista.querySelector("[data-mech-usar]").addEventListener("click", function () {
-          var b = this, previo = inp.value; ocupar(b, "Usando…"); escribir(inp, w);
+          var b = this, previo = inp.value, uI = ubicador(inp); ocupar(b, "Usando…"); escribir(inp, w);
           registrar(herramienta(inp), inp.getAttribute("data-irm-convierte-registro"), d.valor, d.unidad, r.a, que).then(function (id) {
-            c.innerHTML = "<p><b>CONVERTIDO</b> — " + esc(frase) + ".</p>" +
-              '<div class="irm-mech-fila"><button type="button" class="irm-mech-btn" data-mech-deshacer>Deshacer</button>' +
-              '<span class="irm-mech-sub">' + (id ? "Quedó anotado con el valor original." : "") + "</span></div>";
-            c.querySelector("[data-mech-deshacer]").addEventListener("click", function () {
-              var dd = this; ocupar(dd, "Volviendo…"); inp.value = previo;
-              inp.dispatchEvent(new Event("input", { bubbles: true })); inp.dispatchEvent(new Event("change", { bubbles: true }));
-              revertir(id).then(cerrado);
+            /* El formulario pudo repintarse al escribir, ahora o un instante después: se sostiene. */
+            var hilo = sostener(c, uI, inp, function (cc) {
+              cc.classList.remove("irm-mech-alerta"); cc.setAttribute("data-mech-estado", "convertido");
+              cc.innerHTML = "<p><b>CONVERTIDO</b> — " + esc(frase) + ".</p>" +
+                '<div class="irm-mech-fila"><button type="button" class="irm-mech-btn" data-mech-deshacer>Deshacer</button>' +
+                '<span class="irm-mech-sub">' + (id ? "Quedó anotado con el valor original." : "") + "</span></div>";
+              cc.querySelector("[data-mech-deshacer]").addEventListener("click", deshacer);
             });
+            function deshacer() {
+              hilo.soltar(); ocupar(this, "Volviendo…");
+              var iv = reubicar(uI, inp);
+              if (iv) { iv.value = previo; iv.dispatchEvent(new Event("input", { bubbles: true })); iv.dispatchEvent(new Event("change", { bubbles: true })); }
+              revertir(id).then(function () {
+                var cf = cajaViva(hilo.actual(), uI, inp), iv2 = reubicar(uI, inp), volvio = !!iv2 && iv2.value === previo;
+                if (!cf) return;
+                cf.removeAttribute("data-mech-estado");
+                if (volvio && cf.__mechCerrado) { cf.__mechCerrado(); return; }
+                cf.classList.toggle("irm-mech-alerta", !volvio);
+                cf.innerHTML = volvio ? '<p class="irm-mech-sub">Deshecho: volvió a ' + esc(previo) + ".</p>"
+                  : "<p><b>No se pudo devolver el valor:</b> la casilla ya no está en la pantalla.</p>" +
+                    '<p class="irm-mech-sub">Escribí ' + esc(previo) + " a mano.</p>";
+              });
+            }
           }).finally(function () { if (b.isConnected) liberar(b); });
         });
       }
     }
-    cerrado();
+    c.__mechCerrado = cerrado;   // para que un Deshacer que llega a esta caja después de un repintado la deje como nueva
+    if (c.getAttribute("data-mech-estado") !== "convertido") cerrado();   // no tapar un Deshacer que se está sosteniendo
   }
 
   function enganchar(raiz) {
@@ -1601,7 +1703,7 @@ window.__IRM_MECHAIN_FACTORES__ = {"alias":{"\"":{"codigo":"IN","nota":"La comil
   if (document.readyState === "loading") document.addEventListener("DOMContentLoaded", arrancar); else arrancar();
 
   global.IRMMechain = {
-    version: "2",
+    version: "3",
     /* conectar(sb) con el cliente de Supabase de la página, o conectar({factores, registrar, revertir, quien}).
        Trae los factores vivos de la base; si no llega, se queda con los que trae adentro. */
     conectar: function (x, quien) {
