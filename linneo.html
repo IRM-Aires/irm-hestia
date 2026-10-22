@@ -3170,7 +3170,12 @@ window.IRMVolver = window.IRMVolver || (function () {
     if (!enHestia) { a.target = "irm-hestia"; }   // su propia pestaña: la herramienta no se cierra
     a.setAttribute("aria-label", "Volver a Hestia para abrir otra herramienta");
     a.title = "Volver a Hestia para abrir otra herramienta";
-    a.innerHTML = ICONO + '<span class="irm-volver-txt">Hestia</span>';
+    /* Dice la ACCIÓN, no sólo el destino. En la franja conviven tres botones y
+       ahora los tres se leen con la misma fórmula: «Volver a la propuesta»,
+       «Volver a Hestia», «Ir a Linneo». Decía sólo «Hestia» y, al lado de un
+       «Ir a Linneo», parecía otra clase de cosa. Lo pidió el administrador el
+       2026-10-22. En el celular el texto se oculta igual y queda el ícono. */
+    a.innerHTML = ICONO + '<span class="irm-volver-txt">Volver a Hestia</span>';
     a.addEventListener("pointerdown", function () { a.classList.add("irm-volver-tocado"); });
     ["pointerup", "pointercancel", "pointerleave"].forEach(function (t) { a.addEventListener(t, function () { a.classList.remove("irm-volver-tocado"); }); });
     document.body.appendChild(a);
@@ -3578,6 +3583,43 @@ else IRMNapier.iniciar();
 /* Navegación entre herramientas — componente canónico IRM v1 (componente_navegar.py) */
 /* Va a la IZQUIERDA, al lado del «Volver a Hestia», no encima: son dos destinos
    distintos —la casa y de donde venías— y confundirlos pierde el trabajo. */
+/* ── UN SOLO CONTENEDOR, y por eso la posición está garantizada ───────────
+   Antes cada herramienta ponía sus atajos donde quería: Rómulo abajo, Dédalo
+   arriba, Linneo no los tenía. El administrador lo vio y pidió que queden
+   SIEMPRE en el mismo sitio. Prometerlo no alcanza: con tres botones fijos por
+   separado, cada uno con su `left`, basta que uno crezca para que se corra.
+   Entonces no se promete, se construye: todos viven en una fila flex, y el
+   «Volver a Hestia» se MUEVE acá adentro al arrancar. El orden y el aire los
+   decide el contenedor, no la aritmética de cada botón. */
+.irm-barra-nav { position: fixed; bottom: 16px; left: 16px; z-index: 2147483000;
+  display: flex; align-items: center; gap: 8px; flex-wrap: wrap; max-width: calc(100vw - 32px); }
+/* TODO lo que entra a la fila suelta su posición fija: si uno se la queda,
+   arranca en 16 px igual que el contenedor y se monta encima del siguiente.
+   Medido: «Volver a P-01123» 16→176 y «Hestia» 16→112, uno sobre otro. */
+.irm-barra-nav .irm-volver,
+.irm-barra-nav .irm-nav { position: static !important; left: auto !important;
+  right: auto !important; bottom: auto !important; }
+/* El atajo a otra herramienta: chip LIMA. El lima está reservado para cromo de
+   marca —chips entre ellos— y acá hace falta que se distingan de un vistazo de
+   los de estado: el cian ya significa «activo» y «lo declaró una persona».
+   Texto en tinta, nunca lima sobre blanco: ese contraste es de 1,9:1. */
+.irm-atajo-ir { display: inline-flex; align-items: center; gap: 6px; min-height: 40px;
+  padding: 8px 14px; border-radius: 999px; border: 1px solid #96D416; background: #96D416;
+  color: #0b0b0b; text-decoration: none; cursor: pointer;
+  font: 600 13px var(--display, Poppins, system-ui, sans-serif);
+  box-shadow: 0 4px 16px rgba(0,0,0,.14); transition: filter .15s; }
+.irm-atajo-ir:hover { filter: brightness(1.06); }
+.irm-atajo-ir:active { filter: brightness(.86); }
+.irm-atajo-ir:focus-visible { outline: 2px solid #0b0b0b; outline-offset: 2px; }
+.irm-atajo-ir .irm-atajo-ico { width: 16px; height: 16px; flex: none; }
+@media (max-width: 560px) {
+  .irm-atajo-ir { width: 44px; height: 44px; min-height: 44px; padding: 0; justify-content: center; }
+  .irm-atajo-ir .irm-atajo-txt { position: absolute; width: 1px; height: 1px; overflow: hidden;
+    clip: rect(0 0 0 0); white-space: nowrap; }
+}
+@media (prefers-reduced-motion: reduce) { .irm-atajo-ir { transition: none; } }
+@media print { .irm-barra-nav { display: none; } }
+
 .irm-nav { position: fixed; bottom: 16px; left: 16px; z-index: 2147483000; display: inline-flex; align-items: center; gap: 6px;
   min-height: 40px; padding: 8px 14px; border-radius: 999px; border: 1px solid #00B9CE;
   background: #00B9CE; color: #fff; text-decoration: none; cursor: pointer;
@@ -3593,7 +3635,8 @@ else IRMNapier.iniciar();
 /* 14 px y no 10: el ancho se mide antes de que termine de cargar la letra, así
    que sale unos píxeles corto. Medido: con 10 quedaban 5 px de aire, y 5 px es
    un choque esperando a que una palabra crezca. */
-body.irm-con-nav .irm-volver { left: calc(16px + var(--irm-nav-ancho, 190px) + 14px); }
+/* Ya no hace falta correr el «Volver a Hestia» con aritmética: vive dentro de
+   la misma fila y el contenedor lo acomoda. */
 /* En el celular se achica a un círculo con la flecha, como hacen «Volver a Hestia»
    y «Reportar». Conservar el texto completo lo dejaba en ~200 px y la franja no da
    para tantos: medido por la sesión de Rómulo a 375 px reales, chocaba 34 px con
@@ -3604,7 +3647,7 @@ body.irm-con-nav .irm-volver { left: calc(16px + var(--irm-nav-ancho, 190px) + 1
   .irm-nav { width: 44px; height: 44px; min-height: 44px; padding: 0; justify-content: center; }
   .irm-nav .irm-nav-txt { position: absolute; width: 1px; height: 1px; overflow: hidden;
     clip: rect(0 0 0 0); white-space: nowrap; }
-  body.irm-con-nav .irm-volver { left: calc(16px + var(--irm-nav-ancho, 44px) + 8px); }
+
 }
 @media (prefers-reduced-motion: reduce) { .irm-nav { transition: none; } }
 @media print { .irm-nav { display: none; } }
@@ -3809,11 +3852,104 @@ window.IRMNav = window.IRMNav || (function () {
     } catch (e) {}
   }
 
-  var MI = "";
+  var MI = "", ROTULO_MIO = "";
+  function rotuloMio(t) { ROTULO_MIO = String(t || ""); }
   function miClave() { return MI; }
-  function soy(clave) { MI = clave || ""; }
+  function soy(clave) { MI = clave || ""; atajos(); }
+
+  /* La fila: se crea una vez y adentro se mete TODO lo que navega, en orden
+     fijo. El «Volver a Hestia» se trae acá adentro aunque lo haya puesto otro
+     componente: así su posición deja de depender de quién corrió primero. */
+  function barra() {
+    var b = document.querySelector(".irm-barra-nav");
+    if (!b) {
+      b = document.createElement("div");
+      b.className = "irm-barra-nav";
+      b.setAttribute("role", "navigation");
+      b.setAttribute("aria-label", "Ir a otra herramienta");
+      document.body.appendChild(b);
+    }
+    var v = document.querySelector(".irm-volver");
+    if (v && v.parentNode !== b) b.appendChild(v);   /* de donde esté, a la fila */
+    ordenar(b);
+    return b;
+  }
+
+  /* El ORDEN es parte de la garantía: que estén en la misma fila no alcanza si
+     cada herramienta los pone en distinto lugar dentro de ella. Rango declarado,
+     no el azar de quién se dibujó primero:
+       1 · volver a donde me invocaron   (lo más importante: deshacer el salto)
+       2 · Hestia                        (la casa, siempre en el mismo sitio)
+       3 · las otras herramientas        (en el orden del catálogo) */
+  function rango(e) {
+    if (e.classList.contains("irm-nav")) return 1;
+    if (e.classList.contains("irm-volver")) return 2;
+    var k = e.getAttribute("data-irm-ir");
+    var i = Object.keys(NOMBRES).indexOf(k);
+    return 3 + (i < 0 ? 99 : i);
+  }
+  function ordenar(b) {
+    var hijos = Array.prototype.slice.call(b.children);
+    hijos.sort(function (x, y) { return rango(x) - rango(y); });
+    hijos.forEach(function (e) { b.appendChild(e); });
+  }
+
+  var FLECHA_IR = '<svg class="irm-atajo-ico" viewBox="0 0 24 24" fill="none" stroke="currentColor" '
+    + 'stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false">'
+    + '<path d="M5 12h14"/><path d="M12 5l7 7-7 7"/></svg>';
+
+  /* Los atajos a las OTRAS herramientas. Mismo orden en todas —el del catálogo—
+     para que el ojo aprenda una vez dónde está cada una. */
+  function atajos() {
+    var b = barra();
+    Object.keys(NOMBRES).forEach(function (clave) {
+      if (clave === MI) return;                      /* a sí misma no */
+      if (b.querySelector('[data-irm-ir="' + clave + '"]')) return;
+      var h = NOMBRES[clave];
+      var a = document.createElement("a");
+      a.className = "irm-atajo-ir";
+      a.setAttribute("data-irm-ir", clave);
+      a.href = h[2];
+      a.target = "irm-" + clave;
+      if (necesitaNoopener(h[2])) a.rel = "noopener";
+      /* El rótulo dice la ACCIÓN, no sólo el nombre: «Ir a Linneo», no «Linneo».
+         Así los tres tipos de botón de la fila se leen con la misma fórmula —
+         «Volver a la propuesta», «Volver a Hestia», «Ir a Linneo»— y se entiende
+         qué hace cada uno sin haberlo usado antes. Lo pidió el administrador. */
+      a.innerHTML = FLECHA_IR + '<span class="irm-atajo-txt">Ir a ' + h[0].replace(/[<>&]/g, "") + "</span>";
+      a.title = "Ir a " + h[0] + " — se abre en su propia pestaña y se reusa; lo que estés haciendo acá no se pierde";
+      a.setAttribute("aria-label", "Ir a " + h[0]);
+      /* El clic deja el rastro en la base y deja que el enlace abra solo: si el
+         componente fallara, el enlace sigue teniendo su destino y su target. */
+      a.addEventListener("click", function () {
+        try { if (SQL && QUIEN) marcarPaso(clave); } catch (e) {}
+      });
+      b.appendChild(a);
+    });
+  }
+
+  function marcarPaso(clave) {
+    try {
+      Promise.resolve(SQL("nav_paso_marcar", { p_quien: QUIEN, p_hacia: clave,
+        p_de: MI, p_rotulo: ROTULO_MIO, p_url: location.href })).catch(function () {});
+    } catch (e) {}
+  }
+
+  /* El «Volver a Hestia» lo pone OTRO componente y puede llegar después. Sin
+     esto, en Dédalo la fila quedaba sin él —medido— mientras que en Linneo sí
+     estaba: la misma herramienta en dos sitios distintos, que es justo lo que
+     el administrador pidió que no pasara. Se mira unas cuantas veces y se deja. */
+  function absorberVolver(intentos) {
+    var n = intentos || 0;
+    var v = document.querySelector(".irm-volver");
+    var b = document.querySelector(".irm-barra-nav");
+    if (v && b && v.parentNode !== b) { b.appendChild(v); ordenar(b); return; }
+    if (n < 12) setTimeout(function () { absorberVolver(n + 1); }, 400);
+  }
 
   function iniciar() {
+    atajos();
+    absorberVolver();
     if (document.querySelector(".irm-nav")) return;
     var o = origen();
     if (!o) return;                      /* sin origen no hay botón: no se inventa */
@@ -3835,7 +3971,9 @@ window.IRMNav = window.IRMNav || (function () {
         b.classList.add("irm-nav-tocado");
       }
     });
-    document.body.appendChild(b);
+    /* Primero en la fila: volver es más importante que ir. */
+    var fila = barra();
+    fila.insertBefore(b, fila.firstChild);
     document.body.classList.add("irm-con-nav");
     try {
       var w = Math.ceil(b.getBoundingClientRect().width);
@@ -3895,6 +4033,7 @@ window.IRMNav = window.IRMNav || (function () {
 
   return { ir: ir, volver: volver, origen: origen, diagnostico: diagnostico, soy: soy,
            iniciar: iniciar, medir: medir, sondear: sondear, conectar: conectar,
+           atajos: atajos, rotulo: rotuloMio,
            /* La dirección y el rel los sabe el catálogo, no cada herramienta: así
               nadie más tiene una copia del contrato (pedido de la sesión de Rómulo). */
            url: function (clave, rotulo) {
