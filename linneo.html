@@ -3848,24 +3848,8 @@ window.IRMNav = window.IRMNav || (function () {
        desde la URL. Abrir siempre vale más que volver elegante. */
     try {
       var a = document.createElement("a");
-      if (llegoSola(u)) {
-        /* Destino que no es claude.ai (Hestia, Linneo): el enlace va SIN
-           noopener, así que el navegador encuentra la pestaña por su nombre, la
-           navega y la enfoca. Llega sola, sin abrir nada. */
-        a.href = u; a.target = pestanaDe(clave);
-      } else {
-        /* Destino en claude.ai: desde adentro de un marco con sandbox hace falta
-           `noopener` —si no, ERR_BLOCKED_BY_RESPONSE— y con noopener el nombre
-           deja de servir: SIEMPRE abriría otra ventana. Entonces no se va
-           directo: se navega la pestaña de HESTIA, que sí se puede alcanzar por
-           su nombre, y Hestia hace el segundo tramo desde primer nivel, donde el
-           nombre funciona para todos. Dos tramos, cero ventanas nuevas.
-           Lo que se paga, y se dice: se pasa por la pantalla de Hestia un
-           instante. Es el precio de no acumular una ventana por salto. */
-        a.href = HESTIA + "?ir=" + encodeURIComponent(clave);
-        a.target = pestanaDe("hestia");
-        ultimo = { camino: "transbordo", detalle: "fui por Hestia: a un artefacto no se puede llegar sin abrir otra" };
-      }
+      a.href = u; a.target = pestanaDe(clave);
+      if (necesitaNoopener(u)) a.rel = "noopener";
       a.style.display = "none";
       document.body.appendChild(a);
       a.click();
@@ -3904,79 +3888,42 @@ window.IRMNav = window.IRMNav || (function () {
      Queda la base, que las dos herramientas ya consultan con la misma persona.
      La página le pasa CÓMO hablar; el componente no sabe de conectores. */
 
-  /* ── UNA pestaña POR HERRAMIENTA, y si ya está abierta no se abre otra ──
-     Esta es la tercera forma de resolverlo, y cada una se cambió porque la
-     anterior se midió mal. Conviene dejar las tres escritas:
+  /* ── Por qué se va DIRECTO, aunque cueste una pestaña ────────────────────
+     Esto se midió en Chrome el 2026-10-22, después de tres diseños que salieron
+     de leer la especificación en vez de probar. El administrador lo cortó en
+     seco: «no puedes seguir con deducciones, prueba y verifica que funcione».
+     Tenía razón, y lo medido contradijo dos de mis tres suposiciones.
 
-       v0 · `target="_blank"` …… cada clic, una pestaña. Diez clics, diez.
-       v1 · UNA pestaña para todas («irm-herramienta») …… el salto NAVEGA la
-            pestaña en vez de abrir otra… en teoría. En la práctica el
-            administrador siguió viendo ventanas nuevas.
-       v2 · una por herramienta + registro de abiertas …… lo que hay hoy.
+     El banco: una pestaña llamada `irm-destino` ya abierta, y un enlace con ese
+     mismo `target` disparado desde tres sitios distintos.
 
-     POR QUÉ v1 NO PODÍA FUNCIONAR — y es un límite de la plataforma, no un
-     defecto que se arregle con más código:
+       | desde                        | ¿reusa la pestaña? | ¿te deja ahí? |
+       | marco con sandbox (artefacto)| NO, abre una nueva | SÍ            |
+       | página de primer nivel       | SÍ                 | **NO**        |
+       | clic automático, sin gesto   | SÍ (no se bloquea) | **NO**        |
 
-       · Un artefacto corre dentro de un marco con `sandbox`. Una pestaña abierta
-         desde ahí HEREDA el sandbox, y claude.ai —que manda `frame-ancestors` y
-         `cross-origin-opener-policy`— se niega a dibujarse así: el
-         ERR_BLOCKED_BY_RESPONSE que vio el administrador el 2026-10-22.
-       · `rel="noopener"` lo arregla porque crea un contexto de primer nivel
-         NUEVO, que ya no hereda el sandbox. Pero «NUEVO» es literal: con
-         `noopener` el navegador **no busca** una pestaña con ese nombre. Siempre
-         abre otra. Está en la especificación y acá se pagó con tres intentos.
+     Las dos cosas que no sabía:
 
-     UNA CONTRADICCIÓN QUE NO SE LOGRÓ MEDIR, y se deja escrita en vez de
-     taparse: el 2026-10-22 el administrador abrió APU dos veces y vio UNA sola
-     ventana. Eso y la especificación no pueden ser las dos ciertas.
+       1. Desde un artefacto NO se alcanza ninguna pestaña por su nombre. Ni
+          siquiera una que no sea de claude.ai. El marco aísla.
+       2. **Navegar una pestaña por su nombre NUNCA la trae al frente.** Ésa es
+          la que mata el diseño del transbordo: Hestia sí navegaba la pestaña de
+          Dédalo, pero la persona se quedaba mirando Hestia. «Toco el botón de
+          Dédalo y me voy para Hestia» — exactamente eso.
 
-     Hay una reconciliación posible —que lo observado fuera un destino de Hestia,
-     que va SIN `noopener` y por eso sí reusa la pestaña— pero **NO cubre el caso
-     que se reportó**, y conviene decirlo así para que nadie deje de buscar: lo
-     que se le pidió tocar fue «APU», y «APU» apunta a Dédalo, que vive en
-     claude.ai, que es justo el destino que SIEMPRE necesita `noopener`. Esa
-     explicación sirve para «Recursos», no para el dato que teníamos.
-
-     Entonces siguen sin encajar tres cosas, y ninguna se sabe: la
-     especificación, lo que se observó, y la explicación. Las salidas posibles:
-     que se haya tocado Recursos y no APU, que las ventanas se hayan contado de
-     otra forma, o que el navegador haga algo que ninguna de las dos sesiones
-     leyó bien.
-
-     **Una explicación que no explica el único dato que había es peor que
-     ninguna**: la siguiente persona deja de buscar. (`necesitaNoopener()`, más
-     abajo, es la frontera entre los dos tipos de destino.)
-
-     Lo que vuelve esto una nota al pie y no un problema: **este diseño ya no
-     depende de que la pestaña se reuse**. Pregunta si la herramienta está
-     abierta. Cambiar la premisa es la única forma honesta de cerrar una
-     discusión sobre un hecho que no se pudo medir.
-
-     O sea: desde adentro de un artefacto, ir a OTRO artefacto obliga a abrir
-     pestaña. No hay vuelta. Lo que sí se puede es **no abrir una segunda**, que
-     es exactamente lo que pidió el administrador: «si está abierta, andá a esa;
-     si no está abierta, ahí sí invocala».
-
-     Entonces cada herramienta late en la base (`core.nav_latido`, cada 12 s) y
-     antes de abrir se pregunta si la de destino está viva. Si lo está, NO se
-     abre nada: se le deja el paso escrito —para que allá aparezca el botón de
-     volver— y se le dice a la persona que ya la tiene abierta. Si no está viva,
-     se abre, y con el nombre de SU pestaña, así donde el destino no es
-     claude.ai (Hestia) la pestaña se reusa de verdad.
-
-     Lo que esto NO hace, y se dice en vez de disimularlo: no cambia de pestaña
-     por su cuenta. Ningún navegador deja que una pestaña de fondo se traiga el
-     foco —sería la puerta de entrada de cualquier publicidad—. Lo que sí hace
-     la que ya estaba abierta es ponerse «← te llaman» en el título, para
-     encontrarla de un vistazo entre diez pestañas. */
+     Entonces el salto va DIRECTO. Cuesta una pestaña, y es el único camino que
+     de verdad te deja donde ibas: la pestaña nueva sí aparece al frente.
+     Lo que NO se puede, y se dice en vez de disimularlo: llevar a alguien a una
+     pestaña que ya tiene abierta. Ninguna página puede hacerlo. Por eso tampoco
+     se frena el clic: negarse a abrir sin poder llevar deja a la persona
+     varada, que fue el otro reporte del mismo día. */
   function pestanaDe(clave) { return "irm-" + String(clave || "herramienta"); }
   /* La estación de transbordo. Se declara acá y no en cada herramienta porque
      dos copias de una dirección se desincronizan en la primera mudanza. */
   var HESTIA = "https://irm-hestia.vercel.app/";
-  /* ¿Puedo llegar sola a este destino sin abrir una ventana más?
-     Sólo si NO necesito `noopener` — o sea, si el destino no es claude.ai —
-     porque sin noopener el navegador busca la pestaña por su nombre, la navega
-     y la enfoca. Con noopener crea una nueva, siempre. */
+  /* Medido: un destino que no es claude.ai SÍ reusa su pestaña cuando el enlace
+     sale de una página de primer nivel — pero NO la trae al frente, así que no
+     sirve para «llevarte». Queda como dato consultable, no como camino. */
   function llegoSola(u) { return !necesitaNoopener(u); }
   /* Qué otras herramientas tiene abiertas esta persona AHORA. La llena el
      latido. Arranca en `null` y no en `{}` a propósito: `null` es «todavía no
@@ -4245,8 +4192,8 @@ window.IRMNav = window.IRMNav || (function () {
       a.setAttribute("data-irm-ir", clave);
       /* El enlace apunta a donde corresponde ANTES de que corra una línea de
          JS: si el componente fallara, el botón sigue llevando a algún lado. */
-      if (llegoSola(h[2])) { a.href = h[2]; a.target = pestanaDe(clave); }
-      else { a.href = HESTIA + "?ir=" + encodeURIComponent(clave); a.target = pestanaDe("hestia"); }
+      a.href = h[2]; a.target = pestanaDe(clave);
+      if (necesitaNoopener(h[2])) a.rel = "noopener";
       /* El rótulo dice la ACCIÓN, no sólo el nombre: «Ir a Linneo», no «Linneo».
          Así los tres tipos de botón de la fila se leen con la misma fórmula —
          «Volver a la propuesta», «Volver a Hestia», «Ir a Linneo»— y se entiende

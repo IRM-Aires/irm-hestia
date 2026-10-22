@@ -734,11 +734,34 @@ function instalarCopiar({ avisar = null } = {}) {
       avisarHs("No pude abrir «" + clave + "»: no está entre tus herramientas. Elegí una de abajo.");
       return;
     }
-    var a = document.createElement("a");
-    a.href = h.url; a.target = pestanaDe(clave);   /* sin noopener: reusa y enfoca */
-    a.style.display = "none"; document.body.appendChild(a); a.click();
-    setTimeout(function () { try { a.remove(); } catch (e) {} }, 0);
-    avisarHs("Te llevé a " + ((h.nombre_propio || h.nombre) || clave) + ".");
+    /* NO se salta solo, y esto se midió en Chrome el 2026-10-22: el clic
+       automático sí funciona y sí navega la pestaña del destino — pero
+       **navegar una pestaña por su nombre NUNCA la trae al frente**. O sea que
+       la persona se quedaba mirando Hestia con Dédalo actualizado en una
+       pestaña que no veía. El administrador lo dijo tal cual: «toco el botón de
+       Dédalo y me voy para Hestia».
+       Entonces se ofrece un botón. Un clic de una persona sobre un destino que
+       todavía no tiene pestaña SÍ la abre al frente, y sobre uno que ya la tiene
+       la navega — en los dos casos, con la persona decidiendo. */
+    var nombre = (h.nombre_propio || h.nombre) || clave;
+    var caja = document.getElementById("hs-te-espera");
+    if (!caja) {
+      caja = document.createElement("div");
+      caja.id = "hs-te-espera"; caja.className = "hs-aviso";
+      caja.setAttribute("role", "status");
+      var g = document.getElementById("hs-grilla");
+      if (g && g.parentNode) g.parentNode.insertBefore(caja, g); else document.body.appendChild(caja);
+    }
+    caja.innerHTML = "";
+    var t = document.createElement("span");
+    t.textContent = "Venías hacia " + nombre + ". ";
+    var b = document.createElement("a");
+    b.className = "hs-btn fuerte"; b.href = h.url; b.target = pestanaDe(clave);
+    b.setAttribute("data-abre", clave);
+    b.style.marginLeft = "10px";
+    b.textContent = "Ir a " + nombre;
+    caja.appendChild(t); caja.appendChild(b);
+    try { b.focus(); } catch (e) {}   /* queda bajo el dedo: un Enter alcanza */
   }
 
   var ULTIMO = null;
