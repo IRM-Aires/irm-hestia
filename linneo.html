@@ -3824,14 +3824,6 @@ window.IRMNav = window.IRMNav || (function () {
           p_de: yo.clave, p_rotulo: yo.rotulo, p_url: yo.url })).catch(function () {});
       } catch (e) {}
     }
-    /* Misma regla que en el atajo de la fila: si ya está abierta, no se abre
-       otra. El paso ya quedó escrito arriba, que es lo que esa pestaña necesita
-       para mostrar su botón de volver cuando la persona cambie a ella. */
-    if (yaAbierta(clave) === true) {
-      avisar((NOMBRES[clave] || [])[0] + " ya está abierta en otra pestaña — cambiá a ella (no abro otra)");
-      ultimo = { camino: "no abrí", detalle: "ya estaba abierta; dejé el paso escrito" };
-      return true;
-    }
     var u = url;
     try {
       var sep = u.indexOf("?") >= 0 ? "&" : "?";
@@ -3856,8 +3848,24 @@ window.IRMNav = window.IRMNav || (function () {
        desde la URL. Abrir siempre vale más que volver elegante. */
     try {
       var a = document.createElement("a");
-      a.href = u; a.target = pestanaDe(clave);
-      if (necesitaNoopener(u)) a.rel = "noopener";
+      if (llegoSola(u)) {
+        /* Destino que no es claude.ai (Hestia, Linneo): el enlace va SIN
+           noopener, así que el navegador encuentra la pestaña por su nombre, la
+           navega y la enfoca. Llega sola, sin abrir nada. */
+        a.href = u; a.target = pestanaDe(clave);
+      } else {
+        /* Destino en claude.ai: desde adentro de un marco con sandbox hace falta
+           `noopener` —si no, ERR_BLOCKED_BY_RESPONSE— y con noopener el nombre
+           deja de servir: SIEMPRE abriría otra ventana. Entonces no se va
+           directo: se navega la pestaña de HESTIA, que sí se puede alcanzar por
+           su nombre, y Hestia hace el segundo tramo desde primer nivel, donde el
+           nombre funciona para todos. Dos tramos, cero ventanas nuevas.
+           Lo que se paga, y se dice: se pasa por la pantalla de Hestia un
+           instante. Es el precio de no acumular una ventana por salto. */
+        a.href = HESTIA + "?ir=" + encodeURIComponent(clave);
+        a.target = pestanaDe("hestia");
+        ultimo = { camino: "transbordo", detalle: "fui por Hestia: a un artefacto no se puede llegar sin abrir otra" };
+      }
       a.style.display = "none";
       document.body.appendChild(a);
       a.click();
@@ -3918,6 +3926,32 @@ window.IRMNav = window.IRMNav || (function () {
          `noopener` el navegador **no busca** una pestaña con ese nombre. Siempre
          abre otra. Está en la especificación y acá se pagó con tres intentos.
 
+     UNA CONTRADICCIÓN QUE NO SE LOGRÓ MEDIR, y se deja escrita en vez de
+     taparse: el 2026-10-22 el administrador abrió APU dos veces y vio UNA sola
+     ventana. Eso y la especificación no pueden ser las dos ciertas.
+
+     Hay una reconciliación posible —que lo observado fuera un destino de Hestia,
+     que va SIN `noopener` y por eso sí reusa la pestaña— pero **NO cubre el caso
+     que se reportó**, y conviene decirlo así para que nadie deje de buscar: lo
+     que se le pidió tocar fue «APU», y «APU» apunta a Dédalo, que vive en
+     claude.ai, que es justo el destino que SIEMPRE necesita `noopener`. Esa
+     explicación sirve para «Recursos», no para el dato que teníamos.
+
+     Entonces siguen sin encajar tres cosas, y ninguna se sabe: la
+     especificación, lo que se observó, y la explicación. Las salidas posibles:
+     que se haya tocado Recursos y no APU, que las ventanas se hayan contado de
+     otra forma, o que el navegador haga algo que ninguna de las dos sesiones
+     leyó bien.
+
+     **Una explicación que no explica el único dato que había es peor que
+     ninguna**: la siguiente persona deja de buscar. (`necesitaNoopener()`, más
+     abajo, es la frontera entre los dos tipos de destino.)
+
+     Lo que vuelve esto una nota al pie y no un problema: **este diseño ya no
+     depende de que la pestaña se reuse**. Pregunta si la herramienta está
+     abierta. Cambiar la premisa es la única forma honesta de cerrar una
+     discusión sobre un hecho que no se pudo medir.
+
      O sea: desde adentro de un artefacto, ir a OTRO artefacto obliga a abrir
      pestaña. No hay vuelta. Lo que sí se puede es **no abrir una segunda**, que
      es exactamente lo que pidió el administrador: «si está abierta, andá a esa;
@@ -3936,16 +3970,35 @@ window.IRMNav = window.IRMNav || (function () {
      la que ya estaba abierta es ponerse «← te llaman» en el título, para
      encontrarla de un vistazo entre diez pestañas. */
   function pestanaDe(clave) { return "irm-" + String(clave || "herramienta"); }
+  /* La estación de transbordo. Se declara acá y no en cada herramienta porque
+     dos copias de una dirección se desincronizan en la primera mudanza. */
+  var HESTIA = "https://irm-hestia.vercel.app/";
+  /* ¿Puedo llegar sola a este destino sin abrir una ventana más?
+     Sólo si NO necesito `noopener` — o sea, si el destino no es claude.ai —
+     porque sin noopener el navegador busca la pestaña por su nombre, la navega
+     y la enfoca. Con noopener crea una nueva, siempre. */
+  function llegoSola(u) { return !necesitaNoopener(u); }
   /* Qué otras herramientas tiene abiertas esta persona AHORA. La llena el
      latido. Arranca en `null` y no en `{}` a propósito: `null` es «todavía no
      sé», `{}` sería «ninguna», y mientras el primer latido no vuelva no hay
      ningún hecho que afirmar. */
   var ABIERTAS = null;
   var LATIDO = null, TITULO_REAL = "", LLAMADO = false, PASO_VISTO = "";
-  var SQL = null, QUIEN = "";
-  function conectar(fnSql, quien) {
+  var SQL = null, QUIEN = "", CORREO = "";
+  /* `correo` es opcional y vale la pena mandarlo si la herramienta lo sabe.
+     POR QUÉ, medido el 2026-10-22 con las tres herramientas abiertas: Hestia
+     latía como `datos@irmaires.com` —el correo de su sesión— y los artefactos
+     como `Datos iRM` —el nombre del visor de claude.ai—. La misma persona
+     contaba como dos, así que cada herramienta preguntaba «¿qué tengo abierto?»
+     y se respondía «nada»: abrir otra era lo correcto según lo que sabía. El
+     defecto estaba una capa ANTES de la decisión.
+     La base ya resuelve la equivalencia (`core.nav_persona`), y mandar el correo
+     acá hace que la aprenda sola en vez de que alguien la anote por cada
+     persona nueva. Si no se sabe, no pasa nada: se manda el nombre y listo. */
+  function conectar(fnSql, quien, correo) {
     SQL = (typeof fnSql === "function") ? fnSql : null;
     QUIEN = String(quien || "");
+    CORREO = String(correo || "");
     /* Al conectar se vuelve a preguntar: puede que el botón no se haya podido
        dibujar antes por no saber de dónde veníamos. */
     if (SQL && QUIEN && !origen()) preguntarPorLaBase();
@@ -3966,7 +4019,7 @@ window.IRMNav = window.IRMNav || (function () {
     try {
       Promise.resolve(SQL("nav_latido", { p_quien: QUIEN, p_clave: MI,
           p_rotulo: ROTULO_MIO || (NOMBRES[MI] || [])[0] || MI,
-          p_url: location.href }))
+          p_url: location.href, p_correo: CORREO }))
         .then(function (r) {
           /* Una respuesta con `error` NO es una respuesta: es la base diciendo
              que no pudo. Tomarla como «ninguna abierta» sería guardar un fallo
@@ -4060,7 +4113,7 @@ window.IRMNav = window.IRMNav || (function () {
         var ab = yaAbierta(c) === true;
         a.classList.toggle("irm-abierta", ab);
         var n = (NOMBRES[c] || [])[0] || c;
-        a.title = ab ? ("Ir a " + n + " — ya la tenés abierta en otra pestaña; no se abre otra")
+        a.title = ab ? ("Ir a " + n + " — ya la tenés abierta; te lleva a esa pestaña, no abre otra")
                      : ("Ir a " + n + " — se abre en su propia pestaña; lo que estés haciendo acá no se pierde");
       });
     } catch (e) {}
@@ -4190,9 +4243,10 @@ window.IRMNav = window.IRMNav || (function () {
       var a = document.createElement("a");
       a.className = "irm-atajo-ir";
       a.setAttribute("data-irm-ir", clave);
-      a.href = h[2];
-      a.target = pestanaDe(clave);
-      if (necesitaNoopener(h[2])) a.rel = "noopener";
+      /* El enlace apunta a donde corresponde ANTES de que corra una línea de
+         JS: si el componente fallara, el botón sigue llevando a algún lado. */
+      if (llegoSola(h[2])) { a.href = h[2]; a.target = pestanaDe(clave); }
+      else { a.href = HESTIA + "?ir=" + encodeURIComponent(clave); a.target = pestanaDe("hestia"); }
       /* El rótulo dice la ACCIÓN, no sólo el nombre: «Ir a Linneo», no «Linneo».
          Así los tres tipos de botón de la fila se leen con la misma fórmula —
          «Volver a la propuesta», «Volver a Hestia», «Ir a Linneo»— y se entiende
@@ -4209,11 +4263,11 @@ window.IRMNav = window.IRMNav || (function () {
            que cuando cambie a esa pestaña va a encontrar su botón de volver y el
            título marcado. Con `null` (todavía no sé) se abre, que es lo de
            siempre: no sé no es no. */
-        if (yaAbierta(clave) === true) {
-          try { ev.preventDefault(); } catch (e) {}
-          avisar((NOMBRES[clave] || [])[0] + " ya está abierta en otra pestaña — cambiá a ella (no abro otra)");
-          return false;
-        }
+        /* Acá NO se frena. La primera versión frenaba cuando la herramienta ya
+           estaba abierta, y el administrador lo reportó en una frase: «Rómulo ya
+           no abre». Tenía razón — negarse a abrir sin poder llevar a la pestaña
+           deja a la persona varada, que es peor que abrir de más. Ahora el
+           enlace lleva: directo si llega solo, y por Hestia si no. */
       });
       b.appendChild(a);
     });

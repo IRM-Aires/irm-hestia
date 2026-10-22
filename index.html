@@ -602,8 +602,15 @@ function instalarCopiar({ avisar = null } = {}) {
       // El `rel="noopener"` es obligatorio para claude.ai —sin él responde
       // ERR_BLOCKED_BY_RESPONSE—, y por eso acá el nombre de la pestaña NO
       // alcanza para reusarla: el freno de verdad es ABIERTAS, de abajo.
+      // SIN `rel="noopener"`, y es deliberado: el ERR_BLOCKED_BY_RESPONSE que
+      // obliga a ponerlo pasa cuando el enlace sale de DENTRO de un artefacto,
+      // que vive en un marco con sandbox. Hestia es una página de primer nivel:
+      // no hay sandbox que heredar, así que claude.ai se dibuja bien — y sin
+      // noopener el navegador SÍ busca la pestaña por su nombre, la navega y la
+      // ENFOCA. O sea que desde Hestia no hace falta frenar nada: el clic te
+      // lleva a la que ya tenías.
       abrir = '<a class="hs-btn fuerte" href="' + esc(h.url) + '" target="' + esc(pestanaDe(h.clave)) +
-              '" rel="noopener" data-abre="' + esc(h.clave) + '">Abrir ' + esc(titulo) + '</a>' +
+              '" data-abre="' + esc(h.clave) + '">Abrir ' + esc(titulo) + '</a>' +
               '<p class="hs-nota">Si claude.ai dice que no tenés acceso, falta que el administrador te la comparta en claude.ai.</p>';
     } else if (h.como_abre === "web" && h.url) {
       // Las de la web no necesitan `noopener`, así que acá el nombre SÍ funciona:
@@ -648,16 +655,14 @@ function instalarCopiar({ avisar = null } = {}) {
       });
     } catch (e) {}
   }
-  document.addEventListener("click", function (ev) {
-    var a = ev.target.closest && ev.target.closest("[data-abre]");
-    if (!a) return;
-    var clave = a.getAttribute("data-abre");
-    if (ABIERTAS && ABIERTAS[clave]) {
-      ev.preventDefault();
-      var n = (a.textContent || "").replace(/^Abrir\s+/, "");
-      avisarHs(n + " ya está abierta en otra pestaña — cambiá a ella (no abro otra)");
-    }
-  });
+  /* Acá NO se frena nada, y la primera versión sí lo hacía: con la herramienta
+     ya abierta, el clic no abría y avisaba «cambiá a esa pestaña». El
+     administrador lo reportó en una frase — «Rómulo ya no abre desde Hestia»— y
+     tenía razón: **negarse a abrir sin poder llevar a la pestaña deja a la
+     persona varada**. Peor que abrir de más.
+     Desde Hestia no hace falta frenar: el enlace va sin `noopener`, así que el
+     navegador encuentra la pestaña por su nombre, la navega y la enfoca. El
+     clic hace exactamente lo que se pedía: te lleva a la que ya estaba. */
   function avisarHs(txt) {
     try {
       var d = document.getElementById("hs-ya-abierta");
@@ -668,6 +673,46 @@ function instalarCopiar({ avisar = null } = {}) {
       d.textContent = txt; d.hidden = false;
       clearTimeout(d._t); d._t = setTimeout(function () { d.hidden = true; }, 6000);
     } catch (e) {}
+  }
+
+  /* ── Hestia como estación de transbordo (TK-0320, 2026-10-22) ────────────
+     Un artefacto NO puede llevarte a una pestaña que ya existe: vive en un marco
+     con sandbox, su enlace necesita `rel="noopener"` para que claude.ai se
+     dibuje, y con noopener el navegador deja de buscar la pestaña por nombre y
+     abre otra. Siempre. Por eso el circuito «Dédalo → Linneo → Pitia» dejaba una
+     ventana por salto, que es lo que reportó el administrador cuatro veces.
+
+     Pero hay una asimetría que lo resuelve: **Hestia no está en un marco**. Un
+     artefacto SÍ puede navegar la pestaña de Hestia por su nombre —Hestia no
+     manda `frame-ancestors` ni COOP, así que su enlace va sin noopener— y desde
+     acá, que es primer nivel, el nombre funciona para todos los destinos.
+
+     Entonces el salto no va directo: va por acá. El artefacto navega la pestaña
+     de Hestia a `?ir=<clave>`, y Hestia hace el segundo tramo, que sí reusa y
+     enfoca. Dos tramos, CERO ventanas nuevas — en vez de un tramo y una ventana.
+
+     Es un transbordo: el tren no llega a esa estación, así que se cambia en la
+     que conecta con las dos. */
+  function entregarSiMePidieron(hs) {
+    var clave = "";
+    try { clave = new URLSearchParams(location.search).get("ir") || ""; } catch (e) {}
+    if (!clave) return;
+    /* La dirección se limpia ANTES de saltar: si quedara, recargar Hestia
+       volvería a mandarte afuera y no habría forma de quedarse en casa. */
+    try { history.replaceState(null, "", location.pathname); } catch (e) {}
+    var h = null;
+    for (var i = 0; i < hs.length; i++) if (hs[i].clave === clave) { h = hs[i]; break; }
+    /* Lo que no se puede entregar se dice, no se calla: puede que esa
+       herramienta no esté entre las autorizadas para esta persona. */
+    if (!h || !h.url) {
+      avisarHs("No pude abrir «" + clave + "»: no está entre tus herramientas. Elegí una de abajo.");
+      return;
+    }
+    var a = document.createElement("a");
+    a.href = h.url; a.target = pestanaDe(clave);   /* sin noopener: reusa y enfoca */
+    a.style.display = "none"; document.body.appendChild(a); a.click();
+    setTimeout(function () { try { a.remove(); } catch (e) {} }, 0);
+    avisarHs("Te llevé a " + ((h.nombre_propio || h.nombre) || clave) + ".");
   }
 
   var ULTIMO = null;
@@ -695,6 +740,7 @@ function instalarCopiar({ avisar = null } = {}) {
     var hs = d.herramientas || [];
     $("hs-grilla").innerHTML = hs.map(tarjeta).join("");
     marcarAbiertas();                          /* lo que ya está abierto, marcado de entrada */
+    entregarSiMePidieron(hs);                  /* ?ir=<clave> — ver abajo */
     var pend = d.pendientes || [];
     $("hs-pendientes").innerHTML = pend.length ? '<h2 style="font-size:16px;margin:18px 0 4px">Pedidos en espera</h2>' +
       '<p class="hs-nota">El administrador los revisa en Éaco. Si pediste uno por error, la caneca lo retira.</p><ul class="hs-lista">' +
