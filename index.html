@@ -700,8 +700,34 @@ function instalarCopiar({ avisar = null } = {}) {
     /* La dirección se limpia ANTES de saltar: si quedara, recargar Hestia
        volvería a mandarte afuera y no habría forma de quedarse en casa. */
     try { history.replaceState(null, "", location.pathname); } catch (e) {}
+    /* Se busca por la clave Y por el nombre propio, y eso NO es un adorno: las
+       dos listas se llaman distinto y nadie lo había cruzado. En
+       `acceso.artefacto` Dédalo es `panel_apus` y Linneo es `panel_ime`; en el
+       catálogo del componente de navegación son `dedalo` y `linneo`. Pedir
+       `?ir=dedalo` no encontraba nada y la persona quedaba varada en Hestia —
+       reportado por el administrador el 2026-10-22.
+       Aceptar las dos formas arregla la CLASE, no el caso: el día que alguien
+       agregue una herramienta con su clave propia, sigue funcionando sin que
+       nadie tenga que acordarse de sincronizar dos listas. */
+    var pedido = clave.toLowerCase();
+    function sinTildes(t) {
+      return String(t || "").toLowerCase()
+        .replace(/[áàä]/g,"a").replace(/[éèë]/g,"e").replace(/[íìï]/g,"i")
+        .replace(/[óòö]/g,"o").replace(/[úùü]/g,"u").replace(/ñ/g,"n")
+        .replace(/[^a-z0-9]+/g,"");
+    }
     var h = null;
-    for (var i = 0; i < hs.length; i++) if (hs[i].clave === clave) { h = hs[i]; break; }
+    for (var i = 0; i < hs.length; i++) {
+      var c = hs[i];
+      if (String(c.clave || "").toLowerCase() === pedido) { h = c; break; }
+    }
+    if (!h) for (var j = 0; j < hs.length; j++) {
+      var d = hs[j], np = sinTildes(d.nombre_propio);
+      /* «romulo» tiene que encontrar a «Rómulo y Remo», así que vale el
+         comienzo — pero sólo del nombre propio, nunca al revés: si no,
+         cualquier clave corta pescaría la primera herramienta de la lista. */
+      if (np && (np === sinTildes(pedido) || np.indexOf(sinTildes(pedido)) === 0)) { h = d; break; }
+    }
     /* Lo que no se puede entregar se dice, no se calla: puede que esa
        herramienta no esté entre las autorizadas para esta persona. */
     if (!h || !h.url) {
