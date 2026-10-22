@@ -3669,7 +3669,8 @@ window.IRMNav = window.IRMNav || (function () {
            2026-10-22, con un ERR_BLOCKED_BY_RESPONSE en pantalla—. El target
            con nombre sí se respeta: la pestaña se sigue reusando. */
         var a = document.createElement("a");
-        a.href = destino; a.target = "irm-" + o.clave; a.rel = "noopener";
+        a.href = destino; a.target = "irm-" + o.clave;
+        if (necesitaNoopener(destino)) a.rel = "noopener";
         a.style.display = "none"; document.body.appendChild(a); a.click();
         setTimeout(function () { try { a.remove(); } catch (e3) {} }, 0);
         ultimo = { camino: "pestaña con nombre",
@@ -3690,6 +3691,8 @@ window.IRMNav = window.IRMNav || (function () {
     var op = null;
     try { op = !!(window.opener || (window.top && window.top !== window ? window.top.opener : null)); } catch (e) { op = "bloqueado"; }
     return { vengo_de: o, tengo_opener: op, ultimo_intento: ultimo,
+             noopener_por_destino: { claude_ai: true, hestia: false,
+               por_que: "claude.ai manda cross-origin-opener-policy y frame-ancestors; Hestia no manda ninguna (medido 2026-10-22)" },
              en_marco: (function(){ try { return window.top !== window; } catch(e){ return "bloqueado"; } })() };
   }
 
@@ -3722,7 +3725,8 @@ window.IRMNav = window.IRMNav || (function () {
        desde la URL. Abrir siempre vale más que volver elegante. */
     try {
       var a = document.createElement("a");
-      a.href = u; a.target = "irm-" + clave; a.rel = "noopener";
+      a.href = u; a.target = "irm-" + clave;
+      if (necesitaNoopener(u)) a.rel = "noopener";
       a.style.display = "none";
       document.body.appendChild(a);
       a.click();
@@ -3732,6 +3736,24 @@ window.IRMNav = window.IRMNav || (function () {
     /* Último recurso: si ni el enlace se pudo, que al menos lo intente. */
     try { var w = window.open(u, "irm-" + clave, "noopener"); if (w !== undefined) return true; } catch (e) {}
     return false;
+  }
+
+  /* ¿Hace falta `noopener` para ESTE destino?
+     Medido el 2026-10-22 con las cabeceras de los dos:
+       claude.ai  → cross-origin-opener-policy + frame-ancestors  → SÍ hace falta
+       irm-hestia → ninguna de las dos                            → NO hace falta
+     Ponerlo parejo costaba caro: con `noopener` el navegador crea un contexto
+     NUEVO y el nombre deja de servir para encontrar el que ya estaba, así que se
+     pierde la reutilización de la pestaña — que era el pedido de fondo. Entonces
+     se pone sólo donde la cabecera lo obliga.
+     Lo que NO está medido y no se afirma: si con `noopener` el nombre se reusa.
+     La lectura de la especificación dice que no; no se encontró instrumento para
+     comprobarlo (el panel del navegador no abre pestañas). Mientras tanto, donde
+     no hace falta no se pone, y así al menos la mitad de los casos conserva la
+     pestaña con certeza. */
+  function necesitaNoopener(u) {
+    try { return new URL(u, location.href).hostname.indexOf("claude.ai") >= 0; }
+    catch (e) { return true; }   /* ante la duda, que abra */
   }
 
   var MI = "";
