@@ -3570,10 +3570,21 @@ else IRMNapier.iniciar();
 .irm-nav-ico { width: 18px; height: 18px; flex: none; }
 /* Cuando el de volver está, el «Volver a Hestia» se corre a su derecha: las dos
    salidas conviven y ninguna tapa a la otra. */
-body.irm-con-nav .irm-volver { left: calc(16px + var(--irm-nav-ancho, 190px) + 10px); }
+/* 14 px y no 10: el ancho se mide antes de que termine de cargar la letra, así
+   que sale unos píxeles corto. Medido: con 10 quedaban 5 px de aire, y 5 px es
+   un choque esperando a que una palabra crezca. */
+body.irm-con-nav .irm-volver { left: calc(16px + var(--irm-nav-ancho, 190px) + 14px); }
+/* En el celular se achica a un círculo con la flecha, como hacen «Volver a Hestia»
+   y «Reportar». Conservar el texto completo lo dejaba en ~200 px y la franja no da
+   para tantos: medido por la sesión de Rómulo a 375 px reales, chocaba 34 px con
+   «Volver a Hestia» y 44 px con su atajo de recursos, y encima empujaba al de
+   Hestia sobre otro botón suyo. El rótulo no se pierde: vive en aria-label y en
+   el title, que es lo que lee el lector de pantalla y lo que sale al apuntar. */
 @media (max-width: 560px) {
-  .irm-nav { padding: 8px 12px; font-size: 12px; }
-  body.irm-con-nav .irm-volver { left: calc(16px + var(--irm-nav-ancho, 150px) + 8px); }
+  .irm-nav { width: 44px; height: 44px; min-height: 44px; padding: 0; justify-content: center; }
+  .irm-nav .irm-nav-txt { position: absolute; width: 1px; height: 1px; overflow: hidden;
+    clip: rect(0 0 0 0); white-space: nowrap; }
+  body.irm-con-nav .irm-volver { left: calc(16px + var(--irm-nav-ancho, 44px) + 8px); }
 }
 @media (prefers-reduced-motion: reduce) { .irm-nav { transition: none; } }
 @media print { .irm-nav { display: none; } }
