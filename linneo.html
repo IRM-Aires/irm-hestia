@@ -3604,7 +3604,7 @@ body.irm-con-nav .irm-volver { left: calc(16px + var(--irm-nav-ancho, 190px) + 1
 <script>
 /* Navegación entre herramientas — componente canónico IRM v1 (componente_navegar.py) */
 window.IRMNav = window.IRMNav || (function () {
-  var NOMBRES = {"romulo": ["Rómulo y Remo", "la propuesta"], "dedalo": ["Dédalo", "los APUs"], "linneo": ["Linneo", "el catálogo"], "pitia": ["Pitia", "el análisis"]};
+  var NOMBRES = {"romulo": ["Rómulo y Remo", "la propuesta", "https://claude.ai/artifact/F5P9Nr2tLezMw66VnswHof"], "dedalo": ["Dédalo", "los APUs", "https://claude.ai/artifact/BpAeJ46qVEAyF3zeVjP1MJ"], "linneo": ["Linneo", "el catálogo", "https://irm-hestia.vercel.app/linneo.html"], "pitia": ["Pitia", "el análisis", "https://claude.ai/artifact/BbWVWgHbFDh9i7vKDMpgjB"]};
   var ICONO = '<svg class="irm-nav-ico" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false"><path d="M19 12H5"/><path d="M12 19l-7-7 7-7"/></svg>';
   var ultimo = { camino: null, detalle: "todavía no se intentó" };
 
@@ -3655,16 +3655,31 @@ window.IRMNav = window.IRMNav || (function () {
 
     /* 2 · La pestaña con nombre. Recarga la herramienta, así que el estado sólo
        sobrevive si ella sabe reabrirse desde su URL. Se dice, no se disimula. */
-    if (o.url) {
+    /* La dirección sale de lo que mandaron; si no mandaron nada, de la del
+       catálogo. Así el botón SIEMPRE lleva a algún lado: el 2026-10-22 el
+       administrador vio en Linneo un «Volver a la propuesta» que no hacía NADA
+       porque había llegado `irm_de` pero no la URL. Un botón que aparece y no
+       lleva a ninguna parte es peor que no tenerlo. */
+    var destino = o.url || (NOMBRES[o.clave] || [])[2] || "";
+    if (destino) {
       try {
-        var w = window.open(o.url, "irm-" + o.clave);
-        if (w) { try { w.focus(); } catch (e2) {}
-          ultimo = { camino: "pestaña con nombre", detalle: "reusé la pestaña «irm-" + o.clave + "»; si se recargó, el estado depende de que la herramienta sepa reabrirse" };
-          return true; }
+        /* Enlace con noopener, NO window.open: claude.ai responde con
+           frame-ancestors y cross-origin-opener-policy, y una ventana que
+           conserva el opener desde dentro del marco no abre —medido el
+           2026-10-22, con un ERR_BLOCKED_BY_RESPONSE en pantalla—. El target
+           con nombre sí se respeta: la pestaña se sigue reusando. */
+        var a = document.createElement("a");
+        a.href = destino; a.target = "irm-" + o.clave; a.rel = "noopener";
+        a.style.display = "none"; document.body.appendChild(a); a.click();
+        setTimeout(function () { try { a.remove(); } catch (e3) {} }, 0);
+        ultimo = { camino: "pestaña con nombre",
+                   detalle: "fui a la pestaña «irm-" + o.clave + "»" +
+                     (o.url ? "" : " (a su inicio: no me mandaron a qué punto volver)") };
+        return true;
       } catch (e) {}
     }
 
-    ultimo = { camino: "no se pudo", detalle: "ni opener ni pestaña con nombre" };
+    ultimo = { camino: "no se pudo", detalle: "no hay opener (claude.ai no lo permite) y no me dejaron la URL de vuelta" };
     return false;
   }
 
@@ -3690,8 +3705,32 @@ window.IRMNav = window.IRMNav || (function () {
           (yo.rotulo ? "&irm_rotulo=" + encodeURIComponent(yo.rotulo) : "") +
           "&irm_url=" + encodeURIComponent(yo.url);
     } catch (e) {}
-    var w = window.open(u, "irm-" + clave);   /* sin noopener: es lo que permite volver */
-    if (w) { try { w.focus(); } catch (e) {} return true; }
+    /* ── Por qué un ENLACE y no window.open ─────────────────────────────────
+       Medido el 2026-10-22, con el administrador mirando un «ERR_BLOCKED_BY_
+       RESPONSE» en pantalla: claude.ai responde con
+         content-security-policy: frame-ancestors 'self' …
+         cross-origin-opener-policy: same-origin-allow-popups
+       Una ventana abierta desde DENTRO del marco aislado conservando el opener
+       queda atada a ese marco, y claude.ai se niega a dibujarse así. Resultado:
+       no abría nada. Yo mismo había pedido quitar el `noopener` para poder
+       volver sin recargar; el precio era no poder llegar.
+
+       Un enlace con `rel="noopener"` SÍ respeta el `target` con nombre, así que
+       la pestaña se sigue reusando —que era el pedido de fondo— y lo único que
+       se pierde es el regreso por opener. Para eso está el plan B: la pestaña
+       con nombre se navega a `irm_url`, y Rómulo sabe reabrir su propuesta
+       desde la URL. Abrir siempre vale más que volver elegante. */
+    try {
+      var a = document.createElement("a");
+      a.href = u; a.target = "irm-" + clave; a.rel = "noopener";
+      a.style.display = "none";
+      document.body.appendChild(a);
+      a.click();
+      setTimeout(function () { try { a.remove(); } catch (e) {} }, 0);
+      return true;
+    } catch (e) {}
+    /* Último recurso: si ni el enlace se pudo, que al menos lo intente. */
+    try { var w = window.open(u, "irm-" + clave, "noopener"); if (w !== undefined) return true; } catch (e) {}
     return false;
   }
 
@@ -3703,7 +3742,7 @@ window.IRMNav = window.IRMNav || (function () {
     if (document.querySelector(".irm-nav")) return;
     var o = origen();
     if (!o) return;                      /* sin origen no hay botón: no se inventa */
-    var nom = NOMBRES[o.clave] || ["", "de donde venías"];
+    var nom = NOMBRES[o.clave] || ["", "de donde venías", ""];
     var b = document.createElement("button");
     b.type = "button";
     b.className = "irm-nav";
