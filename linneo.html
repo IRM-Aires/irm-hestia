@@ -3167,15 +3167,18 @@ window.IRMVolver = window.IRMVolver || (function () {
     var a = document.createElement("a");
     a.className = "irm-volver";
     a.href = enHestia ? "./" : HESTIA;
-    /* TK-0320 · Hestia cae en LA MISMA pestaña de herramientas que todo lo demás.
-       Hasta el 2026-10-22 abría una propia —«irm-hestia»— para no perder lo que
-       estabas haciendo. El administrador descartó ese canje tres veces: saltar
-       entre herramientas sumaba una pestaña cada vez y terminabas sin saber en
-       cuál estabas. El nombre lo da el componente de navegación, para no tener
-       dos copias de la misma decisión; si no está, se cae al de siempre. */
+    /* TK-0320 · Hestia tiene SU pestaña, «irm-hestia», como cada herramienta.
+       Y acá, a diferencia de los artefactos, el nombre funciona de verdad:
+       Hestia no manda `frame-ancestors` ni `cross-origin-opener-policy`, así que
+       el enlace no necesita `rel="noopener"` — y sin noopener el navegador SÍ
+       busca la pestaña que ya existe, la navega y la enfoca. O sea que acá
+       «volver a Hestia» de verdad vuelve, no abre una copia.
+       (La historia de las tres versiones está en componente_navegar.py; acá
+       basta saber que el nombre lo da ese componente para no tener dos copias
+       de la misma decisión.) */
     if (!enHestia) {
-      var pest = "irm-herramienta";
-      try { if (window.IRMNav && IRMNav.pestana) pest = IRMNav.pestana(); } catch (e) {}
+      var pest = "irm-hestia";
+      try { if (window.IRMNav && IRMNav.pestana) pest = IRMNav.pestana("hestia"); } catch (e) {}
       a.target = pest;
     }
     a.setAttribute("aria-label", "Volver a Hestia para abrir otra herramienta");
@@ -3590,7 +3593,7 @@ else IRMNapier.iniciar();
 </script>
 
 <style>
-/* Navegación entre herramientas — componente canónico IRM v1 (componente_navegar.py) */
+/* Navegación entre herramientas — componente canónico IRM v2 (componente_navegar.py) */
 /* Va a la IZQUIERDA, al lado del «Volver a Hestia», no encima: son dos destinos
    distintos —la casa y de donde venías— y confundirlos pierde el trabajo. */
 /* ── UN SOLO CONTENEDOR, y por eso la posición está garantizada ───────────
@@ -3629,6 +3632,29 @@ else IRMNapier.iniciar();
 @media (prefers-color-scheme: dark) {
   .irm-atajo-ir { background: var(--superficie, #1a1a19); color: var(--tinta, #fff); } }
 .irm-atajo-ir .irm-atajo-ico { width: 16px; height: 16px; flex: none; }
+/* Ya está abierta en otra pestaña: un punto cian al lado del nombre. Hundirlo
+   no abre otra —ésa es la regla— y conviene saberlo ANTES de hundirlo.
+   Es una marca, no un bloqueo: el botón sigue vivo y sigue llevando a la
+   herramienta; lo que cambia es que en vez de abrir una copia avisa dónde
+   está. Por eso no lleva el lenguaje del bloqueo (ese tiene su propio pilar). */
+.irm-atajo-ir.irm-abierta::after { content: ""; width: 7px; height: 7px; flex: none;
+  border-radius: 50%; background: #00B9CE; margin-left: 2px; }
+/* El aviso. Va ENCIMA de la franja de botones, nunca sobre ella: la franja de
+   abajo tiene su propio pilar y declara su altura en --irm-franja-abajo. */
+.irm-nav-aviso { position: fixed; left: 16px; bottom: calc(var(--irm-franja-abajo, 76px) + 8px);
+  z-index: 2147483001; max-width: min(420px, calc(100vw - 32px));
+  padding: 10px 14px; border-radius: 10px; border: 1px solid #00B9CE;
+  background: var(--superficie, #fcfcfb); color: var(--tinta, #0b0b0b);
+  font: 500 13px var(--cuerpo, Inter, system-ui, sans-serif); line-height: 1.4;
+  box-shadow: 0 6px 24px rgba(0,0,0,.18);
+  opacity: 0; transform: translateY(6px); pointer-events: none;
+  transition: opacity .18s, transform .18s; }
+.irm-nav-aviso.se-ve { opacity: 1; transform: none; }
+@media (prefers-color-scheme: dark) {
+  .irm-nav-aviso { background: var(--superficie, #1a1a19); color: var(--tinta, #fff); } }
+@media (prefers-reduced-motion: reduce) {
+  .irm-nav-aviso { transition: none; transform: none; } }
+@media print { .irm-nav-aviso { display: none; } }
 @media (max-width: 560px) {
   .irm-atajo-ir { width: 44px; height: 44px; min-height: 44px; padding: 0; justify-content: center; }
   .irm-atajo-ir .irm-atajo-txt { position: absolute; width: 1px; height: 1px; overflow: hidden;
@@ -3681,7 +3707,7 @@ else IRMNapier.iniciar();
 @media print { .irm-nav { display: none; } }
 </style>
 <script>
-/* Navegación entre herramientas — componente canónico IRM v1 (componente_navegar.py) */
+/* Navegación entre herramientas — componente canónico IRM v2 (componente_navegar.py) */
 window.IRMNav = window.IRMNav || (function () {
   var NOMBRES = {"romulo": ["Rómulo y Remo", "la propuesta", "https://claude.ai/artifact/F5P9Nr2tLezMw66VnswHof"], "dedalo": ["Dédalo", "los APUs", "https://claude.ai/artifact/BpAeJ46qVEAyF3zeVjP1MJ"], "linneo": ["Linneo", "el catálogo", "https://irm-hestia.vercel.app/linneo.html"], "pitia": ["Pitia", "el análisis", "https://claude.ai/artifact/BbWVWgHbFDh9i7vKDMpgjB"]};
   var ICONO = '<svg class="irm-nav-ico" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false"><path d="M19 12H5"/><path d="M12 19l-7-7 7-7"/></svg>';
@@ -3740,6 +3766,15 @@ window.IRMNav = window.IRMNav || (function () {
        porque había llegado `irm_de` pero no la URL. Un botón que aparece y no
        lleva a ninguna parte es peor que no tenerlo. */
     var destino = o.url || (NOMBRES[o.clave] || [])[2] || "";
+    /* Antes de navegar: si la herramienta de la que vine sigue abierta, lo que
+       hay que hacer es ir a ESA pestaña, no abrir una copia. Y como una pestaña
+       de fondo no se puede enfocar desde acá, se dice en una línea dónde está.
+       Esto además conserva su estado exacto: la pestaña no se toca. */
+    if (yaAbierta(o.clave) === true) {
+      avisar((NOMBRES[o.clave] || [])[0] + " sigue abierta en otra pestaña — cambiá a ella y vas a encontrarla como la dejaste");
+      ultimo = { camino: "no abrí", detalle: "la de vuelta seguía abierta: no abrí una copia" };
+      return true;
+    }
     if (destino) {
       try {
         /* Enlace con noopener, NO window.open: claude.ai responde con
@@ -3748,7 +3783,7 @@ window.IRMNav = window.IRMNav || (function () {
            2026-10-22, con un ERR_BLOCKED_BY_RESPONSE en pantalla—. El target
            con nombre sí se respeta: la pestaña se sigue reusando. */
         var a = document.createElement("a");
-        a.href = destino; a.target = PESTANA;
+        a.href = destino; a.target = pestanaDe(o.clave);
         if (necesitaNoopener(destino)) a.rel = "noopener";
         a.style.display = "none"; document.body.appendChild(a); a.click();
         setTimeout(function () { try { a.remove(); } catch (e3) {} }, 0);
@@ -3789,6 +3824,14 @@ window.IRMNav = window.IRMNav || (function () {
           p_de: yo.clave, p_rotulo: yo.rotulo, p_url: yo.url })).catch(function () {});
       } catch (e) {}
     }
+    /* Misma regla que en el atajo de la fila: si ya está abierta, no se abre
+       otra. El paso ya quedó escrito arriba, que es lo que esa pestaña necesita
+       para mostrar su botón de volver cuando la persona cambie a ella. */
+    if (yaAbierta(clave) === true) {
+      avisar((NOMBRES[clave] || [])[0] + " ya está abierta en otra pestaña — cambiá a ella (no abro otra)");
+      ultimo = { camino: "no abrí", detalle: "ya estaba abierta; dejé el paso escrito" };
+      return true;
+    }
     var u = url;
     try {
       var sep = u.indexOf("?") >= 0 ? "&" : "?";
@@ -3813,7 +3856,7 @@ window.IRMNav = window.IRMNav || (function () {
        desde la URL. Abrir siempre vale más que volver elegante. */
     try {
       var a = document.createElement("a");
-      a.href = u; a.target = PESTANA;
+      a.href = u; a.target = pestanaDe(clave);
       if (necesitaNoopener(u)) a.rel = "noopener";
       a.style.display = "none";
       document.body.appendChild(a);
@@ -3822,7 +3865,7 @@ window.IRMNav = window.IRMNav || (function () {
       return true;
     } catch (e) {}
     /* Último recurso: si ni el enlace se pudo, que al menos lo intente. */
-    try { var w = window.open(u, PESTANA, "noopener"); if (w !== undefined) return true; } catch (e) {}
+    try { var w = window.open(u, pestanaDe(clave), "noopener"); if (w !== undefined) return true; } catch (e) {}
     return false;
   }
 
@@ -3853,22 +3896,52 @@ window.IRMNav = window.IRMNav || (function () {
      Queda la base, que las dos herramientas ya consultan con la misma persona.
      La página le pasa CÓMO hablar; el componente no sabe de conectores. */
 
-  /* ── UNA sola pestaña para todas las herramientas ───────────────────────────
-     Antes había una por herramienta («irm-dedalo», «irm-linneo»…): la segunda
-     vez que ibas a la misma se reusaba, pero saltar de una a otra siempre
-     sumaba una pestaña. El administrador lo dijo tres veces y tenía razón: «no
-     debe abrir ventanas nuevas… trabajar en el mismo entorno».
+  /* ── UNA pestaña POR HERRAMIENTA, y si ya está abierta no se abre otra ──
+     Esta es la tercera forma de resolverlo, y cada una se cambió porque la
+     anterior se midió mal. Conviene dejar las tres escritas:
 
-     Con un nombre único, el salto NAVEGA la pestaña de herramientas en vez de
-     abrir otra. Queda una sola: la primera vez se abre —no hay forma de evitar
-     esa, porque un artefacto vive en un marco aislado y no puede navegar la
-     pestaña que lo contiene— y de ahí en adelante todo pasa adentro.
+       v0 · `target="_blank"` …… cada clic, una pestaña. Diez clics, diez.
+       v1 · UNA pestaña para todas («irm-herramienta») …… el salto NAVEGA la
+            pestaña en vez de abrir otra… en teoría. En la práctica el
+            administrador siguió viendo ventanas nuevas.
+       v2 · una por herramienta + registro de abiertas …… lo que hay hoy.
 
-     Lo que se paga: la herramienta de la que salís se recarga al volver, así
-     que su estado depende de que sepa reabrirse desde su URL. Rómulo ya lo hace
-     (?p=<consecutivo>). Para una lista —Dédalo, Linneo— perder el scroll es
-     barato; perder una pestaña entre diez, no. */
-  var PESTANA = "irm-herramienta";
+     POR QUÉ v1 NO PODÍA FUNCIONAR — y es un límite de la plataforma, no un
+     defecto que se arregle con más código:
+
+       · Un artefacto corre dentro de un marco con `sandbox`. Una pestaña abierta
+         desde ahí HEREDA el sandbox, y claude.ai —que manda `frame-ancestors` y
+         `cross-origin-opener-policy`— se niega a dibujarse así: el
+         ERR_BLOCKED_BY_RESPONSE que vio el administrador el 2026-10-22.
+       · `rel="noopener"` lo arregla porque crea un contexto de primer nivel
+         NUEVO, que ya no hereda el sandbox. Pero «NUEVO» es literal: con
+         `noopener` el navegador **no busca** una pestaña con ese nombre. Siempre
+         abre otra. Está en la especificación y acá se pagó con tres intentos.
+
+     O sea: desde adentro de un artefacto, ir a OTRO artefacto obliga a abrir
+     pestaña. No hay vuelta. Lo que sí se puede es **no abrir una segunda**, que
+     es exactamente lo que pidió el administrador: «si está abierta, andá a esa;
+     si no está abierta, ahí sí invocala».
+
+     Entonces cada herramienta late en la base (`core.nav_latido`, cada 12 s) y
+     antes de abrir se pregunta si la de destino está viva. Si lo está, NO se
+     abre nada: se le deja el paso escrito —para que allá aparezca el botón de
+     volver— y se le dice a la persona que ya la tiene abierta. Si no está viva,
+     se abre, y con el nombre de SU pestaña, así donde el destino no es
+     claude.ai (Hestia) la pestaña se reusa de verdad.
+
+     Lo que esto NO hace, y se dice en vez de disimularlo: no cambia de pestaña
+     por su cuenta. Ningún navegador deja que una pestaña de fondo se traiga el
+     foco —sería la puerta de entrada de cualquier publicidad—. Lo que sí hace
+     la que ya estaba abierta es ponerse «← te llaman» en el título, para
+     encontrarla de un vistazo entre diez pestañas. */
+  function pestanaDe(clave) { return "irm-" + String(clave || "herramienta"); }
+  /* Qué otras herramientas tiene abiertas esta persona AHORA. La llena el
+     latido. Arranca en `null` y no en `{}` a propósito: `null` es «todavía no
+     sé», `{}` sería «ninguna», y mientras el primer latido no vuelva no hay
+     ningún hecho que afirmar. */
+  var ABIERTAS = null;
+  var LATIDO = null, TITULO_REAL = "", LLAMADO = false, PASO_VISTO = "";
   var SQL = null, QUIEN = "";
   function conectar(fnSql, quien) {
     SQL = (typeof fnSql === "function") ? fnSql : null;
@@ -3876,6 +3949,155 @@ window.IRMNav = window.IRMNav || (function () {
     /* Al conectar se vuelve a preguntar: puede que el botón no se haya podido
        dibujar antes por no saber de dónde veníamos. */
     if (SQL && QUIEN && !origen()) preguntarPorLaBase();
+    latir();                      /* y desde acá, cada 12 s */
+  }
+
+  /* ── El latido ─────────────────────────────────────────────────────────────
+     Dice «estoy abierta» y pregunta, en la misma vuelta, cuáles OTRAS lo están.
+     Dos preguntas en una llamada: pedir lo mismo dos veces cada doce segundos
+     es gastar el doble por la misma respuesta.
+
+     Doce segundos contra los cuarenta y cinco que la base da por vivo: si una
+     vuelta se pierde, la siguiente llega mucho antes de que a nadie lo den por
+     muerto. Y cuando la pestaña está escondida el navegador frena los
+     temporizadores: por eso también se late al volver a mirarla. */
+  function latir() {
+    if (!SQL || !QUIEN || !MI) return;
+    try {
+      Promise.resolve(SQL("nav_latido", { p_quien: QUIEN, p_clave: MI,
+          p_rotulo: ROTULO_MIO || (NOMBRES[MI] || [])[0] || MI,
+          p_url: location.href }))
+        .then(function (r) {
+          /* Una respuesta con `error` NO es una respuesta: es la base diciendo
+             que no pudo. Tomarla como «ninguna abierta» sería guardar un fallo
+             con forma de dato, y la pantalla no podría distinguirlo de la
+             verdad — abriría una segunda pestaña de algo que ya está abierto,
+             que es el defecto entero. Se deja ABIERTAS como estaba. */
+          r = desenvolver(r);
+          if (r && r.error) return;
+          var lista = (r && r.abiertas) || null;
+          if (!lista) return;                /* no contestó: se conserva lo que había */
+          var m = {};
+          try { (typeof lista === "string" ? JSON.parse(lista) : lista)
+                  .forEach(function (x) { m[x.clave] = x; }); } catch (e) { return; }
+          ABIERTAS = m;
+          pintarAbiertas();
+          atenderPaso(r && r.paso);
+        })
+        .catch(function () {});   /* una vuelta perdida no cambia nada: la que sigue llega en 12 s */
+    } catch (e) {}
+    if (!LATIDO) {
+      LATIDO = setInterval(latir, 12000);
+      /* Al cerrar, retirarse del registro. Si el navegador no deja —no garantiza
+         nada al cerrar—, el latido vencido la retira igual a los 45 s. */
+      try {
+        window.addEventListener("pagehide", function () {
+          try { if (SQL && QUIEN && MI) SQL("nav_cerre", { p_quien: QUIEN, p_clave: MI }); } catch (e) {}
+        });
+        document.addEventListener("visibilitychange", function () {
+          if (document.visibilityState === "visible") { quitarLlamado(); latir(); }
+        });
+      } catch (e) {}
+    }
+  }
+
+  /* Alguien dejó un paso hacia acá. Esto es lo que vuelve útil tener la
+     herramienta ya abierta: la que estaba abierta se entera, cambia su botón de
+     volver al que corresponde y se hace ver en la barra de pestañas.
+     Sólo se atiende si es RECIENTE (90 s) y distinto del último atendido: un
+     paso de hace media hora no puede hacer sonar la campana otra vez. */
+  function atenderPaso(pa) {
+    try {
+      if (!pa || !pa.clave || !NOMBRES[pa.clave]) return;
+      var firma = pa.clave + "|" + (pa.url || "") + "|" + (pa.en || "");
+      if (firma === PASO_VISTO) return;
+      if (typeof pa.hace_s === "number" && pa.hace_s > 90) { PASO_VISTO = firma; return; }
+      PASO_VISTO = firma;
+      var o = { clave: pa.clave, rotulo: pa.rotulo || "", url: pa.url || "" };
+      try { sessionStorage.setItem("irm.nav.origen", JSON.stringify(o)); } catch (e) {}
+      iniciar(true);                  /* REHACE el «Volver a …» con el nuevo origen */
+      ponerLlamado(pa.clave);
+    } catch (e) {}
+  }
+
+  /* Cada herramienta envuelve la respuesta a su manera: Dédalo manda
+     `select … as r` y desarma la fila; Rómulo devuelve las filas tal cual; otra
+     podría devolver `{nav_latido: {...}}`. El componente no puede tener una
+     copia de cada envoltorio —se desincronizan—, así que desenvuelve hasta
+     encontrar el objeto que tiene lo que pidió. Si no lo encuentra, devuelve
+     null, que es «no sé»: nunca un objeto vacío con cara de respuesta. */
+  function desenvolver(r) {
+    for (var i = 0; i < 4 && r; i++) {
+      if (typeof r === "string") { try { r = JSON.parse(r); } catch (e) { return null; } continue; }
+      if (Array.isArray(r)) { r = r[0]; continue; }
+      if (typeof r !== "object") return null;
+      if (r.abiertas !== undefined || r.error !== undefined) return r;
+      var k = Object.keys(r);
+      if (k.length === 1) { r = r[k[0]]; continue; }   /* {nav_latido: {...}} */
+      return null;
+    }
+    return null;
+  }
+
+  /* ¿La herramienta de destino ya está abierta?
+     Tres respuestas, no dos: `true` está abierta · `false` no lo está ·
+     `null` NO SÉ todavía (el latido aún no volvió). Con `null` se abre, que es
+     lo que se hacía siempre: una lista vacía por no haber preguntado no puede
+     leerse como «no hay ninguna» — ese es el pilar del `catch` que no devuelve
+     un dato, aplicado acá. */
+  function yaAbierta(clave) {
+    if (ABIERTAS === null) return null;
+    return !!ABIERTAS[clave];
+  }
+
+  /* El atajo de una herramienta que ya está abierta se marca, para que no haya
+     que hundirlo para enterarse. */
+  function pintarAbiertas() {
+    try {
+      var b = document.querySelector(".irm-barra-nav"); if (!b) return;
+      Array.prototype.forEach.call(b.querySelectorAll("[data-irm-ir]"), function (a) {
+        var c = a.getAttribute("data-irm-ir");
+        var ab = yaAbierta(c) === true;
+        a.classList.toggle("irm-abierta", ab);
+        var n = (NOMBRES[c] || [])[0] || c;
+        a.title = ab ? ("Ir a " + n + " — ya la tenés abierta en otra pestaña; no se abre otra")
+                     : ("Ir a " + n + " — se abre en su propia pestaña; lo que estés haciendo acá no se pierde");
+      });
+    } catch (e) {}
+  }
+
+  /* Un aviso corto, encima de la fila de botones (la franja de abajo tiene su
+     propio pilar: nada se le monta encima). Se va solo, y se puede cerrar. */
+  function avisar(texto) {
+    try {
+      var d = document.querySelector(".irm-nav-aviso");
+      if (!d) {
+        d = document.createElement("div");
+        d.className = "irm-nav-aviso";
+        d.setAttribute("role", "status");
+        d.setAttribute("aria-live", "polite");
+        document.body.appendChild(d);
+      }
+      d.textContent = texto;
+      d.classList.add("se-ve");
+      clearTimeout(d._t);
+      d._t = setTimeout(function () { d.classList.remove("se-ve"); }, 6000);
+    } catch (e) {}
+  }
+
+  /* «Te llaman»: la pestaña que YA estaba abierta no puede traerse el foco, pero
+     sí puede hacerse ver. Se marca el título y se quita al mirarla. */
+  function ponerLlamado(deQuien) {
+    try {
+      if (LLAMADO) return;
+      if (document.visibilityState === "visible") return;   /* si la estás mirando, no hace falta */
+      TITULO_REAL = TITULO_REAL || document.title;
+      document.title = "← te llaman · " + TITULO_REAL;
+      LLAMADO = true;
+    } catch (e) {}
+  }
+  function quitarLlamado() {
+    try { if (LLAMADO && TITULO_REAL) { document.title = TITULO_REAL; LLAMADO = false; } } catch (e) {}
   }
   /* La página recibe NOMBRE y ARGUMENTOS, no una cadena de SQL: unas hablan por
      SQL (Dédalo, por el conector) y otras por RPC (Linneo, con el cliente de
@@ -3900,7 +4122,17 @@ window.IRMNav = window.IRMNav || (function () {
   var MI = "", ROTULO_MIO = "";
   function rotuloMio(t) { ROTULO_MIO = String(t || ""); }
   function miClave() { return MI; }
-  function soy(clave) { MI = clave || ""; atajos(); }
+  function soy(clave) {
+    MI = clave || "";
+    /* La pestaña reclama su nombre. Sin esto, una herramienta abierta por un
+       enlace suelto (el de claude.ai, un favorito) no tendría nombre, y el
+       siguiente que fuera hacia ella abriría una segunda aunque ya estuviera
+       ahí. Reclamarlo es una línea y cierra ese hueco. */
+    try { if (MI) window.name = pestanaDe(MI); } catch (e) {}
+    try { TITULO_REAL = document.title; } catch (e) {}
+    atajos();
+    latir();
+  }
 
   /* La fila: se crea una vez y adentro se mete TODO lo que navega, en orden
      fijo. El «Volver a Hestia» se trae acá adentro aunque lo haya puesto otro
@@ -3959,7 +4191,7 @@ window.IRMNav = window.IRMNav || (function () {
       a.className = "irm-atajo-ir";
       a.setAttribute("data-irm-ir", clave);
       a.href = h[2];
-      a.target = PESTANA;
+      a.target = pestanaDe(clave);
       if (necesitaNoopener(h[2])) a.rel = "noopener";
       /* El rótulo dice la ACCIÓN, no sólo el nombre: «Ir a Linneo», no «Linneo».
          Así los tres tipos de botón de la fila se leen con la misma fórmula —
@@ -3970,8 +4202,18 @@ window.IRMNav = window.IRMNav || (function () {
       a.setAttribute("aria-label", "Ir a " + h[0]);
       /* El clic deja el rastro en la base y deja que el enlace abra solo: si el
          componente fallara, el enlace sigue teniendo su destino y su target. */
-      a.addEventListener("click", function () {
+      a.addEventListener("click", function (ev) {
         try { if (SQL && QUIEN) marcarPaso(clave); } catch (e) {}
+        /* La regla del administrador: si esa herramienta ya está abierta, NO se
+           abre otra. El paso queda escrito igual —acaba de marcarse arriba—, así
+           que cuando cambie a esa pestaña va a encontrar su botón de volver y el
+           título marcado. Con `null` (todavía no sé) se abre, que es lo de
+           siempre: no sé no es no. */
+        if (yaAbierta(clave) === true) {
+          try { ev.preventDefault(); } catch (e) {}
+          avisar((NOMBRES[clave] || [])[0] + " ya está abierta en otra pestaña — cambiá a ella (no abro otra)");
+          return false;
+        }
       });
       b.appendChild(a);
     });
@@ -3996,10 +4238,15 @@ window.IRMNav = window.IRMNav || (function () {
     if (n < 12) setTimeout(function () { absorberVolver(n + 1); }, 400);
   }
 
-  function iniciar() {
+  function iniciar(rehacer) {
     atajos();
     absorberVolver();
-    if (document.querySelector(".irm-nav")) return;
+    var ya = document.querySelector(".irm-nav");
+    /* Con un origen NUEVO hay que rehacerlo: si no, la herramienta que ya estaba
+       abierta se queda ofreciendo volver a la propuesta anterior — un botón que
+       lleva al lugar equivocado es peor que no tenerlo. */
+    if (ya && rehacer) { try { ya.remove(); } catch (e) {} ya = null; }
+    if (ya) return;
     var o = origen();
     if (!o) return;                      /* sin origen no hay botón: no se inventa */
     var nom = NOMBRES[o.clave] || ["", "de donde venías", ""];
@@ -4085,12 +4332,13 @@ window.IRMNav = window.IRMNav || (function () {
            atajos: atajos, rotulo: rotuloMio,
            /* El nombre de la pestaña lo da ACÁ y lo leen los demás componentes:
               dos copias de la misma decisión se desincronizan al primer cambio. */
-           pestana: function () { return PESTANA; },
+           pestana: pestanaDe, abiertas: function () { return ABIERTAS; },
+           latir: latir, yaAbierta: yaAbierta,
            /* La dirección y el rel los sabe el catálogo, no cada herramienta: así
               nadie más tiene una copia del contrato (pedido de la sesión de Rómulo). */
            url: function (clave, rotulo) {
              var h = NOMBRES[clave]; if (!h) return null;
-             return { url: h[2], target: PESTANA, rel: necesitaNoopener(h[2]) ? "noopener" : "",
+             return { url: h[2], target: pestanaDe(clave), rel: necesitaNoopener(h[2]) ? "noopener" : "",
                       nombre: h[0], rotulo: rotulo || "" };
            } };
 })();
