@@ -1387,6 +1387,14 @@ async function arranque() {
   $("#login").hidden = true; $("#app").hidden = false; $("#b-act-caja").hidden = false;
   $("#b-cuenta").textContent = (SESION.user.email||"?")[0].toUpperCase(); $("#b-cuenta").title = SESION.user.email;
   $("#c-info").innerHTML = `Sesión de <b>${e(SESION.user.email)}</b>.`;
+  // TK-0320 · El componente de navegación no sabe hablar con la base: se le pasa
+  // cómo, y con el correo de quien entró. Es el ÚNICO canal que llega a un
+  // ARTEFACTO —la URL no, porque vive en otro origen— así que sin esto, al ir de
+  // Linneo a Dédalo, allá no aparece el botón para volver acá.
+  try {
+    if (window.IRMNav && typeof IRMNav.conectar === "function")
+      IRMNav.conectar((fn, args) => rpc(fn, args), SESION.user.email || "");
+  } catch (e) {}
   await refrescarPanel();
 }
 $("#l-btn").onclick = async () => {
@@ -3701,6 +3709,15 @@ window.IRMNav = window.IRMNav || (function () {
   function ir(clave, url, rotulo) {
     if (!NOMBRES[clave]) return false;
     var yo = { clave: miClave(), rotulo: rotulo || "", url: location.href };
+    /* Se deja dicho en la base ANTES de abrir: es lo único que le va a llegar a
+       un artefacto. No se espera la respuesta —abrir no puede quedar colgado de
+       que la base conteste— y del otro lado hay un reintento. */
+    if (SQL && QUIEN) {
+      try {
+        Promise.resolve(SQL("nav_paso_marcar", { p_quien: QUIEN, p_hacia: clave,
+          p_de: yo.clave, p_rotulo: yo.rotulo, p_url: yo.url })).catch(function () {});
+      } catch (e) {}
+    }
     var u = url;
     try {
       var sep = u.indexOf("?") >= 0 ? "&" : "?";
@@ -3754,6 +3771,42 @@ window.IRMNav = window.IRMNav || (function () {
   function necesitaNoopener(u) {
     try { return new URL(u, location.href).hostname.indexOf("claude.ai") >= 0; }
     catch (e) { return true; }   /* ante la duda, que abra */
+  }
+
+  /* ── El canal que cruza entre artefactos ─────────────────────────────────
+     Los parámetros de la URL NO llegan a un artefacto: vive en su propio origen
+     (…frame.claudeusercontent.com) y la URL con los parámetros es la de
+     claude.ai. Medido el 2026-10-22: Linneo —página normal— mostraba el botón y
+     Dédalo —artefacto— no. sessionStorage y localStorage tampoco cruzan, por lo
+     mismo; y el opener está cortado porque sin noopener claude.ai no abre.
+     Queda la base, que las dos herramientas ya consultan con la misma persona.
+     La página le pasa CÓMO hablar; el componente no sabe de conectores. */
+  var SQL = null, QUIEN = "";
+  function conectar(fnSql, quien) {
+    SQL = (typeof fnSql === "function") ? fnSql : null;
+    QUIEN = String(quien || "");
+    /* Al conectar se vuelve a preguntar: puede que el botón no se haya podido
+       dibujar antes por no saber de dónde veníamos. */
+    if (SQL && QUIEN && !origen()) preguntarPorLaBase();
+  }
+  /* La página recibe NOMBRE y ARGUMENTOS, no una cadena de SQL: unas hablan por
+     SQL (Dédalo, por el conector) y otras por RPC (Linneo, con el cliente de
+     Supabase). Pasarle SQL obligaría a la mitad a desarmarlo. */
+  function preguntarPorLaBase(reintento) {
+    if (!SQL || !QUIEN || !MI) return;
+    try {
+      Promise.resolve(SQL("nav_paso_de", { p_quien: QUIEN, p_hacia: MI }))
+        .then(function (o) {
+          if (o && o.clave && NOMBRES[o.clave]) {
+            try { sessionStorage.setItem("irm.nav.origen", JSON.stringify(o)); } catch (e) {}
+            iniciar();
+          } else if (!reintento) {
+            /* Puede que el aviso de quien invocó todavía no haya llegado: se
+               reintenta UNA vez. No más: insistir sería inventar un origen. */
+            setTimeout(function () { preguntarPorLaBase(true); }, 1800);
+          }
+        }).catch(function () {});
+    } catch (e) {}
   }
 
   var MI = "";
@@ -3841,7 +3894,14 @@ window.IRMNav = window.IRMNav || (function () {
   else iniciar();
 
   return { ir: ir, volver: volver, origen: origen, diagnostico: diagnostico, soy: soy,
-           iniciar: iniciar, medir: medir, sondear: sondear };
+           iniciar: iniciar, medir: medir, sondear: sondear, conectar: conectar,
+           /* La dirección y el rel los sabe el catálogo, no cada herramienta: así
+              nadie más tiene una copia del contrato (pedido de la sesión de Rómulo). */
+           url: function (clave, rotulo) {
+             var h = NOMBRES[clave]; if (!h) return null;
+             return { url: h[2], target: "irm-" + clave, rel: necesitaNoopener(h[2]) ? "noopener" : "",
+                      nombre: h[0], rotulo: rotulo || "" };
+           } };
 })();
 </script>
 <script>try{IRMNav.soy("linneo")}catch(e){}</script>
