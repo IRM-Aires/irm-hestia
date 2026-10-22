@@ -2419,7 +2419,7 @@ async function pintarProvMaestro() {
 }
 function editarProv(i) { const x = PROVS[i]; formProveedor({ id: x.id, nombre: x.nombre, nit: x.nit, notas: x.notas, donde: "#prov-form" }); $("#prov-form").scrollIntoView({ behavior: "smooth", block: "center" }); }
 function agregarProvSuelto(i) { formProveedor({ nombre: PROVS[i].nombre, donde: "#prov-form" }); }
-CANECA_ACC.proveedor = async ds => { await rpc("ime_retirar_proveedor", { p_id: Number(ds.id) }); await pintarProvMaestro();
+CANECA_ACC.proveedor = async ds => { await correr(() => rpc("ime_retirar_proveedor", { p_id: Number(ds.id) })); await pintarProvMaestro();   // TK-0307: si falla, lo dice (antes el catch global lo callaba)
   aviso("Proveedor eliminado de la lista.", { deshacer: async () => { await rpc("ime_retirar_proveedor", { p_id: Number(ds.id), p_activo: true }); pintarProvMaestro(); } }); };
 $("#p-btn").onclick = async () => {
   const rid = Number($("#p-rid").value); if (!rid) { $("#p-busca").focus(); aviso("Primero elegí el recurso de la lista (paso 1).", { tipo:"atencion" }); return; }
