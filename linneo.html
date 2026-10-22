@@ -3599,18 +3599,25 @@ else IRMNapier.iniciar();
 .irm-barra-nav .irm-volver,
 .irm-barra-nav .irm-nav { position: static !important; left: auto !important;
   right: auto !important; bottom: auto !important; }
-/* El atajo a otra herramienta: chip LIMA. El lima está reservado para cromo de
-   marca —chips entre ellos— y acá hace falta que se distingan de un vistazo de
-   los de estado: el cian ya significa «activo» y «lo declaró una persona».
-   Texto en tinta, nunca lima sobre blanco: ese contraste es de 1,9:1. */
+/* El atajo a otra herramienta: MISMO traje que «Volver a Hestia» —fondo claro y
+   marco cian— y no un relleno de color. Probamos el lima y el administrador
+   prefirió esto, con razón: los cinco botones de la franja hacen lo mismo
+   (llevarte a otro lado) y leerse como una sola familia vale más que
+   distinguirlos entre sí. Lo que los diferencia es el VERBO del rótulo —«Volver
+   a…» contra «Ir a…»—, que es la distinción que importa.
+   El relleno cian queda para el momento en que se los toca, como en todo el
+   ecosistema: el cian marca lo activo. */
 .irm-atajo-ir { display: inline-flex; align-items: center; gap: 6px; min-height: 40px;
-  padding: 8px 14px; border-radius: 999px; border: 1px solid #96D416; background: #96D416;
-  color: #0b0b0b; text-decoration: none; cursor: pointer;
+  padding: 8px 14px; border-radius: 999px; border: 1px solid #00B9CE;
+  background: var(--superficie, #fcfcfb); color: var(--tinta, #0b0b0b);
+  text-decoration: none; cursor: pointer;
   font: 600 13px var(--display, Poppins, system-ui, sans-serif);
-  box-shadow: 0 4px 16px rgba(0,0,0,.14); transition: filter .15s; }
-.irm-atajo-ir:hover { filter: brightness(1.06); }
-.irm-atajo-ir:active { filter: brightness(.86); }
-.irm-atajo-ir:focus-visible { outline: 2px solid #0b0b0b; outline-offset: 2px; }
+  box-shadow: 0 4px 16px rgba(0,0,0,.14); transition: background .15s, color .15s; }
+.irm-atajo-ir:hover { background: color-mix(in srgb, #00B9CE 12%, var(--superficie, #fcfcfb)); }
+.irm-atajo-ir:active { background: #00B9CE; color: #fff; }
+.irm-atajo-ir:focus-visible { outline: 2px solid #00B9CE; outline-offset: 2px; }
+@media (prefers-color-scheme: dark) {
+  .irm-atajo-ir { background: var(--superficie, #1a1a19); color: var(--tinta, #fff); } }
 .irm-atajo-ir .irm-atajo-ico { width: 16px; height: 16px; flex: none; }
 @media (max-width: 560px) {
   .irm-atajo-ir { width: 44px; height: 44px; min-height: 44px; padding: 0; justify-content: center; }
@@ -3622,11 +3629,19 @@ else IRMNapier.iniciar();
 
 .irm-nav { position: fixed; bottom: 16px; left: 16px; z-index: 2147483000; display: inline-flex; align-items: center; gap: 6px;
   min-height: 40px; padding: 8px 14px; border-radius: 999px; border: 1px solid #00B9CE;
-  background: #00B9CE; color: #fff; text-decoration: none; cursor: pointer;
+  /* Mismo traje que los demás de la fila: fondo claro y marco cian. Estuvo
+     relleno de cian para destacarlo, y al verlos juntos el administrador
+     prefirió que los cinco se lean igual — lo que los distingue es el verbo del
+     rótulo, no el color. El relleno cian queda para cuando se lo toca. */
+  background: var(--superficie, #fcfcfb); color: var(--tinta, #0b0b0b);
+  text-decoration: none; cursor: pointer;
   font: 600 13px var(--display, Poppins, system-ui, sans-serif);
-  box-shadow: 0 4px 16px rgba(0,0,0,.14); transition: filter .15s; -webkit-tap-highlight-color: transparent; }
-.irm-nav:hover { filter: brightness(1.07); }
-.irm-nav:active, .irm-nav.irm-nav-tocado { filter: brightness(.85); }
+  box-shadow: 0 4px 16px rgba(0,0,0,.14);
+  transition: background .15s, color .15s; -webkit-tap-highlight-color: transparent; }
+.irm-nav:hover { background: color-mix(in srgb, #00B9CE 12%, var(--superficie, #fcfcfb)); }
+.irm-nav:active, .irm-nav.irm-nav-tocado { background: #00B9CE; color: #fff; }
+@media (prefers-color-scheme: dark) {
+  .irm-nav { background: var(--superficie, #1a1a19); color: var(--tinta, #fff); } }
 .irm-nav:focus-visible { outline: 2px solid #00B9CE; outline-offset: 2px; }
 .irm-nav[aria-busy="true"] { cursor: progress; }
 .irm-nav-ico { width: 18px; height: 18px; flex: none; }
@@ -3720,12 +3735,12 @@ window.IRMNav = window.IRMNav || (function () {
            2026-10-22, con un ERR_BLOCKED_BY_RESPONSE en pantalla—. El target
            con nombre sí se respeta: la pestaña se sigue reusando. */
         var a = document.createElement("a");
-        a.href = destino; a.target = "irm-" + o.clave;
+        a.href = destino; a.target = PESTANA;
         if (necesitaNoopener(destino)) a.rel = "noopener";
         a.style.display = "none"; document.body.appendChild(a); a.click();
         setTimeout(function () { try { a.remove(); } catch (e3) {} }, 0);
         ultimo = { camino: "pestaña con nombre",
-                   detalle: "fui a la pestaña «irm-" + o.clave + "»" +
+                   detalle: "fui a la pestaña de herramientas" +
                      (o.url ? "" : " (a su inicio: no me mandaron a qué punto volver)") };
         return true;
       } catch (e) {}
@@ -3785,7 +3800,7 @@ window.IRMNav = window.IRMNav || (function () {
        desde la URL. Abrir siempre vale más que volver elegante. */
     try {
       var a = document.createElement("a");
-      a.href = u; a.target = "irm-" + clave;
+      a.href = u; a.target = PESTANA;
       if (necesitaNoopener(u)) a.rel = "noopener";
       a.style.display = "none";
       document.body.appendChild(a);
@@ -3794,7 +3809,7 @@ window.IRMNav = window.IRMNav || (function () {
       return true;
     } catch (e) {}
     /* Último recurso: si ni el enlace se pudo, que al menos lo intente. */
-    try { var w = window.open(u, "irm-" + clave, "noopener"); if (w !== undefined) return true; } catch (e) {}
+    try { var w = window.open(u, PESTANA, "noopener"); if (w !== undefined) return true; } catch (e) {}
     return false;
   }
 
@@ -3824,6 +3839,23 @@ window.IRMNav = window.IRMNav || (function () {
      mismo; y el opener está cortado porque sin noopener claude.ai no abre.
      Queda la base, que las dos herramientas ya consultan con la misma persona.
      La página le pasa CÓMO hablar; el componente no sabe de conectores. */
+
+  /* ── UNA sola pestaña para todas las herramientas ───────────────────────────
+     Antes había una por herramienta («irm-dedalo», «irm-linneo»…): la segunda
+     vez que ibas a la misma se reusaba, pero saltar de una a otra siempre
+     sumaba una pestaña. El administrador lo dijo tres veces y tenía razón: «no
+     debe abrir ventanas nuevas… trabajar en el mismo entorno».
+
+     Con un nombre único, el salto NAVEGA la pestaña de herramientas en vez de
+     abrir otra. Queda una sola: la primera vez se abre —no hay forma de evitar
+     esa, porque un artefacto vive en un marco aislado y no puede navegar la
+     pestaña que lo contiene— y de ahí en adelante todo pasa adentro.
+
+     Lo que se paga: la herramienta de la que salís se recarga al volver, así
+     que su estado depende de que sepa reabrirse desde su URL. Rómulo ya lo hace
+     (?p=<consecutivo>). Para una lista —Dédalo, Linneo— perder el scroll es
+     barato; perder una pestaña entre diez, no. */
+  var PESTANA = "irm-herramienta";
   var SQL = null, QUIEN = "";
   function conectar(fnSql, quien) {
     SQL = (typeof fnSql === "function") ? fnSql : null;
@@ -3910,7 +3942,7 @@ window.IRMNav = window.IRMNav || (function () {
       a.className = "irm-atajo-ir";
       a.setAttribute("data-irm-ir", clave);
       a.href = h[2];
-      a.target = "irm-" + clave;
+      a.target = PESTANA;
       if (necesitaNoopener(h[2])) a.rel = "noopener";
       /* El rótulo dice la ACCIÓN, no sólo el nombre: «Ir a Linneo», no «Linneo».
          Así los tres tipos de botón de la fila se leen con la misma fórmula —
@@ -4038,7 +4070,7 @@ window.IRMNav = window.IRMNav || (function () {
               nadie más tiene una copia del contrato (pedido de la sesión de Rómulo). */
            url: function (clave, rotulo) {
              var h = NOMBRES[clave]; if (!h) return null;
-             return { url: h[2], target: "irm-" + clave, rel: necesitaNoopener(h[2]) ? "noopener" : "",
+             return { url: h[2], target: PESTANA, rel: necesitaNoopener(h[2]) ? "noopener" : "",
                       nombre: h[0], rotulo: rotulo || "" };
            } };
 })();
