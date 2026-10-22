@@ -2766,6 +2766,18 @@ arranque();
 
 
 <style>
+/* Piso de la franja de abajo — componente canónico IRM (TK-0321, componente_reporte.py) */
+.irm-franja-fondo { position: fixed; left: 0; right: 0; bottom: 0; pointer-events: none;
+  height: calc(var(--irm-franja-abajo, 68px) + 14px + env(safe-area-inset-bottom, 0px));
+  background: linear-gradient(to top,
+    var(--irm-franja-color, var(--plano, var(--suelo, #f9f9f7))) 62%, transparent);
+  z-index: 2147482998; }
+/* El final de la página deja de quedar tapado para siempre por los botones. */
+body { padding-bottom: calc(var(--irm-franja-abajo, 68px) + 14px); }
+@media print { .irm-franja-fondo { display: none; } }
+</style>
+<div class="irm-franja-fondo" aria-hidden="true"></div>
+<style>
 /* Botón «Reportar» — componente canónico IRM v6 (IMAGEN CORPORATIVA/memoria_procedimental/componente_reporte.py) */
 .irm-reporte-raiz { --irmr-tinta: var(--tinta, #0b0b0b); --irmr-tinta-2: var(--tinta-2, #52514e);
   --irmr-sup: var(--superficie, #fcfcfb); --irmr-borde: var(--cuadricula, #e1e0d9); --irmr-cian: #00B9CE;
