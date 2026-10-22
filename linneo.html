@@ -3167,7 +3167,17 @@ window.IRMVolver = window.IRMVolver || (function () {
     var a = document.createElement("a");
     a.className = "irm-volver";
     a.href = enHestia ? "./" : HESTIA;
-    if (!enHestia) { a.target = "irm-hestia"; }   // su propia pestaña: la herramienta no se cierra
+    /* TK-0320 · Hestia cae en LA MISMA pestaña de herramientas que todo lo demás.
+       Hasta el 2026-10-22 abría una propia —«irm-hestia»— para no perder lo que
+       estabas haciendo. El administrador descartó ese canje tres veces: saltar
+       entre herramientas sumaba una pestaña cada vez y terminabas sin saber en
+       cuál estabas. El nombre lo da el componente de navegación, para no tener
+       dos copias de la misma decisión; si no está, se cae al de siempre. */
+    if (!enHestia) {
+      var pest = "irm-herramienta";
+      try { if (window.IRMNav && IRMNav.pestana) pest = IRMNav.pestana(); } catch (e) {}
+      a.target = pest;
+    }
     a.setAttribute("aria-label", "Volver a Hestia para abrir otra herramienta");
     a.title = "Volver a Hestia para abrir otra herramienta";
     /* Dice la ACCIÓN, no sólo el destino. En la franja conviven tres botones y
@@ -4073,6 +4083,9 @@ window.IRMNav = window.IRMNav || (function () {
   return { ir: ir, volver: volver, origen: origen, diagnostico: diagnostico, soy: soy,
            iniciar: iniciar, medir: medir, sondear: sondear, conectar: conectar,
            atajos: atajos, rotulo: rotuloMio,
+           /* El nombre de la pestaña lo da ACÁ y lo leen los demás componentes:
+              dos copias de la misma decisión se desincronizan al primer cambio. */
+           pestana: function () { return PESTANA; },
            /* La dirección y el rel los sabe el catálogo, no cada herramienta: así
               nadie más tiene una copia del contrato (pedido de la sesión de Rómulo). */
            url: function (clave, rotulo) {
