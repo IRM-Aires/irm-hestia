@@ -557,7 +557,8 @@ function canecaOcupada(b) {
           // equivocado queda Suspendido hasta que lo vuelvas a poner Activa.
           '<p style="margin:12px 0 4px"><b>Corregir el correo</b></p><div class="mn-nombre"><input type="email" maxlength="120" autocomplete="off" data-correo-nuevo-de="' + esc(p.correo) + '" placeholder="el correo correcto, terminado en @irmaires.com" aria-label="Correo correcto de ' + esc(p.nombre || p.correo) + '">' +
           '<button class="mn-btn" type="button" data-correo-corregir="' + esc(p.correo) + '">Corregir el correo</button></div>' +
-          '<p class="mn-sub" style="margin:4px 0 0">Si este correo se escribió mal: el correcto recibe la invitación con el mismo nombre y los mismos permisos, y ' + esc(p.correo) + ' queda <b>Suspendido</b> hasta que lo vuelvas a poner Activa. Solo correos @irmaires.com.</p>') +
+          '<p class="mn-sub" style="margin:4px 0 0">Si este correo se escribió mal: el correcto recibe la invitación con el mismo nombre y los mismos permisos, y ' + esc(p.correo) + ' queda <b>Suspendido</b> hasta que lo vuelvas a poner Activa. Solo correos @irmaires.com.</p>' +
+          '<div data-correo-res-de="' + esc(p.correo) + '" role="status" aria-live="polite"></div>') +
         (!p.administrador && p.cuenta === "invitada" ? '<p style="margin:12px 0 4px"><b>Invitación</b> <span class="mn-sub">enviada ' + esc(fecha(p.invitada_en)) + ', todavía no la abre</span></p>' +
           '<div style="display:flex;flex-wrap:wrap;gap:8px;align-items:center"><button class="mn-btn" type="button" data-inv="reenviar" data-correo="' + esc(p.correo) + '">Reenviar la invitación</button>' +
           caneca("la invitación de " + p.correo, { attrs: 'data-inv="retirar" data-correo="' + esc(p.correo) + '" data-nombre="' + esc(p.nombre || "") + '"' }) + '</div>' : '') +
@@ -774,7 +775,7 @@ function canecaOcupada(b) {
     ocupar(b, "Enviando…");
     try {
       var d = await portero({ accion: "invitar", correo: correo, nombre: nombre, permisos: permisos }, "Mandando la invitación a " + correo + " y guardando sus permisos…");
-      if (!d || !d.ok) { aviso("<b>" + (d && d.envio && d.envio !== "ya_tenia_cuenta" ? "LA INVITACIÓN SALIÓ, PERO ALGO QUEDÓ A MEDIAS." : "NO SE INVITÓ.") + "</b> " + esc((d && d.mensaje) || "sin detalle"), true); await cargar(); return; }
+      if (!d || !d.ok) { await cargar(); aviso("<b>" + (d && d.envio && d.envio !== "ya_tenia_cuenta" ? "LA INVITACIÓN SALIÓ, PERO ALGO QUEDÓ A MEDIAS." : "NO SE INVITÓ.") + "</b> " + esc((d && d.mensaje) || "sin detalle"), true); return; }   // repintar ANTES: cargar() borra el aviso
       $("mn-inv-cancelar").click();
       await cargar();
       var dice = d.envio === "ya_tenia_cuenta" ? "GUARDADO — " + correo + " ya tenía cuenta: no se le mandó correo, solo quedaron sus permisos."
@@ -801,14 +802,22 @@ function canecaOcupada(b) {
   // TK-0618 (administrador, 2026-11-12): «le asigné mal el correo a Any». Dos pasos, en este orden: primero el correo
   // correcto queda invitado con sus permisos; recién entonces se suspende el equivocado. Si el primero falla, el
   // equivocado sigue como estaba —nadie se queda sin entrar por un error a mitad de camino—.
+  // El resultado se dice AL LADO del botón, no solo arriba de la página: el 2026-11-12 la invitación falló (Supabase
+  // frenó los correos) y el aviso quedó arriba, fuera de la vista, y pareció que el botón no hacía nada.
+  function avisoEnFicha(correo, html, error) {
+    aviso(html, error);
+    var el = document.querySelector('[data-correo-res-de="' + (window.CSS && CSS.escape ? CSS.escape(correo) : correo) + '"]');
+    if (el) { el.innerHTML = html ? '<div class="mn-aviso' + (error ? " mn-error" : "") + '" style="margin-top:8px">' + html + '</div>' : ""; el.scrollIntoView({ block: "nearest" }); }
+  }
   async function corregirCorreo(b) {
     var viejo = b.getAttribute("data-correo-corregir"), inp = b.parentNode.querySelector("input[data-correo-nuevo-de]");
+    ABIERTAS[viejo] = true;   // que la ficha siga abierta después de repintar, para que se vea el resultado
     var nuevo = inp ? inp.value.trim().toLowerCase() : "";
     var p = ((T && T.personas) || []).filter(function (x) { return x.correo === viejo; })[0];
-    if (!/^[a-z0-9._%+-]+@irmaires\.com$/.test(nuevo)) { aviso("<b>NO SE CORRIGIÓ.</b> Escribí el correo correcto completo, terminado en @irmaires.com.", true); if (inp) inp.focus(); return; }
-    if (nuevo === viejo) { aviso("<b>NO SE CORRIGIÓ.</b> Es el mismo correo que ya tiene.", true); return; }
-    if (((T && T.personas) || []).some(function (x) { return x.correo === nuevo; })) { aviso("<b>NO SE CORRIGIÓ.</b> " + esc(nuevo) + " ya está en la lista de personas: dale los permisos desde su propia ficha y suspendé " + esc(viejo) + " con «Suspendida».", true); return; }
-    if (!p) { aviso("<b>NO SE CORRIGIÓ.</b> No encontré a " + esc(viejo) + " en la lista: recargá la página e intentá de nuevo.", true); return; }
+    if (!/^[a-z0-9._%+-]+@irmaires\.com$/.test(nuevo)) { avisoEnFicha(viejo, "<b>NO SE CORRIGIÓ.</b> Escribí el correo correcto completo, terminado en @irmaires.com.", true); if (inp) inp.focus(); return; }
+    if (nuevo === viejo) { avisoEnFicha(viejo, "<b>NO SE CORRIGIÓ.</b> Es el mismo correo que ya tiene.", true); return; }
+    if (((T && T.personas) || []).some(function (x) { return x.correo === nuevo; })) { avisoEnFicha(viejo, "<b>NO SE CORRIGIÓ.</b> " + esc(nuevo) + " ya está en la lista de personas: dale los permisos desde su propia ficha y suspendé " + esc(viejo) + " con «Suspendida».", true); return; }
+    if (!p) { avisoEnFicha(viejo, "<b>NO SE CORRIGIÓ.</b> No encontré a " + esc(viejo) + " en la lista: recargá la página e intentá de nuevo.", true); return; }
     var permisos = Object.keys(p.permisos || {}).filter(function (k) { return p.permisos[k].estado === "activo"; })
       .map(function (k) { return { artefacto: k, rol: p.permisos[k].rol }; });
     ocupar(b, "Corrigiendo…"); if (inp) inp.disabled = true;
@@ -816,15 +825,16 @@ function canecaOcupada(b) {
       var d = await portero({ accion: "invitar", correo: nuevo, nombre: p.nombre || "", permisos: permisos },
         "Paso 1 de 2 · Invitando a " + nuevo + " con " + permisos.length + (permisos.length === 1 ? " herramienta" : " herramientas") + "…");
       if (!d || !d.ok) {
-        aviso("<b>" + (d && d.envio && d.envio !== "ya_tenia_cuenta" ? "LA INVITACIÓN A " + esc(nuevo) + " SALIÓ, PERO ALGO QUEDÓ A MEDIAS." : "NO SE CORRIGIÓ.") + "</b> " + esc((d && d.mensaje) || "sin detalle") + " " + esc(viejo) + " sigue como estaba.", true);
-        await cargar(); return;
+        await cargar();   // primero repintar: cargar() borra el aviso, y si va después el error no se ve
+        avisoEnFicha(viejo, "<b>" + (d && d.envio && d.envio !== "ya_tenia_cuenta" ? "LA INVITACIÓN A " + esc(nuevo) + " SALIÓ, PERO ALGO QUEDÓ A MEDIAS." : "NO SE CORRIGIÓ.") + "</b> " + esc((d && d.mensaje) || "sin detalle") + " " + esc(viejo) + " sigue como estaba.", true);
+        return;
       }
       var r;
       try { r = await rpc("minos_persona", { p_correo: viejo, p_estado: "suspendido" }, "Paso 2 de 2 · Suspendiendo " + viejo + "…");
         if (!r || !r.ok) throw new Error((r && r.mensaje) || "la base no confirmó"); }
       catch (e2) {
         await cargar();
-        aviso("<b>" + esc(nuevo) + " QUEDÓ INVITADO, PERO " + esc(viejo) + " NO QUEDÓ SUSPENDIDO.</b> " + esc(e2.message) + " — abrí su ficha y tocá «Suspendida».", true);
+        avisoEnFicha(viejo, "<b>" + esc(nuevo) + " QUEDÓ INVITADO, PERO " + esc(viejo) + " NO QUEDÓ SUSPENDIDO.</b> " + esc(e2.message) + " — abrí su ficha y tocá «Suspendida».", true);
         return;
       }
       ABIERTAS[nuevo] = true; await cargar();
@@ -836,7 +846,7 @@ function canecaOcupada(b) {
           if (!v || !v.ok) throw new Error((v && v.mensaje) || "la base no confirmó");
         } else await porteroOk({ accion: "retirar", correo: nuevo }, "Retirando la invitación de " + nuevo + "…");
       });
-    } catch (e) { aviso("<b>NO SE CORRIGIÓ.</b> " + esc(e.message) + " — " + esc(viejo) + " sigue como estaba. Revisá tu conexión e intentá de nuevo.", true); }
+    } catch (e) { avisoEnFicha(viejo, "<b>NO SE CORRIGIÓ.</b> " + esc(e.message) + " — " + esc(viejo) + " sigue como estaba. Revisá tu conexión e intentá de nuevo.", true); }
     finally { if (b.isConnected) liberar(b); if (inp && inp.isConnected) inp.disabled = false; }
   }
   $("mn-personas").addEventListener("keydown", function (ev) {
