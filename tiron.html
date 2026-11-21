@@ -139,15 +139,29 @@ fieldset { min-width: 0; }
 @media print {
   :root { color-scheme: light; }
   body { background: #fff; padding: 0; }
-  /* El encabezado con el logo se repite en toda página, como el membrete. */
   thead { display: table-header-group; }
+  /* `running()` + `element()` mueven el encabezado y el pie al margen de CADA
+     página. Chrome NO los implementa, así que con Chrome ambos se quedan en el
+     flujo: el encabezado sale en la hoja 1 y el pie al final de la última.
+     Medido el 2026-11-13 sobre un PDF de 8 páginas impreso con Chrome sin
+     ventana. Se dejan por los motores que sí los implementan (WeasyPrint,
+     Prince, paged.js), donde el pie sí se repite. */
   .irm-cabecera { position: running(membrete); }
   .irm-pie { position: running(pie); }
+  /* La numeración va en la CAJA DE MARGEN, que es el único lugar donde
+     `counter(page)` tiene valor. Chrome sí implementa las cajas de margen
+     (medido el mismo día: «página 1 de 8» … «página 8 de 8», 8,2 pt en
+     #898781, dentro del margen inferior), así que acá la paginación de §4.3
+     sale en todas las hojas y en el mismo tono que el pie.
+     Antes esto vivía en `.irm-paginacion::after`, fuera de la caja de margen:
+     ahí los contadores valen 0 y el pie imprimía literalmente «página 0 de 0».
+     Un contador que no se puede resolver no se imprime en cero — eso no es un
+     fallo callado, es una afirmación falsa (TK-0627). */
   @page { @top-center { content: element(membrete); }
-          @bottom-center { content: element(pie); } }
-  /* Respaldo para motores sin `running()` (Chrome incluido): el encabezado va
-     en la primera página y la numeración la lleva el pie fijo. */
-  .irm-paginacion::after { content: "página " counter(page) " de " counter(pages); }
+          @bottom-center { content: element(pie); }
+          @bottom-right { content: "página " counter(page) " de " counter(pages);
+                          font: 400 11px Inter, system-ui, sans-serif;
+                          color: var(--tinta-apagada); } }
   h1, h2, h3 { break-after: avoid; }
   table, figure, pre { break-inside: avoid; }
   a[href^="http"]::after { content: " (" attr(href) ")"; font-size: 9px; }
@@ -521,6 +535,13 @@ th.irm-caneca-col, td.irm-caneca-col { width: 38px; text-align: center; padding-
     <p class="dim">Entrá con tu correo @irmaires.com y tocá <b>Abrir Tirón</b> en el área Contabilidad.</p>
   </div>
 </div>
+<!-- TK-0620 (Habeas Data): en la web, sin las reglas de uso aceptadas en Hestia la carga no se abre -->
+<div id="gayo-web" class="activar" style="display:none">
+  <div class="tarjeta">
+    <h2 id="gw-titulo">Antes de usar Tirón</h2>
+    <div id="gw-cuerpo"></div>
+  </div>
+</div>
 
 <div id="app" style="display:none">
   <div class="aviso prueba" id="aviso-prueba" style="display:none"></div>
@@ -734,7 +755,7 @@ th.irm-caneca-col, td.irm-caneca-col { width: 38px; text-align: center; padding-
 <footer class="irm-pie">
   <div class="irm-contacto"><span><b>C.</b> 318 3591189</span><span><b>D.</b> Cra. 36 #10B-39 el poblado, Medellín, Ant.</span><span>www.irmaires.com</span></div>
   <span>Confidencial — uso interno IRM Aires</span>
-  <span class="irm-paginacion">2026-11-12</span>
+  <span class="irm-paginacion">2026-11-20</span>
 </footer>
 
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
@@ -905,8 +926,8 @@ function canecaOcupada(b) {
 const URL_SB = "https://oixizeqfuxsbjqcvzpbe.supabase.co", LLAVE = "sb_publishable_Yfu9GwQGe9w5NsGVmC3BvQ_Gj7k4DGi";
 // Huella del propio archivo (sha256, 12 caracteres), la escribe construir_app.py. Gutenberg publica el archivo en
 // SharePoint y anota la versión vigente; si esta copia no coincide, la app avisa «apretá F5» (migración 12).
-const VERSION_APP = "ca6a0139095b";
-const FECHA_APP = "2026-11-12";   // fecha de edición (la del encabezado)
+const VERSION_APP = "345191f186bd";
+const FECHA_APP = "2026-11-20";   // fecha de edición (la del encabezado)
 const DICC = {"nit": ["nit", "identificacion", "identificación", "numero de identificacion", "n° identificación", "documento", "cedula", "cédula", "id tercero", "nit tercero"], "tercero": ["tercero", "nombre", "razon social", "razón social", "proveedor", "cliente", "beneficiario", "nombre tercero"], "fecha": ["fecha", "fecha documento", "fecha factura", "fecha de emision", "fecha de emisión", "date"], "numero_documento": ["numero", "número", "no", "n°", "factura", "numero factura", "número de factura", "documento", "comprobante", "consecutivo"], "concepto": ["concepto", "descripcion", "descripción", "detalle", "observacion", "observación", "item", "ítem", "producto", "servicio"], "centro_costo": ["centro de costo", "centro de costos", "cc", "obra", "proyecto", "centro costo", "ccosto"], "cuenta": ["cuenta", "cuenta contable", "codigo cuenta", "código cuenta", "puc"], "valor": ["valor", "total", "valor total", "importe", "monto", "subtotal", "base", "neto"], "iva": ["iva", "impuesto", "valor iva", "iva 19"], "retencion": ["retencion", "retención", "retefuente", "rte fte", "reteica", "rete ica"]}, COLSIN = {"Código cuenta contable": ["cuenta", "cuenta contable", "codigo cuenta", "código cuenta", "puc", "cuenta puc"], "Identificación tercero": ["nit", "nit tercero", "identificacion", "identificación", "cedula", "cédula", "numero de identificacion", "id tercero", "documento tercero", "nit proveedor"], "Descripción": ["descripcion", "descripción", "concepto", "detalle", "item", "ítem", "servicio", "producto", "descripcion gasto"], "Código centro/subcentro de costos": ["centro de costo", "centro de costos", "centro costo", "cc", "ccosto", "obra", "proyecto", "codigo centro de costo"], "Débito": ["valor", "total", "valor total", "importe", "monto", "neto", "valor pagado", "valor gasto", "debito", "débito"], "Crédito": ["credito", "crédito", "abono"], "Observaciones": ["observacion", "observación", "observaciones", "nota", "notas", "comentario"], "Base gravable libro compras/ventas": ["base gravable", "base iva", "subtotal"]}, COLCONC = {"Código cuenta contable": "cuenta", "Identificación tercero": "nit", "Descripción": "concepto", "Código centro/subcentro de costos": "centro_costo", "Débito": "valor"};   // de memoria_semantica/mapeo_campos.json (fuente única, versionada)
 /* ── El reloj de las consultas (TK-0311, 2026-10-21) ──────────────────────────
    Hallazgo del banco de artefactos, no de una persona: con la base CAÍDA Tirón
@@ -1372,7 +1393,7 @@ async function leerDocumento(nombre, u8) {
 // ── activación del equipo (sin inicio de sesión para quien usa la app) ──
 function mostrarActivar(aviso) {
   if (EN_HESTIA) {   // en la web no se activa nada: se entra por Hestia, con su sesión
-    $("#app").style.display = "none"; $("#activar").style.display = "none"; $("#activar-web").style.display = ""; $("#barra-sel").classList.remove("on");
+    $("#app").style.display = "none"; $("#activar").style.display = "none"; $("#gayo-web").style.display = "none"; $("#activar-web").style.display = ""; $("#barra-sel").classList.remove("on");
     $("#aw-estado").innerHTML = aviso ? `<div class="aviso err" style="text-align:left">${aviso}</div>` : "";
     return;
   }
@@ -1402,9 +1423,59 @@ async function arranque() {
   }
   SESION = data.session;
   if (!SESION) return mostrarActivar();
-  $("#activar").style.display = "none"; $("#activar-web").style.display = "none"; $("#app").style.display = "";
+  if (EN_HESTIA && !(await gayoAlDia())) return;   // TK-0620: sin las reglas de uso aceptadas, la carga no se abre
+  $("#activar").style.display = "none"; $("#activar-web").style.display = "none"; $("#gayo-web").style.display = "none"; $("#app").style.display = "";
   await cargarEstado();
   sondearEquipo().catch(() => {});
+}
+
+// ── Habeas Data: las reglas de uso (Gayo) se aceptan antes de usar Tirón (TK-0620, administrador 2026-11-12) ──
+// Solo en la WEB, donde la sesión es la de la persona (la de Hestia). En el ARCHIVO de OneDrive la sesión es la de la
+// cuenta del cargador que activó TI, no la de quien está sentado: revisarla ahí diría si «la cuenta» aceptó, no la
+// persona. Tres respuestas y no dos: «aceptó» abre la carga, «no aceptó» lleva a Hestia, y «no se pudo comprobar» lo
+// dice y ofrece reintentar — un error de red no es un sí ni un no (pilar del catch, 2026-10-19).
+const HESTIA_URL = "https://irm-hestia.vercel.app/";
+function pintarGayo(titulo, cuerpo) {
+  $("#app").style.display = "none"; $("#activar").style.display = "none"; $("#activar-web").style.display = "none";
+  $("#barra-sel").classList.remove("on");
+  $("#gw-titulo").textContent = titulo; $("#gw-cuerpo").innerHTML = cuerpo; $("#gayo-web").style.display = "";
+  const r = $("#gw-reintentar");
+  if (r) r.onclick = async () => { const listo = ocupado(r); try { await arranque(); } finally { listo(); } };
+}
+async function gayoAlDia() {
+  let data, error, fallo = null;
+  paso("Revisando en Hestia que aceptaste las reglas de uso…");
+  try { ({ data, error } = await sb.schema("core").rpc("gayo_al_dia")); if (error) fallo = error.message || "error desconocido"; }
+  catch (err) { fallo = (err && err.message) || "error desconocido"; }
+  finally { paso(null); }
+  if (!fallo && (!data || typeof data.al_dia !== "boolean")) fallo = "la respuesta llegó incompleta";
+  if (fallo) {
+    const porque = sinRespuesta(fallo) ? "La base de datos de IRM no contestó a tiempo."
+      : esRed(fallo) ? "No hay conexión con la base de datos de IRM." : `La base respondió con un error: ${e(fallo)}.`;
+    pintarGayo("No pude comprobar las reglas de uso", `
+      <div class="aviso err" style="text-align:left"><b>No sé todavía si aceptaste las reglas de uso.</b> ${porque}
+      Por eso la carga no se abre: no se puede dar por aceptado lo que no se pudo revisar.</div>
+      <ol class="dim" style="text-align:left;font-size:14px;padding-left:20px;margin:12px 0 0">
+        <li>Revisa que tengas internet.</li>
+        <li>Clic en <b>Volver a revisar</b>. Si aparece de nuevo, espera un minuto y repite.</li>
+        <li>Si sigue igual, avísale a TI con la hora exacta.</li></ol>
+      <p style="margin-top:18px"><button class="btn" id="gw-reintentar">Volver a revisar</button></p>`);
+    return false;
+  }
+  if (data.al_dia) return true;
+  if (data.sesion === false) { mostrarActivar(); return false; }
+  const v = data.version ? " " + e(data.version) : "";
+  pintarGayo("Antes de usar Tirón, acepta las reglas de uso", `
+    <p>Antes de usar Tirón tienes que leer y aceptar las <b>reglas de uso${v}</b> en Hestia. Son las reglas de cómo se cuidan los datos de las personas (Habeas Data), y se aceptan una vez por versión.</p>
+    <ol class="dim" style="text-align:left;font-size:14px;padding-left:20px;margin:12px 0 0">
+      <li>Clic en <b>Ir a Hestia</b>.</li>
+      <li>Hestia te muestra las reglas: léelas hasta el final y clic en <b>Cerrar las reglas</b>.</li>
+      <li>Marca la casilla <b>«Leí las reglas de uso y me comprometo a cumplirlas»</b>.</li>
+      <li>Vuelve a abrir Tirón desde Hestia (área Contabilidad). Si ya las aceptaste en otra pestaña, clic en <b>Ya las acepté: revisar otra vez</b>.</li></ol>
+    <p style="margin-top:18px"><a class="btn" href="${HESTIA_URL}">Ir a Hestia</a></p>
+    <p><button class="btn-texto" id="gw-reintentar">Ya las acepté: revisar otra vez</button></p>
+    ${data.correo ? `<p class="dim" style="font-size:12px">Sesión de ${e(data.correo)}.</p>` : ""}`);
+  return false;
 }
 
 // ── pilar «equipo nuevo» (regla del usuario, 2026-09-30) ──
@@ -3476,7 +3547,7 @@ body { padding-bottom: calc(var(--irm-franja-abajo, 68px) + 14px); }
     _proveedor: null };
 })(window);
 </script>
-<script>(function(){var go=function(){IRMReporte.iniciar({"artefacto": "cargador_siigo", "nombre": "Tirón", "version": "2026-11-12", "posicion": "derecha"});};if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',go);else go();})();</script>
+<script>(function(){var go=function(){IRMReporte.iniciar({"artefacto": "cargador_siigo", "nombre": "Tirón", "version": "2026-11-20", "posicion": "derecha"});};if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',go);else go();})();</script>
 <style>
 /* Botón «Volver a Hestia» — componente canónico IRM v2 (IMAGEN CORPORATIVA/memoria_procedimental/componente_volver.py) */
 /* La franja de abajo es de los dos botones del ecosistema («Volver» a la izquierda, «Reportar» a la
