@@ -1,0 +1,26 @@
+{
+  "id": "/estrabon.html",
+  "name": "Estrabón — IRM Aires",
+  "short_name": "Estrabón",
+  "description": "Cada cliente de IRM: propuestas, ganadas y perdidas",
+  "lang": "es-CO",
+  "start_url": "/estrabon.html",
+  "scope": "/",
+  "display": "standalone",
+  "background_color": "#f9f9f7",
+  "theme_color": "#00B9CE",
+  "icons": [
+    {
+      "src": "/app/estrabon-192.png",
+      "sizes": "192x192",
+      "type": "image/png",
+      "purpose": "any"
+    },
+    {
+      "src": "/app/estrabon-512.png",
+      "sizes": "512x512",
+      "type": "image/png",
+      "purpose": "any"
+    }
+  ]
+}

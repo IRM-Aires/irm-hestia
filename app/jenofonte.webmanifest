@@ -1,0 +1,26 @@
+{
+  "id": "/jenofonte.html",
+  "name": "Jenofonte — IRM Aires",
+  "short_name": "Jenofonte",
+  "description": "Las solicitudes de los técnicos de campo",
+  "lang": "es-CO",
+  "start_url": "/jenofonte.html",
+  "scope": "/",
+  "display": "standalone",
+  "background_color": "#f9f9f7",
+  "theme_color": "#00B9CE",
+  "icons": [
+    {
+      "src": "/app/jenofonte-192.png",
+      "sizes": "192x192",
+      "type": "image/png",
+      "purpose": "any"
+    },
+    {
+      "src": "/app/jenofonte-512.png",
+      "sizes": "512x512",
+      "type": "image/png",
+      "purpose": "any"
+    }
+  ]
+}

@@ -1,0 +1,26 @@
+{
+  "id": "/frontino.html",
+  "name": "Frontino — IRM Aires",
+  "short_name": "Frontino",
+  "description": "Cuánto rinde una cuadrilla en un día",
+  "lang": "es-CO",
+  "start_url": "/frontino.html",
+  "scope": "/",
+  "display": "standalone",
+  "background_color": "#f9f9f7",
+  "theme_color": "#00B9CE",
+  "icons": [
+    {
+      "src": "/app/frontino-192.png",
+      "sizes": "192x192",
+      "type": "image/png",
+      "purpose": "any"
+    },
+    {
+      "src": "/app/frontino-512.png",
+      "sizes": "512x512",
+      "type": "image/png",
+      "purpose": "any"
+    }
+  ]
+}
