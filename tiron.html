@@ -226,7 +226,8 @@ label.f small { color:var(--tinta-apagada); font-weight:400; }
 @media (prefers-reduced-motion: reduce) { .trabajando .barra::after { animation:none; left:0; width:100%; opacity:.55; } }
 .irm-encabezado .subtitulo { font-family: Inter, system-ui, sans-serif; font-size: 14px; font-weight: 500; color: var(--tinta-2); margin-top: 2px; }
 .irm-encabezado .fecha { text-align: right; line-height: 1.5; }
-.irm-encabezado .fecha span { display: block; }
+.irm-encabezado .fecha > span { display: block; }
+.irm-encabezado .fecha .irm-modo { margin-top: 4px; }
 #h-semana { font-weight: 600; color: var(--tinta); }
 .irm-encabezado .antetitulo { font-family: Inter, system-ui, sans-serif; font-size: 12px; font-weight: 600; letter-spacing: .04em; color: var(--tinta-2); margin-bottom: 2px; }
 .irm-encabezado .titulo-fila { display: flex; align-items: center; gap: 12px; flex-wrap: wrap; }
@@ -422,7 +423,9 @@ a.chip { text-decoration:none; color:var(--irm-cian); }
 .hoja-siigo-marco { border:1px solid var(--cuadricula); background:white; max-height:62vh; overflow:auto; }
 /* Excepción de marca del PILAR del cargador (CLAUDE.md «Imagen corporativa»): la vista previa del archivo de Siigo va en
    el formato de Siigo, sin nada de IRM encima. Mientras está abierta se aparta el botón «Reportar»; al cerrarla vuelve. */
-body:has(#modal.on .hoja-siigo-marco) .irm-reporte-btn, body:has(#modal.on .hoja-siigo-marco) .irm-volver { display:none; }
+body:has(#modal.on .hoja-siigo-marco) .irm-reporte-btn, body:has(#modal.on .hoja-siigo-marco) .irm-volver,
+body:has(#modal.on .hoja-siigo-marco) .irm-modo, body:has(#modal.on .hoja-siigo-marco) #irm-modo-franja,
+body:has(#modal.on .hoja-siigo-marco) #irm-modo-aviso { display:none !important; }
 .hoja-siigo { border-collapse:collapse; table-layout:fixed; color:black; background:white; }
 .hoja-siigo td, .hoja-siigo th { font-family:var(--letra-siigo), sans-serif; }   /* la letra la trae la plantilla de Siigo */
 .hoja-siigo td, .hoja-siigo th { border:1px solid rgba(0,0,0,.16); padding:2px 6px; white-space:nowrap; overflow:hidden; text-overflow:ellipsis; vertical-align:middle; }
@@ -486,7 +489,7 @@ th.irm-caneca-col, td.irm-caneca-col { width: 38px; text-align: center; padding-
 <header class="irm-cabecera irm-encabezado">
   <img src="data:image/svg+xml;base64,PD94bWwgdmVyc2lvbj0iMS4wIiBlbmNvZGluZz0idXRmLTgiPz4KPCEtLSBHZW5lcmF0b3I6IEFkb2JlIElsbHVzdHJhdG9yIDI4LjAuMCwgU1ZHIEV4cG9ydCBQbHVnLUluIC4gU1ZHIFZlcnNpb246IDYuMDAgQnVpbGQgMCkgIC0tPgo8c3ZnIHZlcnNpb249IjEuMSIgaWQ9IkNhcGFfMSIgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIiB4bWxuczp4bGluaz0iaHR0cDovL3d3dy53My5vcmcvMTk5OS94bGluayIgeD0iMHB4IiB5PSIwcHgiCgkgdmlld0JveD0iMCAwIDEyODggNTEzIiBzdHlsZT0iZW5hYmxlLWJhY2tncm91bmQ6bmV3IDAgMCAxMjg4IDUxMzsiIHhtbDpzcGFjZT0icHJlc2VydmUiPgo8c3R5bGUgdHlwZT0idGV4dC9jc3MiPgoJLnN0MHtmaWxsOiMwNUMwREI7fQoJLnN0MXtmaWxsOiNBOUQ0MzM7fQoJLnN0MntmaWxsOiMwNUJGREI7fQoJLnN0M3tmaWxsOiMwNkMwREI7fQo8L3N0eWxlPgo8cGF0aCBjbGFzcz0ic3QwIiBkPSJNMTAyMS45NCwyOTcuODRjMC0yNC4xNS0wLjAzLTQ4LjMsMC4wMS03Mi40NmMwLjAyLTkuMzgsMS42LTE4LjUzLDQuMzYtMjcuNWMyLjk4LTkuNjksMS4xNy0xNC43OC03LjM5LTIwLjMzCgljLTEyLjk0LTguNC0yNy4zOC04LjQzLTQxLjk3LTcuMWMtMy40NiwwLjMxLTYuOTEsMS4xMS0xMC4yNywyLjAxYy0yMS41NSw1LjgtMzMuNjUsMjAuNDgtMzYuNzksNDMuOTgKCWMtMS4wOSw4LjE0LTEuMDMsMTYuMjgtMS4wNSwyNC40M2MtMC4wOCw0My44MS0wLjAxLDg3LjYyLTAuMDUsMTMxLjQzYy0wLjAyLDE4Ljg4LTcuOTksMzEuMTUtMjMuNTgsMzYuNjgKCWMtMjAuMSw3LjEyLTQyLjM3LTYuMzktNDUuMTItMjcuNWMtMC42Mi00Ljc3LTAuOTItOS42Mi0wLjkzLTE0LjQzYy0wLjA3LTQzLjE0LTAuMjYtODYuMjksMC4wNC0xMjkuNDMKCWMwLjE4LTI1Ljg4LDQuNjMtNTEuMDEsMTYuNi03NC4zMWMxNi44NS0zMi43OSw0NS4zMi01MC41LDc5LjYtNjAuMTZjMzYuNTItMTAuMyw3MC40Ni0zLjkyLDEwMS45MywxNi44NQoJYzAuOTcsMC42NCwxLjk0LDEuMjksMi45MSwxLjk0YzYuNjMsNC40Myw3LjkzLDQuNDcsMTQuMjEtMC4yYzE0LjM5LTEwLjcsMzAuMjktMTguMTMsNDgtMjEuMDYKCWM3NC45MS0xMi4zOSwxMzAuMzIsMjcuOTYsMTQ3Ljg4LDkzLjk3YzMuMDIsMTEuMzYsMy4wNCwyMy4xLDMuMDgsMzQuNzNjMC4xOCw0OC40NywwLjExLDk2Ljk1LDAuMDYsMTQ1LjQyCgljLTAuMDIsMTcuOTItOS4zNiwzMS4xNi0yNC45LDM1LjU3Yy0xOS43Nyw1LjYxLTQyLjA0LTEwLjI2LTQyLjUtMzAuNzNjLTAuNDQtMTkuNjUtMC4zLTM5LjMxLTAuMzEtNTguOTYKCWMwLTI4Ljc5LDAuMTktNTcuNTksMC4wOS04Ni4zOGMtMC4wNC0xMi40My0yLjgtMjQuNDEtNy40My0zNS45NWMtNS45NC0xNC43OS0xNi42OC0yMy41Ni0zMi40NC0yNi40NQoJYy0xMS4wOS0yLjA0LTIyLjE3LTIuNjEtMzMuMjctMC42NmMtMjEuOTYsMy44NS0zMy4zMywxOC40Ni0zOC42NiwzOC44N2MtMS41Niw1Ljk2LTIuMjgsMTIuMDktMi4yOSwxOC4yOQoJYy0wLjA3LDM4Ljk4LTAuMjIsNzcuOTUtMC4yMSwxMTYuOTNjMCwxMS4zMSwwLjczLDIyLjYzLTAuNTEsMzMuOTNjLTEuOSwxNy4zOS0xNS4yNSwzMC45NS0zMS4yMiwzMS42OAoJYy0xOS4wNiwwLjg3LTMzLjI4LTEwLjIzLTM2Ljg5LTI4LjczYy0wLjg3LTQuNDQtMS4xNy04Ljg5LTEuMTYtMTMuNGMwLjAyLTIzLjY1LDAuMDEtNDcuMzEsMC4wMS03MC45NgoJQzEwMjEuODMsMjk3Ljg0LDEwMjEuODksMjk3Ljg0LDEwMjEuOTQsMjk3Ljg0eiIvPgo8cGF0aCBjbGFzcz0ic3QxIiBkPSJNOTcuNzYsNDM2LjU5Yy01LjU3LTIuNTgtMTAuMDgtNi40Ni0xNC4wMi0xMC44OWMtMjkuNzEtMzMuMzgtNTIuMS03MC44OS02MC45NC0xMTUuMQoJQzYuNTksMjI5LjQ0LDI0LjI4LDE1Ni41OCw3OS41Myw5NC4xNmMzNi42LTQxLjM1LDgyLjY1LTY3LjIsMTM2Ljg4LTc3LjZjNTMuMzQtMTAuMjMsMTA0LjYyLTIuNDUsMTUzLjc2LDIwLjI2CgljMjQuNjQsMTEuMzksNDUuNjIsMjcuOTMsNjUuMDMsNDYuNjJjMi40LDIuMzEsNC45LDQuNTEsNy4yMSw2LjkxYzEuMzMsMS4zOCwyLjI1LDMuMywwLjY3LDQuOTFjLTEuNTEsMS41NC0yLjYxLTAuNTItMy42OC0xLjIxCgljLTMzLjI0LTIxLjQ2LTY5LjM3LTM1LjQ2LTEwOC43Mi0zOS42M2MtNzEuNzQtNy41OS0xMzUuNDgsMTEuODktMTg5Ljk4LDU5LjQ1Yy0zOC41NiwzMy42NS02NC42NSw3NS4zMS03Ni41NiwxMjUuMwoJYy0xMi40Nyw1Mi4zNi02LjgsMTAzLjM2LDEyLjY0LDE1My4xNkM4Mi43MSw0MDcuNTMsODkuOTcsNDIyLjA5LDk3Ljc2LDQzNi41OXoiLz4KPHBhdGggY2xhc3M9InN0MiIgZD0iTTczNS4xNSwzMDQuOTFjMCwyMy4xNSwwLjA3LDQ2LjMxLTAuMDIsNjkuNDZjLTAuMDYsMTYuNzYtNy44NiwyOC45My0yMS43NCwzNC4zNwoJYy0yMi44Nyw4Ljk2LTQ2Ljk5LTcuMzktNDcuNDItMzIuNzdjLTAuNDYtMjcuNjQtMC4wMy01NS4zLTAuMDctODIuOTVjLTAuMDItMTIuNDgtMC4yLTI0Ljk3LTAuMzgtMzcuNDUKCWMtMC4zOS0yNi43NiwxLjIyLTUzLjI0LDEwLjc4LTc4LjYyYzEzLjEzLTM0Ljg1LDM4LjMxLTU2Ljg0LDcyLjc2LTY5LjkyYzI3LjQ5LTEwLjQ0LDU0LjgzLTEwLjc4LDgyLjczLTMKCWMxOC42Niw1LjIsMjkuODQsMjIuMzksMjYuMDgsNDAuMThjLTQuMDUsMTkuMTUtMjIuMSwzMS42LTQxLjQzLDI4LjExYy0xNS43NS0yLjg0LTMxLjMyLTMuOC00Ni45NywwLjYzCgljLTEyLjU4LDMuNTYtMjEuMjQsMTEuMjktMjYuNDQsMjMuMTVjLTUuNDMsMTIuMzgtNy44MiwyNS4zOS03Ljg2LDM4Ljg0QzczNS4xLDI1OC4yNyw3MzUuMTUsMjgxLjU5LDczNS4xNSwzMDQuOTF6Ii8+CjxwYXRoIGNsYXNzPSJzdDMiIGQ9Ik0yMzIuNzMsNDg4LjM0Yy0yNy43NS01LjI1LTUyLjQxLTE3LjU4LTc0LjcyLTM0LjU5QzEyMy41LDQyNy40Niw5OS40MiwzOTMuNTksODcsMzUxLjg4CgljLTI1LjE3LTg0LjQ4LDYuODYtMTc0LjQsNzkuNDUtMjIzLjU3YzY4LjIzLTQ2LjIyLDE1NC40LTQxLjI3LDIwMy41Mi0xMS4zM2MtMTUuMjctMS4xOS0yOS42My0wLjk4LTQzLjk2LDAuMQoJYy00NC45MiwzLjM5LTg2LjEzLDE2LjQ2LTEyMC42NCw0Ni43Yy0yNy4xLDIzLjc1LTQ0LjkxLDUzLjctNTcuMTIsODcuMTZjLTMxLjA5LDg1LjE1LTEuNDQsMTc2LjQ4LDc0LjEyLDIyOC45MwoJYzMuNTQsMi40Niw3LjE1LDQuODEsMTAuNzIsNy4yMUMyMzIuOTYsNDg3LjUsMjMyLjg1LDQ4Ny45MiwyMzIuNzMsNDg4LjM0eiIvPgo8cGF0aCBjbGFzcz0ic3QzIiBkPSJNMjA1LjAzLDQzOC45OGMxMC42MSwwLjY3LDIxLjIxLDEuNTgsMzEuODIsMS45N2MyOS4zNCwxLjA4LDU4LjE0LTEuODgsODYuMDItMTEuNzYKCWMzNS4zOS0xMi41NSw2My42Ny0zNC40MSw4NC44MS02NS4yNmMyMi41OS0zMi45NiwzNy02OS4yLDQwLjI1LTEwOS4yNWMzLjgtNDYuNzItMTEuMTEtODcuODEtMzkuMjctMTI0LjU5CgljLTEwLjE2LTEzLjI3LTIxLjY5LTI1LjI1LTM0LjAxLTM2LjVjLTAuOTMtMC44NS0xLjk3LTEuNTYtMy41OC0yLjgyYzQuNzMtMS40Miw4LjAxLTAuNjMsMTEuMiwwLjgxCgljNjYuOTYsMzAuMTIsMTA4LjYsODAuNiwxMTkuMjEsMTUzLjY3YzkuMDEsNjItOS4yOCwxMTYuNjktNTIuMzksMTYyLjI3Yy0zNi4xOSwzOC4yNi04MS4yMyw1OC4wOC0xMzMuODYsNjAuNTcKCWMtMzcuODcsMS43OS03My4zNC02LjMzLTEwNi0yNS44OGMtMS41LTAuOS0zLjQ1LTEuMzMtNC4xMi0zLjNMMjA1LjAzLDQzOC45OHoiLz4KPHBhdGggY2xhc3M9InN0MCIgZD0iTTYyMS44NSwyNTUuMTJjMCwzOS40NywwLjA0LDc4LjkzLTAuMDIsMTE4LjRjLTAuMDMsMjEuODYtMTMuNzEsMzYuNjctMzQuNDUsMzcuNTUKCWMtMTguMDUsMC43Ni0zNC4wOC0xMy41Ny0zNS4zNS0zMS42NGMtMC4xNi0yLjMyLTAuMTctNC42Ni0wLjE3LTYuOTljLTAuMDEtNTAuNjIsMC4wMy0xMDEuMjUtMC4wMy0xNTEuODcKCWMtMC4wMi0xOC40OC0wLjY5LTM2Ljk2LTAuMjctNTUuNDJjMC4yOS0xMi42Mi0wLjYzLTI1LjMyLDEuMzYtMzcuODdjMi44OC0xOC4xOSwxNS43NC0yOS42LDMyLjgxLTI5LjM2CgljMTguNCwwLjI2LDMzLjA3LDEyLjk5LDM1LjQzLDMwLjg1YzAuNDEsMy4xMiwwLjY1LDYuMywwLjY1LDkuNDVDNjIxLjg3LDE3Ny4xOSw2MjEuODUsMjE2LjE2LDYyMS44NSwyNTUuMTJ6Ii8+CjxwYXRoIGNsYXNzPSJzdDEiIGQ9Ik0zMTAuMTcsMTM4LjVjMjguMjctMi43Nyw4MC4wMiwyMS40MSw5OC45NCw3My4zOWMxOS44Niw1NC41NiwzLjc1LDEwNi4xOS00Mi45OSwxMzguMzIKCWMtNDQuOTcsMzAuOTEtOTguODksMjQuNi0xMzAuMDUsMC40OGM1NS4yNi0yLjIsOTYuNDItMjUuNTIsMTE0Ljk1LTc4LjkyQzM2OS41LDIxOC40NywzNTMuMjUsMTc0LjI4LDMxMC4xNywxMzguNXoiLz4KPHBhdGggY2xhc3M9InN0MyIgZD0iTTIwNS4xMiw0MzguOWMtMC4xNC0wLjA0LTAuMjktMC4wNi0wLjQtMC4xNGMtMC4wNS0wLjA0LTAuMDQtMC4xOC0wLjA1LTAuMjhjMC4xMiwwLjE2LDAuMjQsMC4zMywwLjM2LDAuNDkKCUMyMDUuMDMsNDM4Ljk4LDIwNS4xMiw0MzguOSwyMDUuMTIsNDM4Ljl6Ii8+Cjwvc3ZnPg==" alt="IRM Aires">
   <div class="titulo"><div class="antetitulo">Cargador Siigo</div><div class="titulo-fila"><h1><span class="sello-panteon" title="La pluma con el trazo rápido debajo: la taquigrafía que vuelve registro fiel lo dictado." style="display:inline-block;vertical-align:-.12em;margin-right:.35em"><svg width="1em" height="1em" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M19.5 4.5c-5.5.5-9.5 3.5-11.5 9L6.5 18l4-1.5c5.5-2 8.5-6 9-12z"/><path d="M6.5 18C10 13 14 9 18 6.5"/><path d="M3 21c2.5-1 5.5-1 8.5 0" stroke="#00B9CE"/></svg></span>Tirón</h1><span class="leyenda">Tirón copiaba fiel lo que le dictaba Cicerón: por eso esta mesa, que pasa tus gastos a Siigo, lleva su nombre.</span><button type="button" class="para-que" id="para-que">¿Para qué sirve?</button></div><div class="subtitulo">Carga de documentos · Legalización de cajas menores</div></div>
-  <div class="fecha"><span id="h-semana"></span><span id="h-version"></span></div><div class="agentes" aria-label="Agentes que intervienen"><span class="quien">Quién trabaja acá:</span><button type="button" class="agente" data-agente="0" title="Tirón, el secretario de Cicerón, copiaba fiel todo lo que le dictaban: por eso el que pasa tus gastos a Siigo sin inventar nada lleva su nombre. Clic para ver qué hace."><b>Tirón</b><span class="que"> pasa los gastos a Siigo</span></button><button type="button" class="agente" data-agente="1" title="Francesco de Tassis montó el primer correo de Europa: por eso el que trae los documentos lleva su nombre. Clic para ver qué hace."><b>Tassis</b><span class="que"> trae los documentos</span></button><button type="button" class="agente" data-agente="2" title="Calímaco hizo el catálogo de la biblioteca de Alejandría: por eso el que mantiene la lista oficial de obras lleva su nombre. Clic para ver qué hace."><b>Calímaco</b><span class="que"> mantiene la lista de obras</span></button><button type="button" class="agente" data-agente="3" title="Gutenberg inventó la imprenta para que todos leyeran la misma edición: por eso el que te trae la app al día lleva su nombre. Clic para ver qué hace."><b>Gutenberg</b><span class="que"> te trae la app al día</span></button></div>
+  <div class="fecha"><span id="h-semana"></span><span id="h-version"></span><button type="button" class="irm-modo leyendo" data-irm-modo hidden>Leyendo modo…</button></div><div class="agentes" aria-label="Agentes que intervienen"><span class="quien">Quién trabaja acá:</span><button type="button" class="agente" data-agente="0" title="Tirón, el secretario de Cicerón, copiaba fiel todo lo que le dictaban: por eso el que pasa tus gastos a Siigo sin inventar nada lleva su nombre. Clic para ver qué hace."><b>Tirón</b><span class="que"> pasa los gastos a Siigo</span></button><button type="button" class="agente" data-agente="1" title="Francesco de Tassis montó el primer correo de Europa: por eso el que trae los documentos lleva su nombre. Clic para ver qué hace."><b>Tassis</b><span class="que"> trae los documentos</span></button><button type="button" class="agente" data-agente="2" title="Calímaco hizo el catálogo de la biblioteca de Alejandría: por eso el que mantiene la lista oficial de obras lleva su nombre. Clic para ver qué hace."><b>Calímaco</b><span class="que"> mantiene la lista de obras</span></button><button type="button" class="agente" data-agente="3" title="Gutenberg inventó la imprenta para que todos leyeran la misma edición: por eso el que te trae la app al día lleva su nombre. Clic para ver qué hace."><b>Gutenberg</b><span class="que"> te trae la app al día</span></button></div>
 </header>
 
 <main>
@@ -755,7 +758,7 @@ th.irm-caneca-col, td.irm-caneca-col { width: 38px; text-align: center; padding-
 <footer class="irm-pie">
   <div class="irm-contacto"><span><b>C.</b> 318 3591189</span><span><b>D.</b> Cra. 36 #10B-39 el poblado, Medellín, Ant.</span><span>www.irmaires.com</span></div>
   <span>Confidencial — uso interno IRM Aires</span>
-  <span class="irm-paginacion">2026-11-20</span>
+  <span class="irm-paginacion">2026-11-26</span>
 </footer>
 
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
@@ -926,8 +929,8 @@ function canecaOcupada(b) {
 const URL_SB = "https://oixizeqfuxsbjqcvzpbe.supabase.co", LLAVE = "sb_publishable_Yfu9GwQGe9w5NsGVmC3BvQ_Gj7k4DGi";
 // Huella del propio archivo (sha256, 12 caracteres), la escribe construir_app.py. Gutenberg publica el archivo en
 // SharePoint y anota la versión vigente; si esta copia no coincide, la app avisa «apretá F5» (migración 12).
-const VERSION_APP = "345191f186bd";
-const FECHA_APP = "2026-11-20";   // fecha de edición (la del encabezado)
+const VERSION_APP = "85a997d5764b";
+const FECHA_APP = "2026-11-26";   // fecha de edición (la del encabezado)
 const DICC = {"nit": ["nit", "identificacion", "identificación", "numero de identificacion", "n° identificación", "documento", "cedula", "cédula", "id tercero", "nit tercero"], "tercero": ["tercero", "nombre", "razon social", "razón social", "proveedor", "cliente", "beneficiario", "nombre tercero"], "fecha": ["fecha", "fecha documento", "fecha factura", "fecha de emision", "fecha de emisión", "date"], "numero_documento": ["numero", "número", "no", "n°", "factura", "numero factura", "número de factura", "documento", "comprobante", "consecutivo"], "concepto": ["concepto", "descripcion", "descripción", "detalle", "observacion", "observación", "item", "ítem", "producto", "servicio"], "centro_costo": ["centro de costo", "centro de costos", "cc", "obra", "proyecto", "centro costo", "ccosto"], "cuenta": ["cuenta", "cuenta contable", "codigo cuenta", "código cuenta", "puc"], "valor": ["valor", "total", "valor total", "importe", "monto", "subtotal", "base", "neto"], "iva": ["iva", "impuesto", "valor iva", "iva 19"], "retencion": ["retencion", "retención", "retefuente", "rte fte", "reteica", "rete ica"]}, COLSIN = {"Código cuenta contable": ["cuenta", "cuenta contable", "codigo cuenta", "código cuenta", "puc", "cuenta puc"], "Identificación tercero": ["nit", "nit tercero", "identificacion", "identificación", "cedula", "cédula", "numero de identificacion", "id tercero", "documento tercero", "nit proveedor"], "Descripción": ["descripcion", "descripción", "concepto", "detalle", "item", "ítem", "servicio", "producto", "descripcion gasto"], "Código centro/subcentro de costos": ["centro de costo", "centro de costos", "centro costo", "cc", "ccosto", "obra", "proyecto", "codigo centro de costo"], "Débito": ["valor", "total", "valor total", "importe", "monto", "neto", "valor pagado", "valor gasto", "debito", "débito"], "Crédito": ["credito", "crédito", "abono"], "Observaciones": ["observacion", "observación", "observaciones", "nota", "notas", "comentario"], "Base gravable libro compras/ventas": ["base gravable", "base iva", "subtotal"]}, COLCONC = {"Código cuenta contable": "cuenta", "Identificación tercero": "nit", "Descripción": "concepto", "Código centro/subcentro de costos": "centro_costo", "Débito": "valor"};   // de memoria_semantica/mapeo_campos.json (fuente única, versionada)
 /* ── El reloj de las consultas (TK-0311, 2026-10-21) ──────────────────────────
    Hallazgo del banco de artefactos, no de una persona: con la base CAÍDA Tirón
@@ -1615,6 +1618,25 @@ function paso(texto) {
 // con PRUEBA en el nombre y lo aprendido de sus valores no se usa en cargas reales. Como un simulacro de incendio:
 // todo funciona igual, pero nada cuenta.
 let MODO = null;
+// ── EN VIVO / EN PRUEBA POR CARGA (TK-0764, paraguas TK-0752, 2026-11-26) ──
+// Es otra cosa que el «modo prueba» de arriba: aquel es de TODA la herramienta hasta que TI la certifique; éste es de
+// UNA carga y lo prende quien trabaja, desde el botón del banner. Con la carga EN PRUEBA se completa y se revisa todo,
+// y se puede bajar el BORRADOR; lo que no sale es el oficial: «Aprobar y cerrar» lo frena la base
+// (core.siigo_aprobar_carga → core.modo_prueba_exigir). Funciona igual en la web (sesión de Hestia) y en el archivo
+// de OneDrive (cuenta del cargador): las dos hablan con la base por el mismo cliente `sb`.
+let MODO_PRUEBA_CONECTADO = false, MODO_PRUEBA_CARGA = null;
+const cargaAbiertaId = () => (EST && EST.carga && EST.carga.id != null ? String(EST.carga.id) : null);
+const cargaEnPrueba = () => !!(window.IRMModo && IRMModo.enPrueba() === true);
+function conectarModoPrueba() {
+  if (!window.IRMModo) return;
+  const id = cargaAbiertaId();
+  if (!MODO_PRUEBA_CONECTADO) {
+    MODO_PRUEBA_CONECTADO = true; MODO_PRUEBA_CARGA = id;
+    const m = IRMModo.porRpc(sb, () => (SESION && SESION.user && SESION.user.email) || null);
+    IRMModo.conectar({ herramienta: "cargador_siigo", registro: cargaAbiertaId, leer: m.leer, poner: m.poner,
+      alCambiar: () => { if (!EST) return; if (VISTA === "aprobar") pintarAprobar(); else if (cargaEnPrueba()) $("#c-aprobar").disabled = true; } });
+  } else if (id !== MODO_PRUEBA_CARGA) { MODO_PRUEBA_CARGA = id; IRMModo.refrescar(); }
+}
 function pintarModo() {
   const b = $("#aviso-prueba"), c = EST && EST.carga;
   if (!b) return;
@@ -1676,6 +1698,7 @@ async function cargarEstado() {
     ERRF = new Map((EST.errores_formato || []).map(x => [x.fila_id + "|" + x.columna, x.error]));
     CCMAP = new Map(CC.map(c => [c.codigo, c]));
     if (!esGestor()) ["c-agregar","c-sugerir","c-excepcion","c-aprobar","p-btn","cc-btn"].forEach(id => { const b = $("#"+id); if (b) b.disabled = true; });
+    conectarModoPrueba();
     pintarCabeza(); pintarModo(); pintarPasos(); pintarResumen(); pintarTabla(); pintarCentros(); pintarDocumentos(); pintarSharePoint(); pintarVersion();
     if (VISTA === "aprobar") pintarAprobar();
     if (VISTA === "plantilla") pintarPlantilla();
@@ -2283,8 +2306,9 @@ function pintarAprobar() {
     $("#a-cuadre").querySelectorAll("button[data-cp]").forEach(b => b.onclick = () => abrirContrapartida(cua.grupos[Number(b.dataset.cp)]));
   } else $("#a-cuadre").innerHTML = "";
   const listo = items.every(x => x[0]);
-  $("#c-aprobar").disabled = !listo || !gestor;
-  $("#a-nota").textContent = !gestor ? "Esta cuenta es de consulta: no aprueba." : listo ? "Al aprobar se descarga el archivo para Siigo, la carga queda cerrada y se abre la de la próxima semana." : "El botón se activa cuando todo lo de arriba esté en verde.";
+  const enPrueba = cargaEnPrueba();
+  $("#c-aprobar").disabled = !listo || !gestor || enPrueba;
+  $("#a-nota").textContent = !gestor ? "Esta cuenta es de consulta: no aprueba." : enPrueba ? "Esta carga está EN PRUEBA (botón rojo de arriba): se revisa todo y se puede descargar el borrador, pero no se aprueba ni sale el archivo oficial para Siigo. Para aprobarla, primero pasala a EN VIVO." : listo ? "Al aprobar se descarga el archivo para Siigo, la carga queda cerrada y se abre la de la próxima semana." : "El botón se activa cuando todo lo de arriba esté en verde.";
 }
 function abrirContrapartida(g) {
   const q = cuadreCfg(), cs = cols(), filas = EST.filas.filter(f => grupoDe(f) === g.grupo); if (!filas.length) return;
@@ -2501,6 +2525,7 @@ $("#c-vista").onclick = previsualizarSiigo; $("#c-descargar").onclick = descarga
 $("#c-vista2").onclick = () => { cerrarMenu(); previsualizarSiigo(); };
 $("#c-borrador").onclick = () => { cerrarMenu(); descargarSiigo(); };
 $("#c-aprobar").onclick = async () => {
+  if (cargaEnPrueba()) return msg("<b>NO SE APROBÓ.</b> Esta carga está <b>EN PRUEBA</b>: es una práctica y el archivo oficial para Siigo no sale. Si de verdad es real, pasala a <b>EN VIVO</b> con el botón de arriba y aprobá de nuevo.", "at");
   if (!EST.filas.length) return msg("La carga no tiene renglones.", "err");
   if (avisarBloqueoReparto()) return;
   const ok = await preguntar(`Aprobar y cerrar ${e(EST.carga.codigo)}`, `<p>Con ${plural(EST.filas.length, "renglón", "renglones")}. Se descarga el archivo para Siigo, la carga queda cerrada (ya no se edita) y se abre la de la semana siguiente.</p>`, [{ texto: "Aprobar y cerrar", valor: true, clase: "ok" }, { texto: "Todavía no", valor: false, clase: "sec" }]);
@@ -3547,7 +3572,7 @@ body { padding-bottom: calc(var(--irm-franja-abajo, 68px) + 14px); }
     _proveedor: null };
 })(window);
 </script>
-<script>(function(){var go=function(){IRMReporte.iniciar({"artefacto": "cargador_siigo", "nombre": "Tirón", "version": "2026-11-20", "posicion": "derecha"});};if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',go);else go();})();</script>
+<script>(function(){var go=function(){IRMReporte.iniciar({"artefacto": "cargador_siigo", "nombre": "Tirón", "version": "2026-11-26", "posicion": "derecha"});};if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',go);else go();})();</script>
 <style>
 /* Botón «Volver a Hestia» — componente canónico IRM v2 (IMAGEN CORPORATIVA/memoria_procedimental/componente_volver.py) */
 /* La franja de abajo es de los dos botones del ecosistema («Volver» a la izquierda, «Reportar» a la
@@ -3612,4 +3637,175 @@ window.IRMVolver = window.IRMVolver || (function () {
 })();
 if (document.readyState === "loading") document.addEventListener("DOMContentLoaded", function () { IRMVolver.iniciar(); });
 else IRMVolver.iniciar();
+</script>
+<style>
+/* EN VIVO / EN PRUEBA — componente canónico IRM (IMAGEN CORPORATIVA/memoria_procedimental/componente_modo.py) */
+.irm-modo{display:inline-flex;align-items:center;gap:.4em;cursor:pointer;font:inherit;font-size:12px;
+  font-weight:700;letter-spacing:.04em;line-height:1.4;padding:3px 10px;border-radius:999px;
+  border:1.5px solid #0ca30c;background:transparent;color:#0ca30c;white-space:nowrap;min-height:28px}
+/* El display de arriba le gana al [hidden] del navegador: sin esta línea el botón que nace
+   oculto se ve igual, y donde nunca se conecta se queda «Leyendo modo…» girando para siempre. */
+.irm-modo[hidden]{display:none!important}
+.irm-modo.vivo{border-color:#0ca30c;color:#0ca30c;background:transparent}
+.irm-modo.enprueba{border-color:#d03b3b;color:#fff;background:#d03b3b}
+.irm-modo.falla{border-color:#b4690e;color:#b4690e;background:transparent}
+.irm-modo.leyendo{border-color:#B7C6CE;color:#5b6b73}
+.irm-modo:active{transform:translateY(1px)}
+.irm-modo.vivo:active{background:color-mix(in srgb,#0ca30c 14%,transparent)}
+.irm-modo.enprueba:active{background:#b02e2e}
+.irm-modo[disabled]{cursor:not-allowed;opacity:.85}
+.irm-modo:focus-visible{outline:2px solid #00B9CE;outline-offset:2px}
+.irm-modo .irm-modo-rueda{width:11px;height:11px;border-radius:50%;border:2px solid currentColor;
+  border-right-color:transparent;animation:irm-modo-gira .8s linear infinite;display:none}
+.irm-modo[aria-busy="true"] .irm-modo-rueda,.irm-modo.leyendo .irm-modo-rueda{display:inline-block}
+@keyframes irm-modo-gira{to{transform:rotate(360deg)}}
+@media (prefers-reduced-motion:reduce){.irm-modo .irm-modo-rueda{animation:none}}
+/* En prueba, una franja roja arriba: se ve aunque el banner quede fuera de la pantalla. */
+#irm-modo-franja{position:fixed;left:0;right:0;top:0;height:4px;background:#d03b3b;z-index:2147483000;display:none}
+body.irm-en-prueba #irm-modo-franja{display:block}
+#irm-modo-aviso{position:fixed;left:50%;transform:translateX(-50%);bottom:var(--irm-franja-abajo,76px);
+  max-width:min(560px,calc(100vw - 32px));background:#1d2327;color:#fff;border-radius:10px;padding:10px 14px;
+  font-size:13px;line-height:1.4;box-shadow:0 6px 24px rgba(0,0,0,.25);z-index:2147483001;display:none;
+  gap:12px;align-items:center}
+#irm-modo-aviso.ver{display:flex}
+#irm-modo-aviso button{all:unset;cursor:pointer;font-weight:700;color:#00B9CE;text-decoration:underline;white-space:nowrap;padding:6px 2px}
+@media print{.irm-modo,#irm-modo-franja,#irm-modo-aviso{display:none!important}}
+@media (max-width:560px){.irm-modo{min-height:40px}}
+</style>
+<script>
+(function (global) {
+  "use strict";
+  var CFG = null, ESTADO, AVISO_T = null;   /* ESTADO undefined = no se ha leído */
+
+  function btns() { return Array.prototype.slice.call(document.querySelectorAll("[data-irm-modo]")); }
+  function registro() { try { var r = CFG && CFG.registro ? CFG.registro() : null; return r == null || r === "" ? null : String(r); } catch (e) { return null; } }
+  function parse(j) { return typeof j === "string" ? JSON.parse(j) : j; }
+
+  function asegurarPiezas() {
+    if (!document.getElementById("irm-modo-franja")) {
+      var f = document.createElement("div"); f.id = "irm-modo-franja"; f.setAttribute("aria-hidden", "true");
+      document.body.appendChild(f);
+    }
+    if (!document.getElementById("irm-modo-aviso")) {
+      var a = document.createElement("div"); a.id = "irm-modo-aviso"; a.setAttribute("role", "status"); a.setAttribute("aria-live", "polite");
+      document.body.appendChild(a);
+    }
+  }
+
+  function aviso(texto, deshacer) {
+    asegurarPiezas();
+    var a = document.getElementById("irm-modo-aviso");
+    a.textContent = "";
+    var s = document.createElement("span"); s.textContent = texto; a.appendChild(s);
+    if (deshacer) {
+      var b = document.createElement("button"); b.type = "button"; b.textContent = "Deshacer";
+      b.addEventListener("click", function () { a.classList.remove("ver"); deshacer(); });
+      a.appendChild(b);
+    }
+    a.classList.add("ver");
+    clearTimeout(AVISO_T); AVISO_T = setTimeout(function () { a.classList.remove("ver"); }, 9000);
+  }
+
+  function pintar() {
+    asegurarPiezas();
+    var e = ESTADO, enPrueba = !!(e && e.ok && e.en_prueba);
+    document.body.classList.toggle("irm-en-prueba", enPrueba);
+    btns().forEach(function (b) {
+      b.hidden = false;
+      b.classList.remove("vivo", "enprueba", "falla", "leyendo");
+      var txt, tit, off = false;
+      if (e === undefined) { b.classList.add("leyendo"); txt = "Leyendo modo…"; tit = "Preguntándole a la base si esto es real o una práctica."; off = true; }
+      else if (e && e.__falla) { b.classList.add("falla"); txt = "⚠ MODO SIN LEER · reintentar"; tit = "No se pudo leer si esto es real o una práctica (" + e.__falla + "). Tocá para volver a intentarlo. Mientras tanto, tratá lo que hagas como REAL."; }
+      else if (!e.ok) { b.classList.add("falla"); txt = "⚠ MODO NO DISPONIBLE"; tit = e.dice || "La base no reconoce esta herramienta en el modo de prueba."; off = true; }
+      else if (e.tipo === "solo_consulta") { b.classList.add("vivo"); txt = "● EN VIVO"; tit = e.dice || "Esta herramienta solo consulta: no hay nada que practicar."; off = true; }
+      else if (e.sin_registro) { b.classList.add("vivo"); txt = "● EN VIVO"; tit = e.dice || "Todavía no hay nada guardado que poner en prueba."; off = true; }
+      else if (enPrueba) { b.classList.add("enprueba"); txt = "● EN PRUEBA"; tit = "Esto es una PRÁCTICA: se puede trabajar, pero " + (e.que_bloquea || "nada sale de la casa") + ". Tocá para devolverlo a EN VIVO."; }
+      else { b.classList.add("vivo"); txt = "● EN VIVO"; tit = "Esto es REAL: lo que hagas sale de la casa. Tocá para pasarlo a PRUEBA."; }
+      b.innerHTML = '<span class="irm-modo-rueda" aria-hidden="true"></span><span class="irm-modo-txt"></span>';
+      b.querySelector(".irm-modo-txt").textContent = txt;
+      b.title = tit; b.setAttribute("aria-label", txt.replace(/^[●⚠]\s*/, "") + ". " + tit);
+      b.disabled = off;
+    });
+    if (CFG && CFG.alCambiar) { try { CFG.alCambiar(enPrueba, e); } catch (x) {} }
+  }
+
+  function leer() {
+    if (!CFG) return Promise.resolve();
+    /* Una herramienta que solo consulta lo declara al construirse (sale del inventario
+       soporte.modo_prueba_herramienta) y no pregunta: desde claude.ai la llave pública
+       no llega a la base, y sin esto el botón diría «sin leer» para siempre. */
+    if (CFG.soloConsulta) {
+      ESTADO = { ok: true, tipo: "solo_consulta", en_prueba: false,
+                 dice: "Esta herramienta solo consulta: no crea ni envía nada, así que no hay nada que practicar." };
+      pintar(); return Promise.resolve();
+    }
+    ESTADO = undefined; pintar();
+    return Promise.resolve().then(function () { return CFG.leer(CFG.herramienta, registro()); })
+      .then(function (j) { ESTADO = parse(j); })
+      .catch(function (x) { ESTADO = { __falla: (x && x.message) || String(x) }; })
+      .then(pintar);
+  }
+
+  function cambiar(b) {
+    if (ESTADO && ESTADO.__falla) return leer();
+    if (!ESTADO || !ESTADO.ok || b.disabled) return;
+    var prende = !ESTADO.en_prueba, r = registro();
+    b.disabled = true; b.setAttribute("aria-busy", "true");
+    var res = null;
+    return Promise.resolve().then(function () {
+      return CFG.poner(CFG.herramienta, r, prende, prende ? "Puesto en prueba desde el banner" : "Devuelto a EN VIVO desde el banner");
+    }).then(function (j) { res = parse(j); })
+      .catch(function (x) { res = { ok: false, dice: (x && x.message) || String(x) }; })
+      .then(function () { return leer(); })   /* se relee SIEMPRE: manda lo que quedó en la base */
+      .then(function () {
+        if (!res || !res.ok) { aviso("NO SE CAMBIÓ: " + ((res && res.dice) || "la base rechazó el cambio.") + " El modo quedó como estaba."); return; }
+        aviso(res.dice || (prende ? "EN PRUEBA: esto es una práctica." : "EN VIVO: esto vuelve a ser real."),
+              function () { cambiar(btns()[0]); });
+      })
+      .then(function () { btns().forEach(function (x) { x.removeAttribute("aria-busy"); }); },
+            function () { btns().forEach(function (x) { x.removeAttribute("aria-busy"); }); pintar(); });
+  }
+
+  document.addEventListener("click", function (ev) {
+    var b = ev.target && ev.target.closest && ev.target.closest("[data-irm-modo]");
+    if (b) { ev.preventDefault(); cambiar(b); }
+  });
+
+  function q(s) { return s == null ? "null" : "'" + String(s).replace(/'/g, "''") + "'"; }
+
+  global.IRMModo = {
+    version: "1",
+    conectar: function (cfg) { CFG = cfg; return leer(); },
+    refrescar: function () { return leer(); },
+    /* true / false, o null si todavía no se sabe o falló: null NO es «en vivo». */
+    enPrueba: function () { return ESTADO && ESTADO.ok && !ESTADO.__falla ? !!ESTADO.en_prueba : null; },
+    estado: function () { return ESTADO; },
+    porSql: function (sql, quien) {
+      return {
+        leer: function (h, r) {
+          return Promise.resolve(sql("select core.modo_prueba_de(" + q(h) + ", " + q(r) + ") as j"))
+            .then(function (x) { var f = Array.isArray(x) ? x[0] : x; return f && f.j !== undefined ? f.j : f; });
+        },
+        poner: function (h, r, prende, motivo) {
+          var who = typeof quien === "function" ? quien() : quien;
+          return Promise.resolve(sql("select core.modo_prueba_poner(" + q(h) + ", " + q(r) + ", " + (prende ? "true" : "false")
+            + ", " + q(motivo) + ", " + q(who) + ") as j"))
+            .then(function (x) { var f = Array.isArray(x) ? x[0] : x; return f && f.j !== undefined ? f.j : f; });
+        }
+      };
+    },
+    porRpc: function (sb, quien) {
+      function rpc(fn, args) {
+        return sb.schema("core").rpc(fn, args).then(function (r) { if (r.error) throw new Error(r.error.message || "no se pudo"); return r.data; });
+      }
+      return {
+        leer: function (h, r) { return rpc("modo_prueba_de", { p_herramienta: h, p_registro: r }); },
+        poner: function (h, r, prende, motivo) {
+          var who = typeof quien === "function" ? quien() : quien;
+          return rpc("modo_prueba_poner", { p_herramienta: h, p_registro: r, p_prende: prende, p_motivo: motivo, p_quien: who || null });
+        }
+      };
+    }
+  };
+})(window);
 </script>
