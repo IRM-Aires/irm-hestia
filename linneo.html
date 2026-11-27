@@ -2793,9 +2793,9 @@ function aplicarAjuste() {
   const excluir = $$(".aj-c").filter(c=>!c.checked).map(c=>Number(c.dataset.id));
   return accion($("#aj-aplicar"), async () => {
     const r = await rpc("ime_ajuste_aplicar", { ...AJ.args, p_excluir: excluir.length ? excluir : null, p_nota: $("#aj-nota").value||null });
-    $("#aj-res").innerHTML = `<div class="p-paso" style="border-left-color:#0ca30c"><span class="p-vig" style="--c:#0ca30c">Aplicado</span> Lote <b>${r.lote}</b>: ${num(r.n)} precios subieron ${pct(r.pct)} y quedaron en <span class="p-vig" style="--c:#fab219">ámbar</span>.</div>`;
+    $("#aj-res").innerHTML = `<div class="p-paso" style="border-left-color:#0ca30c"><span class="p-vig" style="--c:#0ca30c">Aplicado</span> Lote <b>${r.lote}</b>: ${num(r.n)} precios subieron ${pct(r.pct)} y quedaron en <span class="p-vig" style="--c:#fab219">ámbar</span>.${r.saltados_en_prueba ? ` <b>${num(r.saltados_en_prueba)} ${r.saltados_en_prueba===1?"recurso no se tocó porque está":"recursos no se tocaron porque están"} EN PRUEBA</b> (${(r.ids_en_prueba||[]).map(e).join(", ")}): son una práctica. Si el ajuste es real para ${r.saltados_en_prueba===1?"él":"ellos"}, pasalos a EN VIVO en su ficha y repetí el ajuste solo con esos.` : ""}</div>`;   /* TK-0777 */
     cargarLotes(); refrescarFondo();
-    aviso(`${num(r.n)} precios ajustados (lote ${r.lote}).`, { deshacer: () => { $("#aj-res").innerHTML = ""; return deshacerLote(r.lote); }, ms: 12000 });
+    aviso(`${num(r.n)} precios ajustados (lote ${r.lote}).${r.saltados_en_prueba ? ` ${num(r.saltados_en_prueba)} en prueba no se tocaron.` : ""}`, { deshacer: () => { $("#aj-res").innerHTML = ""; return deshacerLote(r.lote); }, ms: 12000 });
   });
 }
 let LOTES_LEIDOS = false;   // la lista de ajustes anteriores se lee una vez; después, sólo al aplicar o deshacer
@@ -4688,11 +4688,11 @@ window.IRMNav = window.IRMNav || (function () {
 .irm-modo[hidden]{display:none!important}
 .irm-modo.vivo{border-color:#0ca30c;color:#0ca30c;background:transparent}
 .irm-modo.enprueba{border-color:#d03b3b;color:#fff;background:#d03b3b}
-.irm-modo.falla{border-color:#b4690e;color:#b4690e;background:transparent}
+.irm-modo.falla{border-color:#ec835a;color:#0b0b0b;background:color-mix(in srgb,#ec835a 18%,transparent)}
 .irm-modo.leyendo{border-color:#B7C6CE;color:#5b6b73}
 .irm-modo:active{transform:translateY(1px)}
 .irm-modo.vivo:active{background:color-mix(in srgb,#0ca30c 14%,transparent)}
-.irm-modo.enprueba:active{background:#b02e2e}
+.irm-modo.enprueba:active{filter:brightness(.88)}
 .irm-modo[disabled]{cursor:not-allowed;opacity:.85}
 .irm-modo:focus-visible{outline:2px solid #00B9CE;outline-offset:2px}
 .irm-modo .irm-modo-rueda{width:11px;height:11px;border-radius:50%;border:2px solid currentColor;
